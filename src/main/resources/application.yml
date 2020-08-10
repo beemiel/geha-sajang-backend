@@ -1,10 +1,15 @@
 spring:
-  profiles: local
+#  profiles: local #개발 환경 분리는 추후에 할 계획
   datasource:
     url: jdbc:h2:mem:test
   jpa:
     hibernate:
       ddl-auto: create
     properties:
-      show_sql: true
-      format_sql: true
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace #쿼리 파라미터에 어떤 타입의 어떤 데이터가 들어가는지 로그에 찍힘
