@@ -1,5 +1,6 @@
 package com.incense.gehasajang.domain.room;
 
+import com.incense.gehasajang.domain.UnbookedRoom;
 import com.incense.gehasajang.domain.bed.Bed;
 import com.incense.gehasajang.domain.house.House;
 import lombok.Getter;
@@ -43,5 +44,8 @@ public class Room {
 
     @OneToMany(mappedBy = "room")
     private List<Bed> beds;
+
+    @OneToMany(mappedBy = "room")
+    private List<UnbookedRoom> unbookedRooms;
 
 }

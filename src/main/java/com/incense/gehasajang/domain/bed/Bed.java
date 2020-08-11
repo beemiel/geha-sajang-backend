@@ -1,10 +1,12 @@
 package com.incense.gehasajang.domain.bed;
 
+import com.incense.gehasajang.domain.UnbookedRoom;
 import com.incense.gehasajang.domain.room.Room;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,4 +32,8 @@ public class Bed {
     private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt;
+
+    @OneToMany(mappedBy = "bed")
+    private List<UnbookedRoom> unbookedRooms;
+
 }

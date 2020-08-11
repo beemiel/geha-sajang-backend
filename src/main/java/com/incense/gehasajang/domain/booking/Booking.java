@@ -43,4 +43,7 @@ public class Booking {
     @OneToMany(mappedBy = "booking")
     private List<BookingExtraInfo> bookingExtraInfos;
 
+    @OneToMany(mappedBy = "booking")
+    private List<BookingRoomInfo> bookingRoomInfos;
+
 }
