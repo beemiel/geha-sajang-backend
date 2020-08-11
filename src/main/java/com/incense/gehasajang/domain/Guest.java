@@ -1,5 +1,6 @@
 package com.incense.gehasajang.domain;
 
+import com.incense.gehasajang.domain.booking.Booking;
 import lombok.Getter;
 
 import javax.persistence.*;
