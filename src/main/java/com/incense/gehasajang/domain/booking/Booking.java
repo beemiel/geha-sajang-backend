@@ -1,5 +1,6 @@
-package com.incense.gehasajang.domain;
+package com.incense.gehasajang.domain.booking;
 
+import com.incense.gehasajang.domain.Guest;
 import com.incense.gehasajang.domain.house.House;
 import lombok.Getter;
 

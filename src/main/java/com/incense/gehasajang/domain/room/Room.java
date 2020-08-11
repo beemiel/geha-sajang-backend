@@ -1,5 +1,6 @@
-package com.incense.gehasajang.domain;
+package com.incense.gehasajang.domain.room;
 
+import com.incense.gehasajang.domain.bed.Bed;
 import com.incense.gehasajang.domain.house.House;
 import lombok.Getter;
 

@@ -1,5 +1,6 @@
-package com.incense.gehasajang.domain;
+package com.incense.gehasajang.domain.bed;
 
+import com.incense.gehasajang.domain.room.Room;
 import lombok.Getter;
 
 import javax.persistence.*;
