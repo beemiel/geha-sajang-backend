@@ -24,9 +24,7 @@ public class Bed {
     private BedType bedType;
 
     private String alias;
-
-    private boolean is_down_floor;
-
+    
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
