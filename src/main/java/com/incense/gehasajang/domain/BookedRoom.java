@@ -12,7 +12,8 @@ public class BookedRoom {
     @Column(name = "booked_room_id")
     private Long id;
 
-    @OneToOne(mappedBy = "bookedRoom")
+    @OneToOne
+    @JoinColumn(name = "unbooked_room_id")
     private UnbookedRoom unbookedRoom;
 
 }

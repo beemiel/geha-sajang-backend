@@ -34,8 +34,7 @@ public class UnbookedRoom {
     @OneToMany(mappedBy = "unbookedRoom")
     private List<BookingRoomInfo> bookingRoomInfos;
 
-    @OneToOne
-    @JoinColumn(name = "booked_room_id")
+    @OneToOne(mappedBy = "unbookedRoom")
     private BookedRoom bookedRoom;
 
 }
