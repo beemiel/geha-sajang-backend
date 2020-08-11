@@ -1,6 +1,9 @@
 package com.incense.gehasajang.domain.house;
 
 import com.incense.gehasajang.domain.*;
+import com.incense.gehasajang.domain.booking.Booking;
+import com.incense.gehasajang.domain.room.Room;
+import com.incense.gehasajang.domain.sms.SmsTemplate;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -49,4 +52,7 @@ public class House {
 
     @OneToMany(mappedBy = "house")
     private List<Room> rooms;
+
+    @OneToMany(mappedBy = "house")
+    private List<SmsTemplate> smsTemplates;
 }
