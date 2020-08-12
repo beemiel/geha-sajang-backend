@@ -26,6 +26,8 @@ public abstract class Host {
 
     private String profileImage;
 
+    private String thumbnailImage;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

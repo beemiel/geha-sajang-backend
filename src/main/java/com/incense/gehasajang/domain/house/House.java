@@ -25,9 +25,11 @@ public class House {
     @Embedded
     private Address address;
 
-    private String main_image;
+    private String mainImage;
+    
+    private String thumbnailImage;
 
-    private String main_number;
+    private String mainNumber;
 
     private LocalDateTime createdAt;
 
