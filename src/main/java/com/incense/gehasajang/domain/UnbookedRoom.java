@@ -27,7 +27,9 @@ public class UnbookedRoom {
     @JoinColumn(name = "bed_id")
     private Bed bed;
 
-    private Boolean is_down_bed;
+    private boolean is_down_bed;
+
+    private boolean is_additional_bed;
 
     private String todayAmount;
 
