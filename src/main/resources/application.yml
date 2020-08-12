@@ -2,9 +2,11 @@ spring:
   profiles: local
   datasource:
     url: jdbc:h2:mem:test
+    initialization-mode: always
+    schema: classpath:schema.sql
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
