@@ -11,7 +11,8 @@ import java.util.List;
 @Getter
 public class SmsTemplate {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "sms_template_id")
     private Long id;
 

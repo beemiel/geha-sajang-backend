@@ -1,6 +1,8 @@
 package com.incense.gehasajang.domain.house;
 
-import com.incense.gehasajang.domain.*;
+import com.incense.gehasajang.domain.Address;
+import com.incense.gehasajang.domain.HostHouse;
+import com.incense.gehasajang.domain.Invitation;
 import com.incense.gehasajang.domain.booking.Booking;
 import com.incense.gehasajang.domain.room.Room;
 import com.incense.gehasajang.domain.sms.SmsTemplate;
@@ -14,7 +16,8 @@ import java.util.List;
 @Getter
 public class House {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "house_id")
     private Long id;
 
@@ -26,7 +29,7 @@ public class House {
     private Address address;
 
     private String mainImage;
-    
+
     private String thumbnailImage;
 
     private String mainNumber;

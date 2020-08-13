@@ -13,7 +13,8 @@ import java.util.List;
 @Getter
 public class UnbookedRoom {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "unbooked_room_id")
     private Long id;
 

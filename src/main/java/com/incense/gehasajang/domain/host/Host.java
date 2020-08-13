@@ -1,6 +1,5 @@
 package com.incense.gehasajang.domain.host;
 
-import com.incense.gehasajang.domain.Address;
 import com.incense.gehasajang.domain.HostHouse;
 import lombok.Getter;
 
@@ -14,7 +13,8 @@ import java.util.List;
 @Getter
 public abstract class Host {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "host_id")
     private Long id;
 

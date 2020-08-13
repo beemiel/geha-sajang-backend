@@ -12,7 +12,8 @@ import java.util.List;
 @Getter
 public class Bed {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "bed_id")
     private Long id;
 
@@ -24,7 +25,7 @@ public class Bed {
     private BedType bedType;
 
     private String alias;
-    
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

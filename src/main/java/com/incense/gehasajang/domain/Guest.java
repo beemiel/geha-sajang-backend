@@ -10,7 +10,8 @@ import java.util.List;
 @Getter
 public class Guest {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "guest_id")
     private Long id;
 

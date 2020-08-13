@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class GehaSajangApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(GehaSajangApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(GehaSajangApplication.class, args);
+    }
 
 }

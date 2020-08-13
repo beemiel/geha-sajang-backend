@@ -10,7 +10,8 @@ import javax.persistence.*;
 @Getter
 public class HostHouse {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "host_house_id")
     private Long id;
 

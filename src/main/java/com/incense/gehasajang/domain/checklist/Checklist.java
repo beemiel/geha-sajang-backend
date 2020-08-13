@@ -11,7 +11,8 @@ import java.util.List;
 @Getter
 public class Checklist {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "checklist_id")
     private Long id;
 
