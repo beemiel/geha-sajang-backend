@@ -13,7 +13,8 @@ import java.util.List;
 @Getter
 public class Room {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "room_id")
     private Long id;
 

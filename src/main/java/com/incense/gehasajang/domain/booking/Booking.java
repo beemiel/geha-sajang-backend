@@ -12,7 +12,8 @@ import java.util.List;
 @Getter
 public class Booking {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "booking_id")
     private Long id;
 

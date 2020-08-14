@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 @Getter
 public class ListItem {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "list_item_id")
     private Long id;
 

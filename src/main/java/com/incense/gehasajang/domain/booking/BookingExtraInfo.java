@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 @Getter
 public class BookingExtraInfo {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "booking_extra_info_id")
     private Long id;
 

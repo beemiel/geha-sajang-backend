@@ -8,7 +8,8 @@ import javax.persistence.*;
 @Getter
 public class BookedRoom {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "booked_room_id")
     private Long id;
 

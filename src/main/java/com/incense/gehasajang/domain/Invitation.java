@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 @Getter
 public class Invitation {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "invitation_id")
     private Long id;
 
