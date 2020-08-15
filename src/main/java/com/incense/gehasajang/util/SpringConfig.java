@@ -1,4 +1,4 @@
-package com.incense.gehasajang;
+package com.incense.gehasajang.util;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
