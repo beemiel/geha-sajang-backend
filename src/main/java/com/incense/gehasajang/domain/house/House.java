@@ -6,14 +6,16 @@ import com.incense.gehasajang.domain.Invitation;
 import com.incense.gehasajang.domain.booking.Booking;
 import com.incense.gehasajang.domain.room.Room;
 import com.incense.gehasajang.domain.sms.SmsTemplate;
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class House {
 
     @Id
@@ -60,4 +62,14 @@ public class House {
 
     @OneToMany(mappedBy = "house")
     private List<SmsTemplate> smsTemplates;
+
+    @Builder
+    public House(String name, Address address, String mainImage, String thumbnailImage, String mainNumber) {
+        this.uuid = UUID.randomUUID().toString();
+        this.name = name;
+        this.address = address;
+        this.mainImage = mainImage;
+        this.thumbnailImage = thumbnailImage;
+        this.mainNumber = mainNumber;
+    }
 }
