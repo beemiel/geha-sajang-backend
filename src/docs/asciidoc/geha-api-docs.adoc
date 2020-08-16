@@ -1,0 +1,74 @@
+= 게하사장 API Docs
+0.0.1, 2020/08/13
+:toc: left
+:sectnums:
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toclevels: 5
+:sectlinks:
+
+[[overview]]
+= 개요
+
+게하사장 서비스의 api들을 정리해놓은 문서입니다.
+
+사용되는 method는 아래와 같습니다.
+
+|===
+| Method | Content
+
+| `GET`
+| 읽기
+
+| `POST`
+| 추가
+
+| `PATCH`
+| 수정
+
+| `DELETE`
+| 삭제
+|===
+
+RESTful notes tries to adhere as closely as possible to standard HTTP and REST conventions in its
+use of HTTP status codes.
+
+|===
+| Status code | Usage
+
+| `200 OK`
+| The request completed successfully
+
+| `201 Created`
+| A new resource has been created successfully. The resource's URI is available from the response's
+`Location` header
+
+| `204 No Content`
+| An update to an existing resource has been applied successfully
+
+| `400 Bad Request`
+| The request was malformed. The response body will include an error providing further information
+
+| `404 Not Found`
+| The requested resource did not exist
+|===
+
+== House 관련 API
+
+=== GET House 정보 가져오기
+요청한 house id의 house 정보를 가져온다.
+
+==== HTTP Request
+include::{snippets}/house-controller-test/get-house-info/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/house-controller-test/get-house-info/http-response.adoc[]
+
+==== Path parameters
+include::{snippets}/house-controller-test/get-house-info/path-parameters.adoc[]
+
+==== Response Fields
+include::{snippets}/house-controller-test/get-house-info/response-fields.adoc[]
+
+
