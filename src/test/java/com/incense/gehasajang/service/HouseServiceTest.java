@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 
 import java.util.Optional;
 
@@ -32,17 +31,18 @@ class HouseServiceTest {
     @Test
     @DisplayName("하우스_정보_가져오기")
     void getHouse() {
+        //given
         House returnHouse = House.builder()
                 .name("게스트하우스")
                 .address(new Address("city", "street", "postcode", "detail"))
                 .build();
-
         given(houseRepository.findById(1L)).willReturn(Optional.of(returnHouse));
 
+        //when
         House house = houseService.getHouse(1L);
 
+        //then
         assertThat(house.getName()).isEqualTo("게스트하우스");
-
         verify(houseRepository).findById(1L);
     }
 }

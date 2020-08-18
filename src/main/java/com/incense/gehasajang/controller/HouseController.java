@@ -1,20 +1,20 @@
 package com.incense.gehasajang.controller;
 
 
-import com.incense.gehasajang.service.HouseService;
 import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.dto.HouseDto;
+import com.incense.gehasajang.service.HouseService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/houses")
 public class HouseController {
 
-    private HouseService houseService;
+    private final HouseService houseService;
 
     public HouseController(HouseService houseService) {
         this.houseService = houseService;
