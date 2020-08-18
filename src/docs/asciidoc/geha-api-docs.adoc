@@ -56,19 +56,35 @@ use of HTTP status codes.
 
 == House 관련 API
 
-=== GET House 정보 가져오기
+=== GET House
 요청한 house id의 house 정보를 가져온다.
 
-==== HTTP Request
-include::{snippets}/house-controller-test/get-house-info/http-request.adoc[]
+==== 200 성공
+요청한 House의 정보를 성공적으로 가져옵니다.
 
-==== HTTP Response
-include::{snippets}/house-controller-test/get-house-info/http-response.adoc[]
+- HTTP Request
+include::{snippets}/house-controller-test/get-house-info-success/http-request.adoc[]
 
-==== Path parameters
-include::{snippets}/house-controller-test/get-house-info/path-parameters.adoc[]
+- HTTP Response
+include::{snippets}/house-controller-test/get-house-info-success/http-response.adoc[]
 
-==== Response Fields
-include::{snippets}/house-controller-test/get-house-info/response-fields.adoc[]
+- Path parameters
+include::{snippets}/house-controller-test/get-house-info-success/path-parameters.adoc[]
 
+- Response Fields
+include::{snippets}/house-controller-test/get-house-info-success/response-fields.adoc[]
 
+==== 404 실패
+요청한 House의 정보를 찾을 수 없습니다.
+
+- HTTP Request
+include::{snippets}/house-controller-test/get-house-info-fail/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/house-controller-test/get-house-info-fail/http-response.adoc[]
+
+- Path parameters
+include::{snippets}/house-controller-test/get-house-info-fail/path-parameters.adoc[]
+
+- Response Fields
+include::{snippets}/house-controller-test/get-house-info-fail/response-fields.adoc[]
