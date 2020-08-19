@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class BookingExtraInfo {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_extra_info_id")
     private Long id;
 

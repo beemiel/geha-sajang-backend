@@ -7,6 +7,8 @@ import com.incense.gehasajang.domain.booking.Booking;
 import com.incense.gehasajang.domain.room.Room;
 import com.incense.gehasajang.domain.sms.SmsTemplate;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,7 +21,7 @@ import java.util.UUID;
 public class House {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "house_id")
     private Long id;
 

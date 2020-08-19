@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class SmsVariable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sms_variable_id")
     private Long id;
 

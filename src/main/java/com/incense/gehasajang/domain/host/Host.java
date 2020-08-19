@@ -14,7 +14,7 @@ import java.util.List;
 public abstract class Host {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "host_id")
     private Long id;
 

@@ -18,7 +18,7 @@ drop table if exists house;
 drop table if exists host;
 
 create table host (
-    host_id bigint not null,
+    host_id bigint auto_increment,
     type varchar(31) not null,
     email varchar(255) not null,
     nickname varchar(255) not null,
@@ -37,8 +37,8 @@ create table host (
 );
 
 create table house (
-    house_id bigint not null,
-    uuid varchar(32),
+    house_id bigint auto_increment,
+    uuid varchar(36),
     name varchar(255),
     city varchar(255),
     detail varchar(255),
@@ -54,14 +54,14 @@ create table house (
 );
 
 create table host_house (
-    host_house_id bigint not null,
+    host_house_id bigint auto_increment,
     host_id bigint references host(host_id),
     house_id bigint references house(house_id),
     primary key (host_house_id)
 );
 
 create table room (
-    room_id bigint not null,
+    room_id bigint auto_increment,
     default_capacity integer not null,
     max_capacity integer not null,
     memo varchar(255), --메모는 text?
@@ -77,7 +77,7 @@ create table room (
 );
 
 create table invitation (
-    invitation_id bigint not null,
+    invitation_id bigint auto_increment,
     invitation_code varchar(10),
     expiration_date timestamp,
     house_id bigint references house(house_id),
@@ -86,7 +86,7 @@ create table invitation (
 );
 
 create table bed (
-    bed_id bigint not null,
+    bed_id bigint auto_increment,
     alias varchar(255),
     bed_type varchar(255),
     room_id bigint references room(room_id),
@@ -97,14 +97,14 @@ create table bed (
 );
 
 create table house_off (
-    house_off_id bigint not null,
+    house_off_id bigint auto_increment,
     off_date timestamp,
     house_id bigint references house(house_id),
     primary key (house_off_id)
 );
 
 create table sms_template (
-    sms_template_id bigint not null,
+    sms_template_id bigint auto_increment,
     contents varchar(255), --text
     title varchar(255),
     house_id bigint references house(house_id),
@@ -115,14 +115,14 @@ create table sms_template (
 );
 
 create table sms_variable (
-    sms_variable_id bigint not null,
+    sms_variable_id bigint auto_increment,
     name varchar(255),
     sms_template_id bigint references sms_template(sms_template_id),
     primary key (sms_variable_id)
 );
 
 create table checklist (
-    checklist_id bigint not null,
+    checklist_id bigint auto_increment,
     category varchar(255),
     title varchar(255),
     target_data timestamp,
@@ -133,7 +133,7 @@ create table checklist (
 );
 
 create table list_item (
-    list_item_id bigint not null,
+    list_item_id bigint auto_increment,
     contents varchar(255),
     checked boolean not null,
     checked_at timestamp,
@@ -144,7 +144,7 @@ create table list_item (
 );
 
 create table house_extra_info (
-    house_extra_info_id bigint not null,
+    house_extra_info_id bigint auto_increment,
     title varchar(255),
     house_id bigint references house(house_id),
     deleted_at timestamp,
@@ -152,7 +152,7 @@ create table house_extra_info (
 );
 
 create table guest (
-    guest_id bigint not null,
+    guest_id bigint auto_increment,
     email varchar(255),
     memo varchar(255),
     name varchar(255),
@@ -161,7 +161,7 @@ create table guest (
 );
 
 create table booking (
-    booking_id bigint not null,
+    booking_id bigint auto_increment,
     check_in timestamp not null,
     check_out timestamp not null,
     female_count integer default 0,
@@ -176,7 +176,7 @@ create table booking (
 );
 
 create table unbooked_room (
-    unbooked_room_id bigint not null,
+    unbooked_room_id bigint auto_increment,
     entry_date timestamp not null,
     is_additional_bed boolean not null,
     is_down_bed boolean not null,
@@ -187,13 +187,13 @@ create table unbooked_room (
 );
 
 create table booked_room (
-    booked_room_id bigint not null,
+    booked_room_id bigint auto_increment,
     unbooked_room_id bigint references unbooked_room(unbooked_room_id),
     primary key (booked_room_id)
 );
 
 create table booking_extra_info (
-    booking_extra_info_id bigint not null,
+    booking_extra_info_id bigint auto_increment,
     attend_date timestamp not null,
     attend_status varchar(255) not null,
     memo varchar(255),
@@ -204,7 +204,7 @@ create table booking_extra_info (
 );
 
 create table booking_room_info (
-    booking_room_info_id bigint not null,
+    booking_room_info_id bigint auto_increment,
     gender varchar(255) not null,
     booking_id bigint references booking(booking_id),
     unbooked_room_id bigint references unbooked_room(unbooked_room_id),
