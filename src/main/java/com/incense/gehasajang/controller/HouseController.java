@@ -5,12 +5,15 @@ import com.incense.gehasajang.domain.Address;
 import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.dto.HouseDto;
 import com.incense.gehasajang.service.HouseService;
+import com.incense.gehasajang.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +22,8 @@ public class HouseController {
 
     private final HouseService houseService;
 
+    private final S3Service s3Service;
+
     @GetMapping("/{houseId}")
     public ResponseEntity<HouseDto> detail(@PathVariable Long houseId) {
         House house = houseService.getHouse(houseId);
@@ -26,12 +31,13 @@ public class HouseController {
         return ResponseEntity.ok(houseDto);
     }
 
-    @PostMapping
-    public ResponseEntity<Void> create(@RequestBody @Valid HouseDto houseDto) {
-        House house = toHouse(houseDto);
-        houseService.addHouse(house);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+@PostMapping()
+public ResponseEntity<Void> create(@Valid HouseDto houseDto, MultipartFile file) throws IOException {
+    String imgPath = s3Service.upload(file, "house");
+    House house = toHouse(houseDto, imgPath);
+    houseService.addHouse(house);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+}
 
     private HouseDto toHouseDto(House house) {
         return HouseDto.builder()
@@ -47,11 +53,11 @@ public class HouseController {
                 .build();
     }
 
-    private House toHouse(HouseDto houseDto) {
+    private House toHouse(HouseDto houseDto, String imgPath) {
         return House.builder()
                 .name(houseDto.getName())
                 .address(new Address(houseDto.getCity(), houseDto.getStreet(), houseDto.getPostcode(), houseDto.getDetail()))
-                .mainImage(houseDto.getMainImage())
+                .mainImage(imgPath)
                 .thumbnailImage(houseDto.getThumbnailImage())
                 .mainNumber(houseDto.getMainNumber())
                 .build();

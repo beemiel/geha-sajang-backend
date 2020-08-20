@@ -93,7 +93,8 @@ include::{snippets}/house-controller-test/get-house-info-fail/response-fields.ad
 요청한 House의 정보를 DB에 저장한다.
 
 ==== 201 성공
-DB에 성공적으로 저장된다.
+DB에 성공적으로 저장한다.
+게스트 하우스 이름, 전화번호, 추가정보, 이미지를 form-data에 넣어서 요청한다.
 
 - HTTP Request
 include::{snippets}/house-controller-test/create/http-request.adoc[]
@@ -101,8 +102,11 @@ include::{snippets}/house-controller-test/create/http-request.adoc[]
 - HTTP Response
 include::{snippets}/house-controller-test/create/http-response.adoc[]
 
-- Request Fields
-include::{snippets}/house-controller-test/create/request-fields.adoc[]
+- Request Part Body
+include::{snippets}/house-controller-test/create/request-part-file-body.adoc[]
+
+- Request Parameters
+include::{snippets}/house-controller-test/create/request-parameters.adoc[]
 
 ==== 400 실패
 유효성 검사에 실패한다.
@@ -113,8 +117,8 @@ include::{snippets}/house-controller-test/validation/http-request.adoc[]
 - HTTP Response
 include::{snippets}/house-controller-test/validation/http-response.adoc[]
 
-- Request Fields
-include::{snippets}/house-controller-test/validation/request-fields.adoc[]
+- Request Parameters
+include::{snippets}/house-controller-test/create/request-parameters.adoc[]
 
 - Response Fields
 include::{snippets}/house-controller-test/validation/response-fields.adoc[]

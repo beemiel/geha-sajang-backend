@@ -6,21 +6,19 @@ import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.dto.HouseDto;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.service.HouseService;
-import com.incense.gehasajang.error.ErrorCode;
+import com.incense.gehasajang.service.S3Service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.Collection;
-import java.util.List;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -28,9 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -43,6 +39,9 @@ class HouseControllerTest {
 
     @MockBean
     private HouseService houseService;
+
+    @MockBean
+    private S3Service s3Service;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -101,16 +100,10 @@ class HouseControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("name").description("게스트 하우스 이름"),
-                                fieldWithPath("city").description("주소1"),
-                                fieldWithPath("street").description("주소2"),
-                                fieldWithPath("postcode").description("우편 번호"),
-                                fieldWithPath("detail").description("상세 주소"),
-                                fieldWithPath("mainImage").description("게스트 하우스 이미지"),
-                                fieldWithPath("mainNumber").description("게스트 하우스 전화번호"),
-                                fieldWithPath("houseId").description("서버에서 생성"),
-                                fieldWithPath("thumbnailImage").description("서버에서 생성")
+                        requestPartBody("file"),
+                        requestParameters(
+                                parameterWithName("name").description("이름(50자이내 필수값)"),
+                                parameterWithName("mainNumber").description("전화번호(숫자만, 11자이내)")
                         )));
         verify(houseService).addHouse(any(House.class));
     }
@@ -125,7 +118,7 @@ class HouseControllerTest {
     public void validation() throws Exception {
         //given
         HouseDto houseDto = HouseDto.builder()
-                .name(null)
+                .name("")
                 .mainNumber("01012-3456-11178")
                 .build();
         //when
@@ -136,16 +129,9 @@ class HouseControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("houseId").description("서버에서 생성"),
-                                fieldWithPath("name").description("null이거나 50자 이상인 경우 예외 발생"),
-                                fieldWithPath("city").description("주소 api 추가 시 예외처리 추가"),
-                                fieldWithPath("street").description("주소 api 추가 시 예외처리 추가"),
-                                fieldWithPath("postcode").description("주소 api 추가 시 예외처리 추가"),
-                                fieldWithPath("detail").description("주소 api 추가 시 예외처리 추가"),
-                                fieldWithPath("mainImage").description("이미지가 null로 넘어올 경우 DB에도 null로 저장").optional(),
-                                fieldWithPath("thumbnailImage").description("서버에서 생성"),
-                                fieldWithPath("mainNumber").description("null이거나 11자 이상이거나 문자가 포함된 경우 예외 발생")
+                        requestParameters(
+                                parameterWithName("name").description("이름(50자이내 필수값)"),
+                                parameterWithName("mainNumber").description("전화번호(숫자만, 11자이내)")
                         ),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -200,8 +186,13 @@ class HouseControllerTest {
     }
 
     private ResultActions create(HouseDto houseDto) throws Exception {
-        return  mockMvc.perform(post("/houses")
-                .content(objectMapper.writeValueAsString(houseDto))
-                .contentType(MediaType.APPLICATION_JSON));
+        MockMultipartFile imageFile = new MockMultipartFile("file", "image", "image/jpg", "image".getBytes());
+
+        return mockMvc.perform(MockMvcRequestBuilders.multipart("/houses")
+                .file(imageFile)
+                .param("name", houseDto.getName())
+                .param("mainNumber", houseDto.getMainNumber())
+                .contentType(MediaType.MULTIPART_FORM_DATA));
+
     }
 }

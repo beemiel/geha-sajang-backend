@@ -2,6 +2,7 @@ package com.incense.gehasajang.error;
 
 import com.incense.gehasajang.exception.NotFoundDataException;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,6 +28,14 @@ public class ControllerErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
+        List<ErrorResponse.FieldError> fieldErrors = getFieldErrors(e.getBindingResult());
+        return buildValidationError(ErrorCode.INPUT_VALUE_INVALID, fieldErrors);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BindException.class)
+    public ErrorResponse handleBindException(BindException e) {
         List<ErrorResponse.FieldError> fieldErrors = getFieldErrors(e.getBindingResult());
         return buildValidationError(ErrorCode.INPUT_VALUE_INVALID, fieldErrors);
     }
