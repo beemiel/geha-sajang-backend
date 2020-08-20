@@ -3,6 +3,7 @@ package com.incense.gehasajang.service;
 import com.incense.gehasajang.domain.Address;
 import com.incense.gehasajang.domain.HouseRepository;
 import com.incense.gehasajang.domain.house.House;
+import com.incense.gehasajang.dto.HouseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,5 +45,21 @@ class HouseServiceTest {
         //then
         assertThat(house.getName()).isEqualTo("게스트하우스");
         verify(houseRepository).findById(1L);
+    }
+
+    @Test
+    @DisplayName("하우스 추가")
+    public void addHouse() throws Exception {
+        //given
+        House house = House.builder().name("게스트하우스")
+                .address(new Address("시티", "스트릿", "우편번호", "상세주소"))
+                .mainNumber("01012345678")
+                .mainImage("메인 이미지")
+                .build();
+        //when
+        houseService.addHouse(house);
+
+        //then
+        verify(houseRepository).save(house);
     }
 }

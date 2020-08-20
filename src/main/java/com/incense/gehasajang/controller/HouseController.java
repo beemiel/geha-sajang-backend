@@ -1,30 +1,36 @@
 package com.incense.gehasajang.controller;
 
 
+import com.incense.gehasajang.domain.Address;
 import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.dto.HouseDto;
 import com.incense.gehasajang.service.HouseService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/houses")
 public class HouseController {
 
     private final HouseService houseService;
-
-    public HouseController(HouseService houseService) {
-        this.houseService = houseService;
-    }
 
     @GetMapping("/{houseId}")
     public ResponseEntity<HouseDto> detail(@PathVariable Long houseId) {
         House house = houseService.getHouse(houseId);
         HouseDto houseDto = toHouseDto(house);
         return ResponseEntity.ok(houseDto);
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> create(@RequestBody @Valid HouseDto houseDto) {
+        House house = toHouse(houseDto);
+        houseService.addHouse(house);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     private HouseDto toHouseDto(House house) {
@@ -38,6 +44,16 @@ public class HouseController {
                 .mainImage(house.getMainImage())
                 .thumbnailImage(house.getThumbnailImage())
                 .mainNumber(house.getMainNumber())
+                .build();
+    }
+
+    private House toHouse(HouseDto houseDto) {
+        return House.builder()
+                .name(houseDto.getName())
+                .address(new Address(houseDto.getCity(), houseDto.getStreet(), houseDto.getPostcode(), houseDto.getDetail()))
+                .mainImage(houseDto.getMainImage())
+                .thumbnailImage(houseDto.getThumbnailImage())
+                .mainNumber(houseDto.getMainNumber())
                 .build();
     }
 

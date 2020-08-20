@@ -3,13 +3,19 @@ package com.incense.gehasajang.dto;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.validation.constraints.Size;
+import javax.validation.constraints.NotBlank;
+
 @Getter
 public class HouseDto {
 
     private Long houseId;
 
+    @NotBlank(message = "게스트 하우스 이름을 입력해주세요.")
+    @Size(max = 50, message = "50이내만 가능합니다.")
     private String name;
 
+    //TODO: 2020-08-20 추후에 주소 api 적용되면 validation 추가할 것  -lynn
     private String city;
 
     private String street;

@@ -88,3 +88,18 @@ include::{snippets}/house-controller-test/get-house-info-fail/path-parameters.ad
 
 - Response Fields
 include::{snippets}/house-controller-test/get-house-info-fail/response-fields.adoc[]
+
+=== POST House
+요청한 House의 정보를 DB에 저장한다.
+
+==== 201 성공
+DB에 성공적으로 저장된다.
+
+- HTTP Request
+include::{snippets}/house-controller-test/create/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/house-controller-test/create/http-response.adoc[]
+
+- Request Fields
+include::{snippets}/house-controller-test/create/request-fields.adoc[]

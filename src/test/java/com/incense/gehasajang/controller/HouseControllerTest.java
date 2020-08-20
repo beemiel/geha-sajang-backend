@@ -1,7 +1,9 @@
 package com.incense.gehasajang.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.incense.gehasajang.domain.Address;
 import com.incense.gehasajang.domain.house.House;
+import com.incense.gehasajang.dto.HouseDto;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.service.HouseService;
 import com.incense.gehasajang.util.ErrorMessages;
@@ -17,14 +19,15 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -37,6 +40,9 @@ class HouseControllerTest {
 
     @MockBean
     private HouseService houseService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     @DisplayName("게스트_하우스_정보를_가져온다.")
@@ -71,9 +77,54 @@ class HouseControllerTest {
         verify(houseService).getHouse(2L);
     }
 
+    @Test
+    @DisplayName("하우스 정보 등록")
+    public void create() throws Exception {
+        //given
+        HouseDto houseDto = HouseDto.builder().name("게스트하우스")
+                .city("시티")
+                .street("스트릿")
+                .postcode("우편번호")
+                .detail("상세주소")
+                .mainNumber("01012345678")
+                .mainImage("메인 이미지")
+                .build();
+
+        //when
+        ResultActions resultActions = createSuccess(houseDto);
+
+        //then
+        resultActions.andExpect(status().isCreated())
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("name").description("게스트 하우스 이름"),
+                                fieldWithPath("city").description("주소1"),
+                                fieldWithPath("street").description("주소2"),
+                                fieldWithPath("postcode").description("우편 번호"),
+                                fieldWithPath("detail").description("상세 주소"),
+                                fieldWithPath("mainImage").description("게스트 하우스 이미지"),
+                                fieldWithPath("mainNumber").description("게스트 하우스 전화번호"),
+                                fieldWithPath("houseId").description("서버에서 생성"),
+                                fieldWithPath("thumbnailImage").description("서버에서 생성")
+                        )));
+        verify(houseService).addHouse(any(House.class));
+    }
+
+    private ResultActions createSuccess(HouseDto houseDto) throws Exception {
+        return  mockMvc.perform(post("/houses")
+                .content(objectMapper.writeValueAsString(houseDto))
+                .contentType(MediaType.APPLICATION_JSON));
+    }
+
     //TODO: 2020-08-18 로그인 확인 test 작성  -lynn
 
     //TODO: 2020-08-18 권한 인증 test 작성  -lynn
+
+    //TODO: 2020-08-19 호스트가 소속된 게스트 하우스가 맞는지 확인 test 작성  -lynn
+
+    //TODO: 2020-08-20 값 유효성 검사 test 작성  -lynn
 
     private ResultActions successRequestHouseInfo(Long houseId) throws Exception {
         return mockMvc.perform(RestDocumentationRequestBuilders.get("/houses/{houseId}", houseId)
