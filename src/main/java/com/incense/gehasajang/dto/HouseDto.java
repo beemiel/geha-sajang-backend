@@ -3,8 +3,9 @@ package com.incense.gehasajang.dto;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.validation.constraints.Size;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Getter
 public class HouseDto {
@@ -28,6 +29,8 @@ public class HouseDto {
 
     private String thumbnailImage;
 
+    @NotBlank(message = "전화번호를 입력해주세요.")
+    @Pattern(regexp = "^[0-9]{1,11}$", message = "전화번호는 11자 이내의 숫자만 입력해주세요.")
     private String mainNumber;
 
     @Builder

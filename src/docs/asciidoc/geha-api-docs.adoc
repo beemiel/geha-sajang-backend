@@ -103,3 +103,18 @@ include::{snippets}/house-controller-test/create/http-response.adoc[]
 
 - Request Fields
 include::{snippets}/house-controller-test/create/request-fields.adoc[]
+
+==== 400 실패
+유효성 검사에 실패한다.
+
+- HTTP Request
+include::{snippets}/house-controller-test/validation/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/house-controller-test/validation/http-response.adoc[]
+
+- Request Fields
+include::{snippets}/house-controller-test/validation/request-fields.adoc[]
+
+- Response Fields
+include::{snippets}/house-controller-test/validation/response-fields.adoc[]

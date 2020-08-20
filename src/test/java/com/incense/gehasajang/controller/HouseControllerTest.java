@@ -6,7 +6,7 @@ import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.dto.HouseDto;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.service.HouseService;
-import com.incense.gehasajang.util.ErrorMessages;
+import com.incense.gehasajang.error.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,9 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.Collection;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -67,7 +70,7 @@ class HouseControllerTest {
     @DisplayName("게스트_하우스_정보를_가져오지_못한다.")
     public void getHouseInfoFail() throws Exception {
         //given
-        given(houseService.getHouse(2L)).willThrow(new NotFoundDataException(ErrorMessages.NOT_FOUND, HttpStatus.NOT_FOUND));
+        given(houseService.getHouse(2L)).willThrow(new NotFoundDataException());
 
         //when
         ResultActions resultActions = failRequestHouseInfo(2L);
@@ -91,7 +94,7 @@ class HouseControllerTest {
                 .build();
 
         //when
-        ResultActions resultActions = createSuccess(houseDto);
+        ResultActions resultActions = create(houseDto);
 
         //then
         resultActions.andExpect(status().isCreated())
@@ -112,19 +115,48 @@ class HouseControllerTest {
         verify(houseService).addHouse(any(House.class));
     }
 
-    private ResultActions createSuccess(HouseDto houseDto) throws Exception {
-        return  mockMvc.perform(post("/houses")
-                .content(objectMapper.writeValueAsString(houseDto))
-                .contentType(MediaType.APPLICATION_JSON));
-    }
-
     //TODO: 2020-08-18 로그인 확인 test 작성  -lynn
 
     //TODO: 2020-08-18 권한 인증 test 작성  -lynn
 
     //TODO: 2020-08-19 호스트가 소속된 게스트 하우스가 맞는지 확인 test 작성  -lynn
 
-    //TODO: 2020-08-20 값 유효성 검사 test 작성  -lynn
+    @Test
+    public void validation() throws Exception {
+        //given
+        HouseDto houseDto = HouseDto.builder()
+                .name(null)
+                .mainNumber("01012-3456-11178")
+                .build();
+        //when
+        ResultActions resultActions = create(houseDto);
+
+        //then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("houseId").description("서버에서 생성"),
+                                fieldWithPath("name").description("null이거나 50자 이상인 경우 예외 발생"),
+                                fieldWithPath("city").description("주소 api 추가 시 예외처리 추가"),
+                                fieldWithPath("street").description("주소 api 추가 시 예외처리 추가"),
+                                fieldWithPath("postcode").description("주소 api 추가 시 예외처리 추가"),
+                                fieldWithPath("detail").description("주소 api 추가 시 예외처리 추가"),
+                                fieldWithPath("mainImage").description("이미지가 null로 넘어올 경우 DB에도 null로 저장").optional(),
+                                fieldWithPath("thumbnailImage").description("서버에서 생성"),
+                                fieldWithPath("mainNumber").description("null이거나 11자 이상이거나 문자가 포함된 경우 예외 발생")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").description("에러의 상세 메세지"),
+                                fieldWithPath("status").description("상태 코드"),
+                                fieldWithPath("code").description("직접 정의한 에러 코드"),
+                                fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다."),
+                                fieldWithPath("errors.[].field").description("에러가 난 필드 이름"),
+                                fieldWithPath("errors.[].reason").description("에러 이유"),
+                                fieldWithPath("errors.[].value").description("서버로 요청했던 값").optional()
+                        )));
+    }
 
     private ResultActions successRequestHouseInfo(Long houseId) throws Exception {
         return mockMvc.perform(RestDocumentationRequestBuilders.get("/houses/{houseId}", houseId)
@@ -159,9 +191,17 @@ class HouseControllerTest {
                                 parameterWithName("houseId").description("요청하고자 하는 house id")
                         ),
                         responseFields(
-                                fieldWithPath("message").description("error message"),
-                                fieldWithPath("status").description("status 코드")
-                        )
+                                fieldWithPath("message").description("에러의 상세 메세지"),
+                                fieldWithPath("status").description("상태 코드"),
+                                fieldWithPath("code").description("직접 정의한 에러 코드"),
+                                fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다.")
+                                )
                 ));
+    }
+
+    private ResultActions create(HouseDto houseDto) throws Exception {
+        return  mockMvc.perform(post("/houses")
+                .content(objectMapper.writeValueAsString(houseDto))
+                .contentType(MediaType.APPLICATION_JSON));
     }
 }
