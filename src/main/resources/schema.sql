@@ -199,7 +199,7 @@ create table booking_extra_info (
     attend_status varchar(255) not null,
     memo varchar(255),
     people_count integer not null,
-    title varchar(255),
+    house_extra_info_id bigint references house_extra_info(house_extra_info_id),
     booking_id bigint references booking(booking_id),
     primary key (booking_extra_info_id)
 );

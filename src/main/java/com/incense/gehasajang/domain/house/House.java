@@ -6,10 +6,7 @@ import com.incense.gehasajang.domain.Invitation;
 import com.incense.gehasajang.domain.booking.Booking;
 import com.incense.gehasajang.domain.room.Room;
 import com.incense.gehasajang.domain.sms.SmsTemplate;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -67,12 +64,13 @@ public class House {
     private List<SmsTemplate> smsTemplates;
 
     @Builder
-    public House(String name, Address address, String mainImage, String thumbnailImage, String mainNumber) {
+    public House(String name, Address address, String mainImage, String thumbnailImage, String mainNumber, List<HouseExtraInfo> houseExtraInfos) {
         this.uuid = UUID.randomUUID().toString();
         this.name = name;
         this.address = address;
         this.mainImage = mainImage;
         this.thumbnailImage = thumbnailImage;
         this.mainNumber = mainNumber;
+        this.houseExtraInfos = houseExtraInfos;
     }
 }

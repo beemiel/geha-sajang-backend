@@ -1,4 +1,4 @@
-package com.incense.gehasajang.dto;
+package com.incense.gehasajang.dto.house;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -6,6 +6,7 @@ import lombok.Getter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Getter
 public class HouseDto {
@@ -30,11 +31,13 @@ public class HouseDto {
     private String thumbnailImage;
 
     @NotBlank(message = "전화번호를 입력해주세요.")
-    @Pattern(regexp = "^[0-9]{1,11}$", message = "전화번호는 11자 이내의 숫자만 입력해주세요.")
+    @Pattern(regexp = "^[0-9]{9,11}$", message = "전화번호는 9~11자의 숫자만 입력해주세요.")
     private String mainNumber;
 
+    private List<HouseExtraInfoDto> houseExtraInfoDtos;
+
     @Builder
-    public HouseDto(Long houseId, String name, String city, String street, String postcode, String detail, String mainImage, String thumbnailImage, String mainNumber) {
+    public HouseDto(Long houseId, String name, String city, String street, String postcode, String detail, String mainImage, String thumbnailImage, String mainNumber, List<HouseExtraInfoDto> houseExtraInfoDtos) {
         this.houseId = houseId;
         this.name = name;
         this.city = city;
@@ -44,5 +47,6 @@ public class HouseDto {
         this.mainImage = mainImage;
         this.thumbnailImage = thumbnailImage;
         this.mainNumber = mainNumber;
+        this.houseExtraInfoDtos = houseExtraInfoDtos;
     }
 }
