@@ -1,10 +1,12 @@
 package com.incense.gehasajang.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.incense.gehasajang.domain.Address;
 import com.incense.gehasajang.domain.house.House;
-import com.incense.gehasajang.dto.HouseDto;
+import com.incense.gehasajang.domain.house.HouseExtraInfo;
+import com.incense.gehasajang.dto.house.HouseDto;
+import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.NotFoundDataException;
+import com.incense.gehasajang.exception.NumberExceededException;
 import com.incense.gehasajang.service.HouseService;
 import com.incense.gehasajang.service.S3Service;
 import org.junit.jupiter.api.DisplayName;
@@ -19,9 +21,14 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -43,9 +50,6 @@ class HouseControllerTest {
     @MockBean
     private S3Service s3Service;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Test
     @DisplayName("게스트_하우스_정보를_가져온다.")
     void getHouseInfoSuccess() throws Exception {
@@ -53,6 +57,11 @@ class HouseControllerTest {
         House house = House.builder()
                 .name("게스트하우스")
                 .address(new Address("city", "street", "postcode", "detail"))
+                .houseExtraInfos(Arrays.asList(
+                        HouseExtraInfo.builder().title("추가1").build(),
+                        HouseExtraInfo.builder().title("추가2").build(),
+                        HouseExtraInfo.builder().title("추가3").build()
+                ))
                 .build();
         given(houseService.getHouse(1L)).willReturn(house);
 
@@ -83,6 +92,7 @@ class HouseControllerTest {
     @DisplayName("하우스 정보 등록")
     public void create() throws Exception {
         //given
+        String extra = "조식☆§♥♨☎픽업☆§♥♨☎저녁☆§♥♨☎장비대여";
         HouseDto houseDto = HouseDto.builder().name("게스트하우스")
                 .city("시티")
                 .street("스트릿")
@@ -93,7 +103,7 @@ class HouseControllerTest {
                 .build();
 
         //when
-        ResultActions resultActions = create(houseDto);
+        ResultActions resultActions = create(houseDto, extra);
 
         //then
         resultActions.andExpect(status().isCreated())
@@ -103,9 +113,10 @@ class HouseControllerTest {
                         requestPartBody("file"),
                         requestParameters(
                                 parameterWithName("name").description("이름(50자이내 필수값)"),
-                                parameterWithName("mainNumber").description("전화번호(숫자만, 11자이내)")
+                                parameterWithName("mainNumber").description("전화번호(숫자만, 11자이내 필수값)"),
+                                parameterWithName("extra").description("게스트 하우스 추가 정보")
                         )));
-        verify(houseService).addHouse(any(House.class));
+        verify(houseService).addHouse(any(House.class), any(String.class));
     }
 
     //TODO: 2020-08-18 로그인 확인 test 작성  -lynn
@@ -117,12 +128,13 @@ class HouseControllerTest {
     @Test
     public void validation() throws Exception {
         //given
+        String extra = "";
         HouseDto houseDto = HouseDto.builder()
                 .name("")
                 .mainNumber("01012-3456-11178")
                 .build();
         //when
-        ResultActions resultActions = create(houseDto);
+        ResultActions resultActions = create(houseDto, extra);
 
         //then
         resultActions.andExpect(status().isBadRequest())
@@ -131,7 +143,8 @@ class HouseControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestParameters(
                                 parameterWithName("name").description("이름(50자이내 필수값)"),
-                                parameterWithName("mainNumber").description("전화번호(숫자만, 11자이내)")
+                                parameterWithName("mainNumber").description("전화번호(숫자만, 11자이내)"),
+                                parameterWithName("extra").description("게스트 하우스 추가 정보")
                         ),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -141,6 +154,70 @@ class HouseControllerTest {
                                 fieldWithPath("errors.[].field").description("에러가 난 필드 이름"),
                                 fieldWithPath("errors.[].reason").description("에러 이유"),
                                 fieldWithPath("errors.[].value").description("서버로 요청했던 값").optional()
+                        )));
+    }
+    
+    @Test
+    @DisplayName("하우스 추가 정보 개수 초과")
+    public void numberExceededException() throws Exception {
+        //given
+        String extra = "조식☆§♥♨☎석식☆§♥♨☎중식☆§♥♨☎야식☆§♥♨☎조식☆§♥♨☎석식☆§♥♨☎중식☆§♥♨☎야식☆§♥♨☎조식☆§♥♨☎석식☆§♥♨☎중식☆§♥♨☎야식☆§♥♨☎조식☆§♥♨☎석식☆§♥♨☎중식☆§♥♨☎야식☆§♥♨☎조식☆§♥♨☎석식☆§♥♨☎중식☆§♥♨☎야식☆§♥♨☎조식☆§♥♨☎석식☆§♥♨☎중식☆§♥♨☎야식☆§♥♨☎조식☆§♥♨☎석식☆§♥♨☎중식☆§♥♨☎야식☆§♥♨☎";
+        HouseDto houseDto = HouseDto.builder().name("게스트하우스")
+                .city("시티")
+                .street("스트릿")
+                .postcode("우편번호")
+                .detail("상세주소")
+                .mainNumber("01012345678")
+                .mainImage("메인 이미지")
+                .build();
+        doThrow(NumberExceededException.class).when(houseService).addHouse(any(House.class), any(String.class));
+
+        //when
+        ResultActions resultActions = create(houseDto, extra);
+
+        //then
+        resultActions.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("code").value(ErrorCode.NUMBER_EXCEED.getCode()))
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("message").description("에러의 상세 메세지"),
+                                fieldWithPath("status").description("상태 코드"),
+                                fieldWithPath("code").description("직접 정의한 에러 코드"),
+                                fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다.")
+                        )));
+    }
+
+    @Test
+    @DisplayName("하우스 이미지 파일 초과 테스트")
+    public void fileSizeLimitExceededException() throws Exception {
+        //given
+        String extra = "조식☆§♥♨☎석식☆§♥♨☎중식☆§♥♨☎야식";
+        HouseDto houseDto = HouseDto.builder().name("게스트하우스")
+                .city("시티")
+                .street("스트릿")
+                .postcode("우편번호")
+                .detail("상세주소")
+                .mainNumber("01012345678")
+                .mainImage("메인 이미지")
+                .build();
+        doThrow(MaxUploadSizeExceededException.class).when(s3Service).upload(any(MultipartFile.class), any(String.class));
+
+        //when
+        ResultActions resultActions = create(houseDto, extra);
+
+        //then
+        resultActions.andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("code").value(ErrorCode.FILE_SIZE_LIMIT_EXCEED.getCode()))
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("message").description("에러의 상세 메세지"),
+                                fieldWithPath("status").description("상태 코드"),
+                                fieldWithPath("code").description("직접 정의한 에러 코드"),
+                                fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다.")
                         )));
     }
 
@@ -162,7 +239,10 @@ class HouseControllerTest {
                                 fieldWithPath("detail").description("house 주소 상세"),
                                 fieldWithPath("mainImage").description("이미지(원본)"),
                                 fieldWithPath("thumbnailImage").description("이미지(썸네일)"),
-                                fieldWithPath("mainNumber").description("전화번호")
+                                fieldWithPath("mainNumber").description("전화번호"),
+                                fieldWithPath("houseExtraInfoDtos").description("게스트 하우스 추가 정보"),
+                                fieldWithPath("houseExtraInfoDtos.[].houseExtraInfoId").description("추가 정보 id").optional(),
+                                fieldWithPath("houseExtraInfoDtos.[].title").description("추가 정보 제목").optional()
                         )
                 ));
     }
@@ -185,13 +265,14 @@ class HouseControllerTest {
                 ));
     }
 
-    private ResultActions create(HouseDto houseDto) throws Exception {
+    private ResultActions create(HouseDto houseDto, String extra) throws Exception {
         MockMultipartFile imageFile = new MockMultipartFile("file", "image", "image/jpg", "image".getBytes());
 
         return mockMvc.perform(MockMvcRequestBuilders.multipart("/houses")
                 .file(imageFile)
                 .param("name", houseDto.getName())
                 .param("mainNumber", houseDto.getMainNumber())
+                .param("extra", extra)
                 .contentType(MediaType.MULTIPART_FORM_DATA));
 
     }

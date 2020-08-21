@@ -1,6 +1,7 @@
 package com.incense.gehasajang.error;
 
 import com.incense.gehasajang.exception.NotFoundDataException;
+import com.incense.gehasajang.exception.NumberExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +40,20 @@ public class ControllerErrorAdvice {
     public ErrorResponse handleBindException(BindException e) {
         List<ErrorResponse.FieldError> fieldErrors = getFieldErrors(e.getBindingResult());
         return buildValidationError(ErrorCode.INPUT_VALUE_INVALID, fieldErrors);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NumberExceededException.class)
+    public ErrorResponse handleNumberExceededException(NumberExceededException e) {
+        return buildError(ErrorCode.NUMBER_EXCEED);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ErrorResponse handleFileSizeLimitException (){
+        return buildError(ErrorCode.FILE_SIZE_LIMIT_EXCEED);
     }
 
     private List<ErrorResponse.FieldError> getFieldErrors(BindingResult bindingResult) {
