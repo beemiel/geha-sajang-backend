@@ -12,7 +12,7 @@ import java.util.List;
 public class SmsTemplate {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sms_template_id")
     private Long id;
 

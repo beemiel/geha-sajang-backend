@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class BookingRoomInfo {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_room_info_id")
     private Long id;
 

@@ -12,7 +12,7 @@ import java.util.List;
 public class Checklist {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "checklist_id")
     private Long id;
 

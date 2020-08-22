@@ -1,5 +1,6 @@
 package com.incense.gehasajang.domain.booking;
 
+import com.incense.gehasajang.domain.house.HouseExtraInfo;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 public class BookingExtraInfo {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_extra_info_id")
     private Long id;
 
@@ -21,7 +22,9 @@ public class BookingExtraInfo {
     @Enumerated(EnumType.STRING)
     private AttendStatus attendStatus;
 
-    private String title;
+    @ManyToOne
+    @JoinColumn(name = "house_extra_info_id")
+    private HouseExtraInfo houseExtraInfo;
 
     private String memo;
 
