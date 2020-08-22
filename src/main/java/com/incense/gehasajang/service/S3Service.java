@@ -3,6 +3,7 @@ package com.incense.gehasajang.service;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.incense.gehasajang.exception.CannotConvertException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -30,16 +34,21 @@ public class S3Service {
         }
 
         File uploadFile = convert(multipartFile)
-                .orElseThrow(() -> new IllegalArgumentException(("MultipartFile -> File로 전환이 실패했습니다.")));
+                .orElseThrow(CannotConvertException::new);
 
         return upload(uploadFile, dirName);
     }
 
     private String upload(File uploadFile, String dirName) {
-        //TODO: 2020-08-20 파일 이름이 중복되면 어떻게되지?  -lynn
+        StringBuffer fileName = new StringBuffer(dirName);
+        fileName.append("/");
+        fileName.append(uploadFile.getName());
+        fileName.append("-");
+        fileName.append(UUID.randomUUID().toString().replace("-", ""));
+        fileName.append("-");
+        fileName.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
 
-        String fileName = dirName + "/" + uploadFile.getName();
-        String uploadImageUrl = putS3(uploadFile, fileName);
+        String uploadImageUrl = putS3(uploadFile, fileName.toString());
         removeNewFile(uploadFile);
         return uploadImageUrl;
     }

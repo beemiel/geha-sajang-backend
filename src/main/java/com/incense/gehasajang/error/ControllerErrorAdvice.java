@@ -1,5 +1,6 @@
 package com.incense.gehasajang.error;
 
+import com.incense.gehasajang.exception.CannotConvertException;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.exception.NumberExceededException;
 import org.springframework.http.HttpStatus;
@@ -54,6 +55,13 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ErrorResponse handleFileSizeLimitException (){
         return buildError(ErrorCode.FILE_SIZE_LIMIT_EXCEED);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(CannotConvertException.class)
+    public ErrorResponse handleCannotConvertException (){
+        return buildError(ErrorCode.CANNOT_CONVERT_FILE);
     }
 
     private List<ErrorResponse.FieldError> getFieldErrors(BindingResult bindingResult) {

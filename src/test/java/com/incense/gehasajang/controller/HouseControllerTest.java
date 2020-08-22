@@ -5,6 +5,7 @@ import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.domain.house.HouseExtraInfo;
 import com.incense.gehasajang.dto.house.HouseDto;
 import com.incense.gehasajang.error.ErrorCode;
+import com.incense.gehasajang.exception.CannotConvertException;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.exception.NumberExceededException;
 import com.incense.gehasajang.service.HouseService;
@@ -210,6 +211,38 @@ class HouseControllerTest {
         //then
         resultActions.andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("code").value(ErrorCode.FILE_SIZE_LIMIT_EXCEED.getCode()))
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("message").description("에러의 상세 메세지"),
+                                fieldWithPath("status").description("상태 코드"),
+                                fieldWithPath("code").description("직접 정의한 에러 코드"),
+                                fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다.")
+                        )));
+    }
+
+    @Test
+    @DisplayName("하우스 이미지 파일 변환 테스트")
+    public void cannotConvertException() throws Exception {
+        //given
+        String extra = "조식☆§♥♨☎석식☆§♥♨☎중식☆§♥♨☎야식";
+        HouseDto houseDto = HouseDto.builder().name("게스트하우스")
+                .city("시티")
+                .street("스트릿")
+                .postcode("우편번호")
+                .detail("상세주소")
+                .mainNumber("01012345678")
+                .mainImage("메인 이미지")
+                .build();
+        doThrow(CannotConvertException.class).when(s3Service).upload(any(MultipartFile.class), any(String.class));
+
+        //when
+        ResultActions resultActions = create(houseDto, extra);
+
+        //then
+        resultActions.andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("code").value(ErrorCode.CANNOT_CONVERT_FILE.getCode()))
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
