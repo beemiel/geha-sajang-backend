@@ -1,4 +1,4 @@
-package com.incense.gehasajang.domain;
+package com.incense.gehasajang.domain.guest;
 
 import com.incense.gehasajang.domain.booking.Booking;
 import lombok.Getter;
