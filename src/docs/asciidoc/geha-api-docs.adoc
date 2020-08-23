@@ -161,3 +161,19 @@ include::{snippets}/house-controller-test/cannot-convert-exception/http-response
 - Response Fields
 include::{snippets}/house-controller-test/cannot-convert-exception/response-fields.adoc[]
 
+== 약관 관련 API
+
+=== GET Terms List
+모든 약관 리스트를 요청한다.
+
+==== 200 성공
+요청한 약관 리스트를 성공적으로 가져옵니다.
+
+- HTTP Request
+include::{snippets}/terms-controller-test/list/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/terms-controller-test/list/http-response.adoc[]
+
+- Response Fields
+include::{snippets}/terms-controller-test/list/response-fields.adoc[]
