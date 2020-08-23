@@ -16,6 +16,7 @@ drop table if exists room;
 drop table if exists host_house;
 drop table if exists house;
 drop table if exists host;
+drop table if exists terms;
 
 create table host (
     host_id bigint auto_increment,
@@ -211,4 +212,11 @@ create table booking_room_info (
     unbooked_room_id bigint references unbooked_room(unbooked_room_id),
     deleted_at timestamp,
     primary key (booking_room_info_id)
+);
+
+create table terms (
+    terms_id bigint auto_increment,
+    type varchar(255) not null,
+    contents text,
+    primary key (terms_id)
 );
