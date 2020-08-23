@@ -177,3 +177,37 @@ include::{snippets}/terms-controller-test/list/http-response.adoc[]
 
 - Response Fields
 include::{snippets}/terms-controller-test/list/response-fields.adoc[]
+
+== 회원가입 관련 API
+
+=== POST Check Emil
+이메일 중복 검사를 요청한다.
+중복 유무에 따라 `true/false` 값이 반환된다.
+
+==== 200 성공
+중복검사를 완료한다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/check-email/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/check-email/http-response.adoc[]
+
+- Request Fields
+include::{snippets}/sign-up-controller-test/check-email/request-fields.adoc[]
+
+=== POST Check name
+이름 중복 검사를 요청한다.
+중복 유무에 따라 `true/false` 값이 반환된다.
+
+==== 200 성공
+중복검사를 완료한다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/check-name/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/check-name/http-response.adoc[]
+
+- Request Fields
+include::{snippets}/sign-up-controller-test/check-name/request-fields.adoc[]
