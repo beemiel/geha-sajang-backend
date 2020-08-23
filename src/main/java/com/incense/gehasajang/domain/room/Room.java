@@ -9,8 +9,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
 @Getter
+@Entity
 public class Room {
 
     @Id
@@ -36,10 +36,6 @@ public class Room {
     private String peakAmount;
 
     private String offPeakAmount;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt;
 

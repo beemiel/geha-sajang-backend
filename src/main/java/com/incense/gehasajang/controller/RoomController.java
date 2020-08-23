@@ -1,20 +1,35 @@
 package com.incense.gehasajang.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.incense.gehasajang.domain.room.Room;
+import com.incense.gehasajang.dto.RoomDto;
+import com.incense.gehasajang.service.RoomService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("/rooms")
+@RequestMapping("/api/v1/rooms")
 public class RoomController {
 
+    private final RoomService roomService;
+
     @GetMapping
-    public void list() {
-        // TODO: 방의 전체 리스트
+    public ResponseEntity<List<RoomDto>> list(@RequestBody List<Long> roomIds) {
+        List<Room> rooms = roomService.getRooms(roomIds);
+        List<RoomDto> roomDtos = new ArrayList<>();
+        BeanUtils.copyProperties(rooms, roomDtos);
+        return ResponseEntity.ok(roomDtos);
     }
 
     @GetMapping("/{roomsId}")
-    public void detail() {
+    public void detail(
+            @PathVariable Long roomsId
+    ) {
         // TODO: roomId 에 해당하는 room 조회
     }
 }
