@@ -59,6 +59,7 @@ dependencies {
 	}
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	implementation 'com.github.dozermapper:dozer-core:6.5.0'
 }
 
 dependencyManagement {
