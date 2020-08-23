@@ -1,18 +1,37 @@
 spring:
-  profiles: local
-  datasource:
-    url: jdbc:h2:mem:test
-    initialization-mode: always
-    schema: classpath:schema.sql
-    data: classpath:data.sql
   jpa:
     hibernate:
       ddl-auto: none
     properties:
       hibernate:
         format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
 logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace #쿼리 파라미터에 어떤 타입의 어떤 데이터가 들어가는지 로그에 찍힘
+
+---
+
+spring:
+  profiles: local
+  datasource:
+    url: jdbc:h2:mem:test
+    initialization-mode: always
+    schema: classpath:schema.sql
+
+---
+
+spring:
+  profiles: mysql
+  datasource:
+    url: jdbc:mysql://${MYSQL_ENDPOINT}:3306/${MYSQL_DATABASE}?serverTimezone=UTC&characterEncoding=UTF-8
+    initialization-mode: always
+    schema: classpath:schema.sql
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}

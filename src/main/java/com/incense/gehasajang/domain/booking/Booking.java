@@ -1,6 +1,6 @@
 package com.incense.gehasajang.domain.booking;
 
-import com.incense.gehasajang.domain.Guest;
+import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.house.House;
 import lombok.Getter;
 
@@ -13,7 +13,7 @@ import java.util.List;
 public class Booking {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_id")
     private Long id;
 

@@ -1,4 +1,4 @@
-package com.incense.gehasajang.domain;
+package com.incense.gehasajang.domain.house;
 
 import com.incense.gehasajang.domain.house.House;
 import org.springframework.data.jpa.repository.JpaRepository;

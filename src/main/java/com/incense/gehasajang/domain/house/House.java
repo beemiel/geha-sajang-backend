@@ -1,6 +1,7 @@
 package com.incense.gehasajang.domain.house;
 
 import com.incense.gehasajang.domain.Address;
+import com.incense.gehasajang.domain.BaseTimeEntity;
 import com.incense.gehasajang.domain.HostHouse;
 import com.incense.gehasajang.domain.Invitation;
 import com.incense.gehasajang.domain.booking.Booking;
@@ -16,10 +17,10 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class House {
+public class House extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "house_id")
     private Long id;
 
@@ -35,10 +36,6 @@ public class House {
     private String thumbnailImage;
 
     private String mainNumber;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt;
 
@@ -64,12 +61,13 @@ public class House {
     private List<SmsTemplate> smsTemplates;
 
     @Builder
-    public House(String name, Address address, String mainImage, String thumbnailImage, String mainNumber) {
+    public House(String name, Address address, String mainImage, String thumbnailImage, String mainNumber, List<HouseExtraInfo> houseExtraInfos) {
         this.uuid = UUID.randomUUID().toString();
         this.name = name;
         this.address = address;
         this.mainImage = mainImage;
         this.thumbnailImage = thumbnailImage;
         this.mainNumber = mainNumber;
+        this.houseExtraInfos = houseExtraInfos;
     }
 }

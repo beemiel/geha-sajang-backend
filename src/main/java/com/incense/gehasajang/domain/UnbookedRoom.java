@@ -14,7 +14,7 @@ import java.util.List;
 public class UnbookedRoom {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "unbooked_room_id")
     private Long id;
 
