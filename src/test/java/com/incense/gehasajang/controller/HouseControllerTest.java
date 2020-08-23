@@ -255,7 +255,7 @@ class HouseControllerTest {
     }
 
     private ResultActions successRequestHouseInfo(Long houseId) throws Exception {
-        return mockMvc.perform(RestDocumentationRequestBuilders.get("/houses/{houseId}", houseId)
+        return mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/houses/{houseId}", houseId)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(prettyPrint()),
@@ -281,7 +281,7 @@ class HouseControllerTest {
     }
 
     private ResultActions failRequestHouseInfo(Long houseId) throws Exception {
-        return mockMvc.perform(RestDocumentationRequestBuilders.get("/houses/{houseId}", houseId)
+        return mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/houses/{houseId}", houseId)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(prettyPrint()),
@@ -301,7 +301,7 @@ class HouseControllerTest {
     private ResultActions create(HouseDto houseDto, String extra) throws Exception {
         MockMultipartFile imageFile = new MockMultipartFile("file", "image", "image/jpg", "image".getBytes());
 
-        return mockMvc.perform(MockMvcRequestBuilders.multipart("/houses")
+        return mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/houses")
                 .file(imageFile)
                 .param("name", houseDto.getName())
                 .param("mainNumber", houseDto.getMainNumber())
