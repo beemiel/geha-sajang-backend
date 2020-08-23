@@ -2,7 +2,7 @@ package com.incense.gehasajang.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.incense.gehasajang.dto.host.EmailCheckDto;
-import com.incense.gehasajang.dto.host.NameCheckDto;
+import com.incense.gehasajang.dto.host.NicknameCheckDto;
 import com.incense.gehasajang.service.SignUpService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,20 +66,20 @@ class SignUpControllerTest {
     @DisplayName("닉네임 중복 체크")
     void checkName() throws Exception {
         //given
-        NameCheckDto nameCheckDto = NameCheckDto.builder().name("name").build();
+        NicknameCheckDto nicknameCheckDto = NicknameCheckDto.builder().nickname("name").build();
         given(signUpService.checkName(anyString())).willReturn(true);
 
         //when
         mockMvc.perform(post("/api/v1/users/check-name")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(nameCheckDto)))
+                .content(objectMapper.writeValueAsString(nicknameCheckDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"))
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("name").description("중복 검사 요청할 이름")
+                                fieldWithPath("nickname").description("중복 검사 요청할 닉네임")
                         )
                 ));
 

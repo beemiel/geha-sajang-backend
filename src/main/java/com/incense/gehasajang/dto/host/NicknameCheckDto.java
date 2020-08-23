@@ -9,10 +9,10 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class NameCheckDto {
+public class NicknameCheckDto {
 
     @NotBlank(message = "닉네임을 입력해주세요.")
     @Size(min = 2, max = 10, message = "닉네임은 2~10자까지만 가능합니다.")
-    private String name;
+    private String nickname;
 
 }

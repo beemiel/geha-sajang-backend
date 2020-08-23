@@ -1,7 +1,7 @@
 package com.incense.gehasajang.controller;
 
 import com.incense.gehasajang.dto.host.EmailCheckDto;
-import com.incense.gehasajang.dto.host.NameCheckDto;
+import com.incense.gehasajang.dto.host.NicknameCheckDto;
 import com.incense.gehasajang.service.SignUpService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +26,8 @@ public class SignUpController {
     }
 
     @PostMapping("/check-name")
-    public ResponseEntity<Boolean> nameDuplicateCheck(@RequestBody @Valid NameCheckDto name) {
-        return ResponseEntity.ok(signUpService.checkName(name.getName()));
+    public ResponseEntity<Boolean> nameDuplicateCheck(@RequestBody @Valid NicknameCheckDto name) {
+        return ResponseEntity.ok(signUpService.checkName(name.getNickname()));
     }
 
 }
