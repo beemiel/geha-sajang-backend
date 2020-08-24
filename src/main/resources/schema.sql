@@ -22,8 +22,8 @@ drop table if exists terms;
 create table host (
     host_id bigint auto_increment,
     type varchar(31) not null,
-    email varchar(255) not null,
-    nickname varchar(255) not null,
+    email varchar(255) unique not null,
+    nickname varchar(255) unique not null,
     password varchar(255) not null,
     is_agree_to_marketing boolean,
     is_pass_email_auth boolean default false,
@@ -33,7 +33,7 @@ create table host (
     detail varchar(255),
     postcode varchar(10),
     street varchar(255),
-    sub_host_status boolean default true,
+    is_active boolean default true,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp on update current_timestamp,
     deleted_at timestamp,
@@ -52,7 +52,7 @@ create table email_authentication_code (
 
 create table house (
     house_id bigint auto_increment,
-    uuid varchar(36),
+    uuid varchar(36) unique,
     name varchar(255),
     city varchar(255),
     detail varchar(255),
