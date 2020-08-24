@@ -3,6 +3,7 @@ package com.incense.gehasajang.error;
 import com.incense.gehasajang.exception.CannotConvertException;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.exception.NumberExceededException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -62,6 +63,13 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(CannotConvertException.class)
     public ErrorResponse handleCannotConvertException (){
         return buildError(ErrorCode.CANNOT_CONVERT_FILE);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ErrorResponse handleDuplicateException (){
+        return buildError(ErrorCode.DUPLICATE);
     }
 
     private List<ErrorResponse.FieldError> getFieldErrors(BindingResult bindingResult) {

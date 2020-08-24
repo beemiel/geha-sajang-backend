@@ -1,5 +1,6 @@
 package com.incense.gehasajang.service;
 
+import com.incense.gehasajang.domain.host.Host;
 import com.incense.gehasajang.domain.host.HostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,5 +19,11 @@ public class SignUpService {
 
     public boolean checkName(String nickname) {
         return hostRepository.existsByNickname(nickname);
+    }
+
+    public void addHost(Host mainHost) {
+        hostRepository.save(mainHost);
+        //TODO: 2020-08-24 이메일보내기 -lynn
+        //TODO: 2020-08-24 인증 이메일 코드 저장 -lynn
     }
 }
