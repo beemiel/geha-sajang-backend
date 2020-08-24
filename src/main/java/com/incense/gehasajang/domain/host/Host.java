@@ -3,6 +3,7 @@ package com.incense.gehasajang.domain.host;
 import com.incense.gehasajang.domain.BaseTimeEntity;
 import com.incense.gehasajang.domain.HostHouse;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @DiscriminatorColumn(name = "type")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public abstract class Host extends BaseTimeEntity {
 
     @Id
