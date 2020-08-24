@@ -19,8 +19,8 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping
-    public ResponseEntity<List<RoomDto>> list(@RequestBody List<Long> roomIds) {
-        List<Room> rooms = roomService.getRooms(roomIds);
+    public ResponseEntity<List<RoomDto>> list(@RequestBody Long houseId) {
+        List<Room> rooms = roomService.getRooms(houseId);
         List<RoomDto> roomDtos = new ArrayList<>();
         BeanUtils.copyProperties(rooms, roomDtos);
         return ResponseEntity.ok(roomDtos);

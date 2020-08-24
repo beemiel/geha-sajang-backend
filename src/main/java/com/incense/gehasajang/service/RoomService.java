@@ -15,7 +15,7 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
 
-    public List<Room> getRooms(List<Long> roomIds) {
-        return roomRepository.findAllById(roomIds);
+    public List<Room> getRooms(Long houseId) {
+        return roomRepository.findAllByHouseEquals(houseId);
     }
 }
