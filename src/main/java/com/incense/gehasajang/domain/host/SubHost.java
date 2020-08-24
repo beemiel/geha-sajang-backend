@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SubHost extends Host {
 
-    private boolean subHostStatus;
+    private boolean isActive;
 
     @Builder
     public SubHost(Long id, String email, String nickname, String password, String profileImage, String thumbnailImage, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt, List<HostHouse> hostHouses) {

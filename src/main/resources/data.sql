@@ -18,8 +18,9 @@ VALUES (1, '이용약관', '이용약관 Lorem ipsum dolor sit amet, consectetur
        (2, '개인정보', '개인정보 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.'),
        (3, '마케팅', '마케팅 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.');
 
-INSERT INTO host (host_id, type, email, nickname, password)
-VALUES (1, 'main', 'maxmax@gmail.com', 'max', '123456'),
-       (2, 'main', 'joyjoy@gmail.com', 'joy', '123456'),
-       (3, 'main', 'lean@gmail.com', 'lean', '123456'),
-       (4, 'sub', 'lynn@gmail.com', 'lynn', '123456');
+INSERT INTO host
+VALUES (1, 'main', 'maxmax@gmail.com', 'max', '123456', true, false, '', '', '', '', '', '', false, now(),now(),now()),
+       (2, 'main', 'joyjoy@gmail.com', 'joy', '123456', true, false,'', '', '', '', '', '', false, now(),now(),now()),
+       (3, 'main', 'lean@gmail.com', 'lena', '123456', true, false,'', '', '', '', '', '', false, now(),now(),now()),
+       (4, 'sub', 'lynn@gmail.com', 'lynn', '123456', true, false, '', '', '', '', '', '', true, now(),now(),now());
+
