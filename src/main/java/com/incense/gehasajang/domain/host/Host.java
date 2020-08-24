@@ -2,10 +2,7 @@ package com.incense.gehasajang.domain.host;
 
 import com.incense.gehasajang.domain.BaseTimeEntity;
 import com.incense.gehasajang.domain.HostHouse;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -33,10 +30,6 @@ public abstract class Host extends BaseTimeEntity {
     private String profileImage;
 
     private String thumbnailImage;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt;
 

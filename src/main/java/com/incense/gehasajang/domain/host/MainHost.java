@@ -1,5 +1,6 @@
 package com.incense.gehasajang.domain.host;
 
+import com.github.dozermapper.core.Mapping;
 import com.incense.gehasajang.domain.Address;
 import com.incense.gehasajang.domain.HostHouse;
 import lombok.AccessLevel;
@@ -11,7 +12,6 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,12 +28,13 @@ public class MainHost extends Host {
 
     private boolean isPassEmailAuth;
 
+    //TODO: 2020-08-24 원투원으로 바꿀까 -lynn
     @OneToMany(mappedBy = "host")
     private List<EmailAuthenticationCode> codes;
 
     @Builder
-    public MainHost(Long id, String email, String nickname, String password, String profileImage, String thumbnailImage, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt, List<HostHouse> hostHouses, Address address, boolean isAgreeToMarketing, boolean isPassEmailAuth) {
-        super(id, email, nickname, password, profileImage, thumbnailImage, createdAt, updatedAt, deletedAt, hostHouses);
+    public MainHost(Long id, String email, String nickname, String password, String profileImage, String thumbnailImage, LocalDateTime deletedAt, List<HostHouse> hostHouses, Address address, boolean isAgreeToMarketing, boolean isPassEmailAuth) {
+        super(id, email, nickname, password, profileImage, thumbnailImage, deletedAt, hostHouses);
         this.address = address;
         this.isAgreeToMarketing = isAgreeToMarketing;
         this.isPassEmailAuth = isPassEmailAuth;
