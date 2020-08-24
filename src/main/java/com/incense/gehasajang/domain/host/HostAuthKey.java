@@ -2,6 +2,7 @@ package com.incense.gehasajang.domain.host;
 
 import com.incense.gehasajang.domain.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,11 +14,11 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class EmailAuthenticationCode extends BaseTimeEntity {
+public class HostAuthKey extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "email_authentication_code_id")
+    @Column(name = "host_auth_key_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
@@ -26,6 +27,12 @@ public class EmailAuthenticationCode extends BaseTimeEntity {
 
     private LocalDateTime expirationDate;
 
-    private String code;
+    private String key;
 
+    @Builder
+    public HostAuthKey(Host host, LocalDateTime expirationDate, String key) {
+        this.host = host;
+        this.expirationDate = expirationDate;
+        this.key = key;
+    }
 }

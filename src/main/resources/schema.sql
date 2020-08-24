@@ -15,7 +15,7 @@ drop table if exists bed;
 drop table if exists room;
 drop table if exists host_house;
 drop table if exists house;
-drop table if exists email_authentication_code;
+drop table if exists host_auth_key;
 drop table if exists host;
 drop table if exists terms;
 
@@ -40,14 +40,14 @@ create table host (
     primary key (host_id)
 );
 
-create table email_authentication_code (
-    email_authentication_code_id bigint auto_increment,
+create table host_auth_key (
+    host_auth_key_id bigint auto_increment,
     host_id bigint references host(host_id),
     code varchar (255) not null,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp on update current_timestamp,
     expiration_date timestamp,
-    primary key (email_authentication_code_id)
+    primary key (host_auth_key_id)
 );
 
 create table house (

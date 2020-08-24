@@ -1,6 +1,5 @@
 package com.incense.gehasajang.domain.host;
 
-import com.github.dozermapper.core.Mapping;
 import com.incense.gehasajang.domain.Address;
 import com.incense.gehasajang.domain.HostHouse;
 import lombok.AccessLevel;
@@ -30,7 +29,7 @@ public class MainHost extends Host {
 
     //TODO: 2020-08-24 원투원으로 바꿀까 -lynn
     @OneToMany(mappedBy = "host")
-    private List<EmailAuthenticationCode> codes;
+    private List<HostAuthKey> keys;
 
     @Builder
     public MainHost(Long id, String email, String nickname, String password, String profileImage, String thumbnailImage, LocalDateTime deletedAt, List<HostHouse> hostHouses, Address address, boolean isAgreeToMarketing, boolean isPassEmailAuth) {
