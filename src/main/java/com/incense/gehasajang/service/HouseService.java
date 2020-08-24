@@ -8,6 +8,7 @@ import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.exception.NumberExceededException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class HouseService {
 
     private final HouseRepository houseRepository;
@@ -26,6 +28,7 @@ public class HouseService {
                 .orElseThrow(NotFoundDataException::new);
     }
 
+    @Transactional
     public void addHouse(House house, String extra) {
         House saveHouse = houseRepository.save(house);
         if(!extra.isEmpty()) {
@@ -33,6 +36,7 @@ public class HouseService {
         }
     }
 
+    //TODO: 2020-08-24 cascade 설정 추가한 뒤 아래 메서드 수정 or 삭제 -lynn
     private void addHouseExtraInfo(String extra, House saveHouse) {
         String[] extraInfos = extra.split("☆§♥♨☎");
         checkExtraLength(extraInfos);

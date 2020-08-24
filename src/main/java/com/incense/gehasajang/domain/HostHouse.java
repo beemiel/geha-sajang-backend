@@ -6,6 +6,8 @@ import lombok.Getter;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
 @Getter
 public class HostHouse {
@@ -15,11 +17,11 @@ public class HostHouse {
     @Column(name = "host_house_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "host_id")
     private Host host;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "house_id")
     private House house;
 

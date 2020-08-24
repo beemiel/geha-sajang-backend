@@ -5,6 +5,8 @@ import lombok.Getter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
 @Getter
 public class HouseOff {
@@ -16,7 +18,7 @@ public class HouseOff {
 
     private LocalDateTime offDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "house_id")
     private House house;
 

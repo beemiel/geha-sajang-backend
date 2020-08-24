@@ -9,6 +9,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
 @Getter
 public class UnbookedRoom {
@@ -20,11 +22,11 @@ public class UnbookedRoom {
 
     private LocalDateTime entry_date;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "bed_id")
     private Bed bed;
 
@@ -37,7 +39,7 @@ public class UnbookedRoom {
     @OneToMany(mappedBy = "unbookedRoom")
     private List<BookingRoomInfo> bookingRoomInfos;
 
-    @OneToOne(mappedBy = "unbookedRoom")
+    @OneToOne(mappedBy = "unbookedRoom", fetch = LAZY)
     private BookedRoom bookedRoom;
 
 }
