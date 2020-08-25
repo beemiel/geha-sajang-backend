@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("api/v1/terms")
+@RequestMapping("/api/v1/terms")
 @RequiredArgsConstructor
 public class TermsController {
 

@@ -2,6 +2,7 @@ package com.incense.gehasajang.controller;
 
 import com.incense.gehasajang.domain.terms.Terms;
 import com.incense.gehasajang.domain.terms.TermsRepository;
+import com.incense.gehasajang.util.CommonString;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,9 @@ class TermsControllerTest {
                 .andExpect(jsonPath("[1]type").value("개인정보"))
                 .andExpect(jsonPath("[2]type").value("마케팅"))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("[].terms_id").description("id").type(Long.class),

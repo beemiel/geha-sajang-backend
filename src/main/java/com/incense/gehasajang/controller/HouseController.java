@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/houses")
+@RequestMapping("/api/v1/houses")
 public class HouseController {
 
     private final HouseService houseService;

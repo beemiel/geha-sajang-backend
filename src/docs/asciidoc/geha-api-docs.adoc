@@ -13,7 +13,11 @@
 
 👩‍💻👨‍💻👩‍💻👨‍💻INCENSE 게하사장 서비스의 API를 정리해놓은 문서입니다.
 
-사용되는 method는 아래와 같습니다.
+서버가 API서버이므로 기본 Url은 **/api/v1(버전)/~** 입니다.
+
+예) `http://13.124.108.177:8080/api/v1/houses/1`
+
+- method는 아래와 같습니다.
 
 |===
 | Method | Content
@@ -31,33 +35,113 @@
 | 삭제
 |===
 
-RESTful notes tries to adhere as closely as possible to standard HTTP and REST conventions in its
-use of HTTP status codes.
+- Http Status Code는 아래와 같습니다.
 
 |===
 | Status code | Usage
 
 | `200 OK`
-| The request completed successfully
+| 요청이 성공했습니다.
 
 | `201 Created`
-| A new resource has been created successfully. The resource's URI is available from the response's
-`Location` header
+| 요청한 리소스가 생성되었습니다.
 
 | `204 No Content`
-| An update to an existing resource has been applied successfully
+| 요청은 성공했지만 특별한 Response는 없습니다.
 
 | `400 Bad Request`
-| The request was malformed. The response body will include an error providing further information
+| 잘못된 요청입니다.
 
 | `404 Not Found`
-| The requested resource did not exist
+| 리소스를 찾을 수 없습니다.
+
+| `409 Conflict`
+| DB에 이미 존재하는 데이터입니다.
+
+| `500 INTERNAL_SERVER_ERROR`
+| 서버 내부 에러입니다.
+|===
+
+- 내부적으로 사용하는 에러코드는 아래와 같습니다.
+
+??? 주로 유효성 검사
+|===
+| Error code | Status | Message
+
+| `???`
+|  400
+|  입력값이 올바르지 않습니다
+
+|===
+
+House 관련
+|===
+| Error code | Status | Message
+
+| `HO_001`
+|  404
+|  해당 하우스를 찾을 수 없습니다.
+
+| `HO_002`
+|  400
+|  지정된 숫자를 초과하였습니다.
+
+|===
+
+호스트 관련
+|===
+| Error code | Status | Message
+
+| `US_001`
+|  409
+|  이미 등록된 호스트입니다.
+
+| `US_002`
+|  404
+|  호스트를 찾을 수 없습니다.
+
+| `US_003`
+|  401
+|  인증키가 올바르지 않습니다.
+
+| `US_004`
+|  401
+|  이미 인증이 완료된 호스트입니다.
+
+| `US_005`
+|  401
+|  만료된 인증키입니다.
+
+|===
+
+이미지 관련
+|===
+| Error code | Status | Message
+
+| `IMG_001`
+|  500
+|  10MB이하의 파일만 가능합니다
+
+| `IMG_002`
+|  500
+|  MultipartFile -> File로 전환이 실패했습니다
+
+|===
+
+메일 관련
+|===
+| Error code | Status | Message
+
+| `MA_001`
+|  500
+|  메일 전송에 실패했습니다
+
 |===
 
 == House 관련 API
 
-=== GET House
-요청한 house id의 house 정보를 가져옵니다.
+=== GET /houses/{houseId}
+ver1: 요청한 house id의 house 정보를 가져옵니다.
 
 ==== 200 성공
 요청한 House의 정보를 성공적으로 가져옵니다.
@@ -89,24 +173,41 @@ include::{snippets}/house-controller-test/get-house-info-fail/path-parameters.ad
 - Response Fields
 include::{snippets}/house-controller-test/get-house-info-fail/response-fields.adoc[]
 
-=== POST House
-요청한 House의 정보를 DB에 저장합니다.
+=== POST /houses
+ver1: 요청한 House의 정보를 DB에 저장합니다.
 
 ==== 201 성공
-DB에 성공적으로 저장한다.
+DB에 성공적으로 저장합니다.
 게스트 하우스 이름, 전화번호, 추가정보, 이미지를 form-data에 넣어서 요청합니다.
 
 - HTTP Request
-include::{snippets}/house-controller-test/create/http-request.adoc[]
-
-- HTTP Response
-include::{snippets}/house-controller-test/create/http-response.adoc[]
-
-- Request Part Body
-include::{snippets}/house-controller-test/create/request-part-file-body.adoc[]
+```
+POST /api/v1/houses HTTP/1.1
+Content-Type: multipart/form-data
+Host: 13.124.108.177:8080
+```
 
 - Request Parameters
-include::{snippets}/house-controller-test/create/request-parameters.adoc[]
+|===
+| Parameter	 | Description
+
+| file
+| 이미지 파일(NULL❌)
+
+| name
+| 이름(50자이내 필수값)
+
+| mainNumber
+| 전화번호(숫자만, 11자이내 필수값)
+
+| extra
+| 게스트 하우스 추가 정보(NULL❌)
+|===
+
+- HTTP Response
+```
+HTTP/1.1 201 Created
+```
 
 ==== 400 실패 (이름/전화번호)
 이름과 전화번호의 유효성 검사에 실패합니다.
@@ -114,13 +215,50 @@ include::{snippets}/house-controller-test/create/request-parameters.adoc[]
 이름과 전화번호는 함께 검사하므로 errors라는 배열에 상세 내용이 담깁니다.
 
 - HTTP Request
-include::{snippets}/house-controller-test/validation/http-request.adoc[]
-
-- HTTP Response
-include::{snippets}/house-controller-test/validation/http-response.adoc[]
+```
+POST /api/v1/houses HTTP/1.1
+Content-Type: multipart/form-data
+Host: 13.124.108.177:8080
+```
 
 - Request Parameters
-include::{snippets}/house-controller-test/create/request-parameters.adoc[]
+|===
+| Parameter	 | Description
+
+| file
+| 이미지 파일(NULL❌)
+
+| name
+| 이름(50자이내 필수값)
+
+| mainNumber
+| 전화번호(숫자만, 11자이내 필수값)
+
+| extra
+| 게스트 하우스 추가 정보(NULL❌)
+|===
+
+- HTTP Response
+```
+HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+
+{
+  "message" : "입력값이 올바르지 않습니다.",
+  "code" : "???",
+  "status" : 400,
+  "errors" : [ {
+    "field" : "mainNumber",
+    "value" : "01012-3456-11178",
+    "reason" : "전화번호는 9~11자의 숫자만 입력해주세요."
+  }, {
+    "field" : "name",
+    "value" : "",
+    "reason" : "게스트 하우스 이름을 입력해주세요."
+  } ]
+}
+
+```
 
 - Response Fields
 include::{snippets}/house-controller-test/validation/response-fields.adoc[]
@@ -163,8 +301,8 @@ include::{snippets}/house-controller-test/cannot-convert-exception/response-fiel
 
 == 약관 관련 API
 
-=== GET Terms List
-모든 약관 리스트를 요청합니다.
+=== GET /terms
+ver1: 모든 약관 리스트를 요청합니다.
 
 ==== 200 성공
 요청한 약관 리스트를 성공적으로 가져옵니다.
@@ -188,8 +326,8 @@ include::{snippets}/terms-controller-test/list/response-fields.adoc[]
 ✨주의✨ DB에 요청한 값이 `존재하는지`가 기준입니다. 실수하지 않도록 다시 한번 확인해보아요.
 
 
-=== POST Check Emil
-이메일 중복 검사를 요청합니다.
+=== POST /users/check-email
+ver1: 이메일 중복 검사를 요청합니다.
 
 ==== 200 성공
 중복검사를 완료합니다.
@@ -203,8 +341,8 @@ include::{snippets}/sign-up-controller-test/check-email/http-response.adoc[]
 - Request Fields
 include::{snippets}/sign-up-controller-test/check-email/request-fields.adoc[]
 
-=== POST Check name
-이름 중복 검사를 요청합니다.
+=== POST /users/check-name
+ver1: 이름 중복 검사를 요청합니다.
 
 ==== 200 성공
 중복검사를 완료합니다.
@@ -218,8 +356,8 @@ include::{snippets}/sign-up-controller-test/check-name/http-response.adoc[]
 - Request Fields
 include::{snippets}/sign-up-controller-test/check-name/request-fields.adoc[]
 
-=== POST sign up
-회원가입을 요청합니다.
+=== POST /users
+ver1: 회원가입을 요청합니다.
 
 호스트 `이메일, 닉네임, 비밀번호, 프로필 사진, 마케팅 동의 여부` 를 form-data에 넣어서 요청합니다.
 
@@ -291,8 +429,8 @@ include::{snippets}/sign-up-controller-test/join-duplication/http-response.adoc[
 - Response Fields
 include::{snippets}/sign-up-controller-test/join-duplication/response-fields.adoc[]
 
-=== GET Email Auth
-회원가입시 호스트 이메일로 전송되는 인증 링크와 연결된 인증 API입니다.
+=== GET users/auth?email=&authkey=
+ver1: 회원가입시 호스트 이메일로 전송되는 인증 링크와 연결된 인증 API입니다.
 
 ==== 201 성공
 성공적으로 인증되었습니다.
