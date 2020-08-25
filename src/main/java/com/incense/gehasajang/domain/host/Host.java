@@ -1,7 +1,8 @@
 package com.incense.gehasajang.domain.host;
 
+import com.incense.gehasajang.domain.BaseTimeEntity;
 import com.incense.gehasajang.domain.HostHouse;
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,7 +12,9 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
 @Getter
-public abstract class Host {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+public abstract class Host extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +30,6 @@ public abstract class Host {
     private String profileImage;
 
     private String thumbnailImage;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt;
 

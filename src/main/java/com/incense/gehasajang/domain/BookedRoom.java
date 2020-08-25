@@ -4,6 +4,8 @@ import lombok.Getter;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
 @Getter
 public class BookedRoom {
@@ -13,7 +15,7 @@ public class BookedRoom {
     @Column(name = "booked_room_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = LAZY)
     @JoinColumn(name = "unbooked_room_id")
     private UnbookedRoom unbookedRoom;
 

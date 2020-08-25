@@ -12,9 +12,11 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+import static javax.persistence.FetchType.LAZY;
+
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Room {
 
     @Id
@@ -22,7 +24,7 @@ public class Room {
     @Column(name = "room_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "house_id")
     private House house;
 

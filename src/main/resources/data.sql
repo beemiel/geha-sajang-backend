@@ -22,3 +22,14 @@ INSERT INTO room VALUES (1, 4, 6, null, 'test_room_1', 15000, 20000, 'MULTIPLE',
 INSERT INTO room VALUES (2, 4, 6, null, 'test_room_2', 30000, 40000, 'DORMITORY', 2, now(), null, null);
 INSERT INTO room VALUES (3, 4, 6, null, 'test_room_3', 30000, 40000, 'MULTIPLE', 2, now(), null, null);
 INSERT INTO room VALUES (4, 2, 3, null, 'test_room_4', 40000, 50000, 'MULTIPLE', 1, now(), null, null);
+
+INSERT INTO host
+VALUES (1, 'main', 'maxmax@gmail.com', 'max', '123456', true, false, '', '', '', '', '', '', false, now(),now(), null),
+       (2, 'main', 'joyjoy@gmail.com', 'joy', '123456', true, false,'', '', '', '', '', '', false, now(),now(),now()),
+       (3, 'main', 'lean@gmail.com', 'lena', '123456', true, false,'', '', '', '', '', '', false, now(),now(),now()),
+       (4, 'main', 'lynn@gmail.com', 'lynn', '123456', true, false, '', '', '', '', '', '', false , now(),now(), null),
+       (5, 'main', '4incense@gmail.com', '4incense', '123456', true, false, '', '', '', '', '', '', false , now(),now(),null);
+
+INSERT INTO host_auth_key
+VALUES (1, 4, 'testtestkeykey', now()),
+       (2, 5, 'testkey', '2020-08-26');

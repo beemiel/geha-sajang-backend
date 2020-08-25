@@ -15,6 +15,7 @@ drop table if exists bed;
 drop table if exists room;
 drop table if exists host_house;
 drop table if exists house;
+drop table if exists host_auth_key;
 drop table if exists host;
 drop table if exists terms;
 
@@ -24,22 +25,32 @@ create table host (
     email varchar(255) not null,
     nickname varchar(255) not null,
     password varchar(255) not null,
+    is_agree_to_marketing boolean,
+    is_pass_email_auth boolean default false,
     profile_image varchar(255),
     thumbnail_image varchar(255),
     city varchar(255),
     detail varchar(255),
     postcode varchar(10),
     street varchar(255),
-    sub_host_status boolean default true,
+    is_active boolean default true,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp on update current_timestamp,
     deleted_at timestamp,
     primary key (host_id)
 );
 
+create table host_auth_key (
+    host_auth_key_id bigint auto_increment,
+    host_id bigint references host(host_id),
+    auth_key varchar (255) not null,
+    expiration_date timestamp,
+    primary key (host_auth_key_id)
+);
+
 create table house (
     house_id bigint auto_increment,
-    uuid varchar(36),
+    uuid varchar(36) unique,
     name varchar(255),
     city varchar(255),
     detail varchar(255),
