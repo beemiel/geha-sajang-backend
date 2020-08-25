@@ -1,29 +1,34 @@
 package com.incense.gehasajang.controller;
 
+import com.github.dozermapper.core.Mapper;
 import com.incense.gehasajang.domain.room.Room;
 import com.incense.gehasajang.dto.RoomDto;
 import com.incense.gehasajang.service.RoomService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/rooms")
+@RequestMapping("/api/v1/houses/{houseId}/rooms")
 public class RoomController {
 
     private final RoomService roomService;
+    private final Mapper mapper;
 
     @GetMapping
-    public ResponseEntity<List<RoomDto>> list(@RequestBody Long houseId) {
+    public ResponseEntity<List<RoomDto>> list(
+            @PathVariable Long houseId
+    ) {
         List<Room> rooms = roomService.getRooms(houseId);
-        List<RoomDto> roomDtos = new ArrayList<>();
-        BeanUtils.copyProperties(rooms, roomDtos);
-        return ResponseEntity.ok(roomDtos);
+
+        return ResponseEntity.ok(rooms.stream().map(room -> mapper.map(room, RoomDto.class)).collect(Collectors.toList()));
     }
 
     @GetMapping("/{roomsId}")

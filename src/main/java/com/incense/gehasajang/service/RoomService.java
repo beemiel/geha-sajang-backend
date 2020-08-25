@@ -1,6 +1,7 @@
 package com.incense.gehasajang.service;
 
 import com.incense.gehasajang.domain.RoomRepository;
+import com.incense.gehasajang.domain.house.HouseRepository;
 import com.incense.gehasajang.domain.room.Room;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,9 @@ import java.util.List;
 public class RoomService {
 
     private final RoomRepository roomRepository;
+    private final HouseRepository houseRepository;
 
     public List<Room> getRooms(Long houseId) {
-        return roomRepository.findAllByHouseEquals(houseId);
+        return roomRepository.findByRoom_House_Id(houseId);
     }
 }

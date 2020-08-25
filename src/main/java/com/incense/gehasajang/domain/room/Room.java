@@ -65,4 +65,8 @@ public class Room {
         this.unbookedRooms = unbookedRooms;
     }
 
+    public Long getHouseId() {
+        return this.house.getId();
+    }
+
 }
