@@ -43,9 +43,7 @@ create table host (
 create table host_auth_key (
     host_auth_key_id bigint auto_increment,
     host_id bigint references host(host_id),
-    code varchar (255) not null,
-    created_at timestamp default current_timestamp,
-    updated_at timestamp default current_timestamp on update current_timestamp,
+    auth_key varchar (255) not null,
     expiration_date timestamp,
     primary key (host_auth_key_id)
 );

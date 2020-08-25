@@ -19,8 +19,13 @@ VALUES (1, '이용약관', '이용약관 Lorem ipsum dolor sit amet, consectetur
        (3, '마케팅', '마케팅 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.');
 
 INSERT INTO host
-VALUES (1, 'main', 'maxmax@gmail.com', 'max', '123456', true, false, '', '', '', '', '', '', false, now(),now(),now()),
+VALUES (1, 'main', 'maxmax@gmail.com', 'max', '123456', true, false, '', '', '', '', '', '', false, now(),now(), null),
        (2, 'main', 'joyjoy@gmail.com', 'joy', '123456', true, false,'', '', '', '', '', '', false, now(),now(),now()),
        (3, 'main', 'lean@gmail.com', 'lena', '123456', true, false,'', '', '', '', '', '', false, now(),now(),now()),
-       (4, 'sub', 'lynn@gmail.com', 'lynn', '123456', true, false, '', '', '', '', '', '', true, now(),now(),now());
+       (4, 'main', 'lynn@gmail.com', 'lynn', '123456', true, false, '', '', '', '', '', '', false , now(),now(), null),
+       (5, 'main', '4incense@gmail.com', '4incense', '123456', true, false, '', '', '', '', '', '', false , now(),now(),null);
 
+
+INSERT INTO host_auth_key
+VALUES (1, 4, 'testtestkeykey', now()),
+       (2, 5, 'testkey', '2020-08-26');
