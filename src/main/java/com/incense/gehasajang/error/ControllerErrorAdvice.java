@@ -1,6 +1,7 @@
 package com.incense.gehasajang.error;
 
 import com.incense.gehasajang.exception.CannotConvertException;
+import com.incense.gehasajang.exception.CannotSendMailException;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.exception.NumberExceededException;
 import org.hibernate.exception.ConstraintViolationException;
@@ -70,6 +71,13 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(ConstraintViolationException.class)
     public ErrorResponse handleDuplicateException (){
         return buildError(ErrorCode.DUPLICATE);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(CannotSendMailException.class)
+    public ErrorResponse handleCannotSendMailException (){
+        return buildError(ErrorCode.CANNOT_SEND_MAIL);
     }
 
     private List<ErrorResponse.FieldError> getFieldErrors(BindingResult bindingResult) {

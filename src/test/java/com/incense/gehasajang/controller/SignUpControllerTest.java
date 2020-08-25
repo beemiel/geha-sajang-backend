@@ -5,7 +5,7 @@ import com.incense.gehasajang.domain.host.MainHost;
 import com.incense.gehasajang.dto.host.EmailCheckDto;
 import com.incense.gehasajang.dto.host.NicknameCheckDto;
 import com.incense.gehasajang.error.ErrorCode;
-import com.incense.gehasajang.exception.CannotConvertException;
+import com.incense.gehasajang.exception.*;
 import com.incense.gehasajang.service.S3Service;
 import com.incense.gehasajang.service.SignUpService;
 import org.hibernate.exception.ConstraintViolationException;
@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -32,8 +33,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SignUpController.class)
@@ -52,6 +52,9 @@ class SignUpControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Test
     @DisplayName("이메일 중복 체크")
@@ -115,7 +118,7 @@ class SignUpControllerTest {
         doCallRealMethod().when(signUpService).addHost(mainHost);
 
         //when
-        ResultActions resultActions = create(mainHost);
+        ResultActions resultActions = createRequest(mainHost);
 
         //then
         resultActions.andExpect(status().isCreated())
@@ -143,7 +146,7 @@ class SignUpControllerTest {
                 .isAgreeToMarketing(true).build();
 
         //when
-        ResultActions resultActions = create(mainHost);
+        ResultActions resultActions = createRequest(mainHost);
 
         //then
         resultActions.andExpect(status().isBadRequest())
@@ -179,7 +182,7 @@ class SignUpControllerTest {
         doThrow(MaxUploadSizeExceededException.class).when(s3Service).upload(any(MultipartFile.class), any(String.class));
 
         //when
-        ResultActions resultActions = create(mainHost);
+        ResultActions resultActions = createRequest(mainHost);
 
         //then
         resultActions.andExpect(status().is5xxServerError())
@@ -207,7 +210,7 @@ class SignUpControllerTest {
         doThrow(CannotConvertException.class).when(s3Service).upload(any(MultipartFile.class), any(String.class));
 
         //when
-        ResultActions resultActions = create(mainHost);
+        ResultActions resultActions = createRequest(mainHost);
 
         //then
         resultActions.andExpect(status().is5xxServerError())
@@ -235,7 +238,7 @@ class SignUpControllerTest {
         doThrow(ConstraintViolationException.class).when(signUpService).addHost(any(MainHost.class));
 
         //when
-        ResultActions resultActions = create(mainHost);
+        ResultActions resultActions = createRequest(mainHost);
 
         //then
         resultActions.andExpect(status().is5xxServerError())
@@ -251,7 +254,147 @@ class SignUpControllerTest {
                         )));
     }
 
-    private ResultActions create(MainHost mainHost) throws Exception {
+    @Test
+    @DisplayName("회원가입 이메일 인증 성공")
+    void joinConfirm() throws Exception {
+        //given
+        String email = "4incense@gmail.com";
+        String authkey = "testkey";
+        doNothing().when(signUpService).confirm(email, authkey);
+
+        //when
+        confirmRequest(email, authkey)
+                .andExpect(status().isCreated())
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestParameters(
+                                parameterWithName("email").description("호스트 이메일"),
+                                parameterWithName("authkey").description("인증키")
+                        )));
+
+        //then
+        verify(signUpService).confirm(email, authkey);
+    }
+
+    @Test
+    @DisplayName("인증키 불일치")
+    void failToAuth() throws Exception {
+        //given
+        String email = "4incense@gmail.com";
+        String authkey = "testkey";
+        doThrow(new FailToAuthenticationException()).when(signUpService).confirm(any(), any());
+
+        //when
+        confirmRequest(email, authkey)
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("code").value(ErrorCode.FAIL_TO_AUTH.getCode()))
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("message").description("에러의 상세 메세지"),
+                                fieldWithPath("status").description("상태 코드"),
+                                fieldWithPath("code").description("직접 정의한 에러 코드"),
+                                fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다.")
+                        )));
+    }
+    
+    @Test
+    @DisplayName("인증 중복")
+    void duplicateAuth() throws Exception {
+        //given
+        String email = "4incense@gmail.com";
+        String authkey = "testkey";
+        doThrow(new DuplicateAuthException()).when(signUpService).confirm(any(), any());
+
+        //when
+        confirmRequest(email, authkey)
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("code").value(ErrorCode.DUPLICATE_AUTH.getCode()))
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("message").description("에러의 상세 메세지"),
+                                fieldWithPath("status").description("상태 코드"),
+                                fieldWithPath("code").description("직접 정의한 에러 코드"),
+                                fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다.")
+                        )));
+    }
+
+    @Test
+    @DisplayName("인증키 만료")
+    void expiration() throws Exception {
+        //given
+        String email = "4incense@gmail.com";
+        String authkey = "testkey";
+        doThrow(new ExpirationException()).when(signUpService).confirm(any(), any());
+
+        //when
+        confirmRequest(email, authkey)
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("code").value(ErrorCode.EXPIRATION_AUTH.getCode()))
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("message").description("에러의 상세 메세지"),
+                                fieldWithPath("status").description("상태 코드"),
+                                fieldWithPath("code").description("직접 정의한 에러 코드"),
+                                fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다.")
+                        )));
+    }
+    
+    @Test
+    @DisplayName("호스트 없음")
+    void notFoundHost() throws Exception {
+        //given
+        String email = "4incense@gmail.com";
+        String authkey = "testkey";
+        doThrow(new NotFoundDataException()).when(signUpService).confirm(any(), any());
+
+        //when
+        confirmRequest(email, authkey)
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("code").value(ErrorCode.HOST_NOT_FOUND.getCode()))
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("message").description("에러의 상세 메세지"),
+                                fieldWithPath("status").description("상태 코드"),
+                                fieldWithPath("code").description("직접 정의한 에러 코드"),
+                                fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다.")
+                        )));
+    }
+    
+    @Test
+    @DisplayName("메일 전송 실패")
+    void FailToSendMail() throws Exception {
+        //given
+        String email = "4incense@gmail.com";
+        String authkey = "testkey";
+        doThrow(new CannotSendMailException()).when(signUpService).confirm(any(), any());
+
+        //when
+        confirmRequest(email, authkey)
+                .andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("code").value(ErrorCode.CANNOT_SEND_MAIL.getCode()))
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("message").description("에러의 상세 메세지"),
+                                fieldWithPath("status").description("상태 코드"),
+                                fieldWithPath("code").description("직접 정의한 에러 코드"),
+                                fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다.")
+                        )));
+    }
+    
+    
+    
+    private ResultActions createRequest(MainHost mainHost) throws Exception {
         MockMultipartFile imageFile = new MockMultipartFile("file", "image", "image/jpg", "image".getBytes());
 
         return mockMvc.perform(multipart("/api/v1/users")
@@ -261,6 +404,12 @@ class SignUpControllerTest {
                 .param("password", mainHost.getPassword())
                 .param("isAgreeToMarketing", mainHost.isAgreeToMarketing() + "")
                 .contentType(MediaType.MULTIPART_FORM_DATA));
+    }
+
+    private ResultActions confirmRequest(String email, String authKey) throws Exception {
+        return mockMvc.perform(get("/api/v1/users/auth")
+                .param("email", email)
+                .param("authkey", authKey));
     }
 
 }
