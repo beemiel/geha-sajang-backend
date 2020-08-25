@@ -6,6 +6,8 @@ import lombok.Getter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
 @Getter
 public class BookingExtraInfo {
@@ -15,14 +17,14 @@ public class BookingExtraInfo {
     @Column(name = "booking_extra_info_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
     @Enumerated(EnumType.STRING)
     private AttendStatus attendStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "house_extra_info_id")
     private HouseExtraInfo houseExtraInfo;
 

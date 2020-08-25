@@ -1,4 +1,4 @@
-= 게하사장 API Docs
+= ✨게하사장✨ API Docs
 0.0.1, 2020/08/13
 :toc: left
 :sectnums:
@@ -11,7 +11,7 @@
 [[overview]]
 = 개요
 
-게하사장 서비스의 api들을 정리해놓은 문서입니다.
+👩‍💻👨‍💻👩‍💻👨‍💻INCENSE 게하사장 서비스의 API를 정리해놓은 문서입니다.
 
 사용되는 method는 아래와 같습니다.
 
@@ -57,7 +57,7 @@ use of HTTP status codes.
 == House 관련 API
 
 === GET House
-요청한 house id의 house 정보를 가져온다.
+요청한 house id의 house 정보를 가져옵니다.
 
 ==== 200 성공
 요청한 House의 정보를 성공적으로 가져옵니다.
@@ -90,11 +90,11 @@ include::{snippets}/house-controller-test/get-house-info-fail/path-parameters.ad
 include::{snippets}/house-controller-test/get-house-info-fail/response-fields.adoc[]
 
 === POST House
-요청한 House의 정보를 DB에 저장한다.
+요청한 House의 정보를 DB에 저장합니다.
 
 ==== 201 성공
 DB에 성공적으로 저장한다.
-게스트 하우스 이름, 전화번호, 추가정보, 이미지를 form-data에 넣어서 요청한다.
+게스트 하우스 이름, 전화번호, 추가정보, 이미지를 form-data에 넣어서 요청합니다.
 
 - HTTP Request
 include::{snippets}/house-controller-test/create/http-request.adoc[]
@@ -109,9 +109,9 @@ include::{snippets}/house-controller-test/create/request-part-file-body.adoc[]
 include::{snippets}/house-controller-test/create/request-parameters.adoc[]
 
 ==== 400 실패 (이름/전화번호)
-이름과 전화번호의 유효성 검사에 실패한다.
+이름과 전화번호의 유효성 검사에 실패합니다.
 
-이름과 전화번호는 함께 검사하므로 errors라는 배열에 상세 내용이 담긴다.
+이름과 전화번호는 함께 검사하므로 errors라는 배열에 상세 내용이 담깁니다.
 
 - HTTP Request
 include::{snippets}/house-controller-test/validation/http-request.adoc[]
@@ -126,7 +126,7 @@ include::{snippets}/house-controller-test/create/request-parameters.adoc[]
 include::{snippets}/house-controller-test/validation/response-fields.adoc[]
 
 ==== 400 실패 (추가 정보)
-추가 정보의 개수가 16개 이상인 경우 예외를 반환한다.
+추가 정보의 개수가 16개 이상인 경우 예외를 반환합니다.
 
 - HTTP Request
 include::{snippets}/house-controller-test/number-exceeded-exception/http-request.adoc[]
@@ -138,7 +138,7 @@ include::{snippets}/house-controller-test/number-exceeded-exception/http-respons
 include::{snippets}/house-controller-test/number-exceeded-exception/response-fields.adoc[]
 
 ==== 500 실패 (이미지 업로드)
-이미지의 크기가 서버에 업로드 가능한 크기를 초과한 경우 예외를 반환한다.
+이미지의 크기가 서버에 업로드 가능한 크기를 초과한 경우 예외를 반환합니다.
 
 - HTTP Request
 include::{snippets}/house-controller-test/file-size-limit-exceeded-exception/http-request.adoc[]
@@ -150,7 +150,7 @@ include::{snippets}/house-controller-test/file-size-limit-exceeded-exception/htt
 include::{snippets}/house-controller-test/file-size-limit-exceeded-exception/response-fields.adoc[]
 
 ==== 500 실패 (이미지 변환)
-multipartFile을 File로 변환에 실패한다.
+multipartFile을 File로 변환에 실패합니다.
 
 - HTTP Request
 include::{snippets}/house-controller-test/cannot-convert-exception/http-request.adoc[]
@@ -164,7 +164,7 @@ include::{snippets}/house-controller-test/cannot-convert-exception/response-fiel
 == 약관 관련 API
 
 === GET Terms List
-모든 약관 리스트를 요청한다.
+모든 약관 리스트를 요청합니다.
 
 ==== 200 성공
 요청한 약관 리스트를 성공적으로 가져옵니다.
@@ -177,3 +177,192 @@ include::{snippets}/terms-controller-test/list/http-response.adoc[]
 
 - Response Fields
 include::{snippets}/terms-controller-test/list/response-fields.adoc[]
+
+== 회원가입 관련 API
+회원가입을 실시합니다.
+
+중복 검사에서 중복이 있는🙆‍♀️⭕ 경우 **true**를,
+
+중복이 없는🙅‍♀️❌ 경우에는 **false**를 반환합니다.
+
+✨주의✨ DB에 요청한 값이 `존재하는지`가 기준입니다. 실수하지 않도록 다시 한번 확인해보아요.
+
+
+=== POST Check Emil
+이메일 중복 검사를 요청합니다.
+
+==== 200 성공
+중복검사를 완료합니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/check-email/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/check-email/http-response.adoc[]
+
+- Request Fields
+include::{snippets}/sign-up-controller-test/check-email/request-fields.adoc[]
+
+=== POST Check name
+이름 중복 검사를 요청합니다.
+
+==== 200 성공
+중복검사를 완료합니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/check-name/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/check-name/http-response.adoc[]
+
+- Request Fields
+include::{snippets}/sign-up-controller-test/check-name/request-fields.adoc[]
+
+=== POST sign up
+회원가입을 요청합니다.
+
+호스트 `이메일, 닉네임, 비밀번호, 프로필 사진, 마케팅 동의 여부` 를 form-data에 넣어서 요청합니다.
+
+이미지가 없는 경우 null이 아닌 `빈 값` 으로 보내주세요.
+
+==== 201 성공
+성공적으로 등록되었습니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/join/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/join/http-response.adoc[]
+
+- Request Part Body
+include::{snippets}/sign-up-controller-test/join/request-part-file-body.adoc[]
+
+- Request Parameters
+include::{snippets}/sign-up-controller-test/join/request-parameters.adoc[]
+
+==== 400 실패 (유효성 검사)
+유효한 값이 아니므로 실패합니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/join_validation/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/join_validation/http-response.adoc[]
+
+- Request Parameters
+include::{snippets}/sign-up-controller-test/join_validation/request-parameters.adoc[]
+
+- Response Fields
+include::{snippets}/sign-up-controller-test/join_validation/response-fields.adoc[]
+
+==== 500 실패 (이미지 크기 초과)
+이미지 파일의 크기가 10MB 이상입니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/join-image-file-exceeded-exception/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/join-image-file-exceeded-exception/http-response.adoc[]
+
+- Response Fields
+include::{snippets}/sign-up-controller-test/join-image-file-exceeded-exception/response-fields.adoc[]
+
+==== 500 실패 (이미지 변환 실패)
+이미지 파일을 내부적으로 변환하는데 실패했습니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/join-image-cannot-convert-file/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/join-image-cannot-convert-file/http-response.adoc[]
+
+- Response Fields
+include::{snippets}/sign-up-controller-test/join-image-cannot-convert-file/response-fields.adoc[]
+
+==== 409 실패 (중복)
+이미 등록된 호스트가 존재합니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/join-duplication/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/join-duplication/http-response.adoc[]
+
+- Response Fields
+include::{snippets}/sign-up-controller-test/join-duplication/response-fields.adoc[]
+
+=== GET Email Auth
+회원가입시 호스트 이메일로 전송되는 인증 링크와 연결된 인증 API입니다.
+
+==== 201 성공
+성공적으로 인증되었습니다.
+인증이 완료되면 인증 완료 문구만 String으로 반환됩니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/join-confirm/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/join-confirm/http-response.adoc[]
+
+- Request Parameters
+include::{snippets}/sign-up-controller-test/join-confirm/request-parameters.adoc[]
+
+==== 401 실패 (인증키 불일치)
+authKey 불일치로 인증에 실패했습니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/fail-to-auth/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/fail-to-auth/http-response.adoc[]
+
+- Response Fields
+include::{snippets}/sign-up-controller-test/fail-to-auth/response-fields.adoc[]
+
+==== 401 실패 (인증 중복)
+이미 인증된 호스트입니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/duplicate-auth/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/duplicate-auth/http-response.adoc[]
+
+- Response Fields
+include::{snippets}/sign-up-controller-test/duplicate-auth/response-fields.adoc[]
+
+==== 401 실패 (인증키 만료)
+authKey의 만료시간이 초과되었습니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/expiration/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/expiration/http-response.adoc[]
+
+- Response Fields
+include::{snippets}/sign-up-controller-test/expiration/response-fields.adoc[]
+
+==== 404 실패 (호스트)
+요청한 email에 해당하는 호스트가 존재하지 않습니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/not-found-host/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/not-found-host/http-response.adoc[]
+
+- Response Fields
+include::{snippets}/sign-up-controller-test/not-found-host/response-fields.adoc[]
+
+==== 500 실패 (메일 전송)
+메일 전송에 실패했습니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/fail-to-send-mail/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/fail-to-send-mail/http-response.adoc[]
+
+- Response Fields
+include::{snippets}/sign-up-controller-test/fail-to-send-mail/response-fields.adoc[]
