@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -25,6 +26,7 @@ class SignUpServiceTest {
     @Mock
     private HostRepository hostRepository;
 
+    @Mock
     private HostAuthKeyRepository hostAuthKeyRepository;
 
     @Autowired
