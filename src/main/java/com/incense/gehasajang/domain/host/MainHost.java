@@ -7,12 +7,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @DiscriminatorValue("main")
@@ -27,16 +26,18 @@ public class MainHost extends Host {
 
     private boolean isPassEmailAuth;
 
-    //TODO: 2020-08-24 원투원으로 바꿀까 -lynn
-    @OneToMany(mappedBy = "host")
-    private List<HostAuthKey> keys;
+    @OneToOne(mappedBy = "host", fetch = LAZY)
+    private HostAuthKey authKey;
 
     @Builder
-    public MainHost(Long id, String email, String nickname, String password, String profileImage, String thumbnailImage, LocalDateTime deletedAt, List<HostHouse> hostHouses, Address address, boolean isAgreeToMarketing, boolean isPassEmailAuth) {
+    public MainHost(Long id, String email, String nickname, String password, String profileImage, String thumbnailImage, LocalDateTime deletedAt, List<HostHouse> hostHouses, Address address, boolean isAgreeToMarketing) {
         super(id, email, nickname, password, profileImage, thumbnailImage, deletedAt, hostHouses);
         this.address = address;
         this.isAgreeToMarketing = isAgreeToMarketing;
-        this.isPassEmailAuth = isPassEmailAuth;
+    }
+
+    public void changeAuthPass() {
+        isPassEmailAuth = true;
     }
 
 }
