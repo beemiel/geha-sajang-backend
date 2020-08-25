@@ -33,6 +33,14 @@ public class SignUpService {
     }
 
     public void addHost(Host mainHost) {
+        if(checkEmail(mainHost.getEmail())) {
+            throw new DuplicateHostException();
+        }
+
+        if(checkName(mainHost.getNickname())) {
+            throw new DuplicateHostException();
+        }
+
         Host savedHost = hostRepository.save(mainHost);
         HostAuthKey savedKey = hostAuthKeyRepository.save(createAuthKey(savedHost));
         sendMail(mailSender ,mainHost.getEmail(), savedKey.getAuthKey());

@@ -8,10 +8,7 @@ import com.incense.gehasajang.dto.host.HostDto;
 import com.incense.gehasajang.dto.host.NicknameCheckDto;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.error.ErrorResponse;
-import com.incense.gehasajang.exception.DuplicateAuthException;
-import com.incense.gehasajang.exception.ExpirationException;
-import com.incense.gehasajang.exception.FailToAuthenticationException;
-import com.incense.gehasajang.exception.NotFoundDataException;
+import com.incense.gehasajang.exception.*;
 import com.incense.gehasajang.service.S3Service;
 import com.incense.gehasajang.service.SignUpService;
 import lombok.RequiredArgsConstructor;
@@ -106,6 +103,16 @@ public class SignUpController {
                 .code(ErrorCode.EXPIRATION_AUTH.getCode())
                 .status(ErrorCode.EXPIRATION_AUTH.getStatus())
                 .message(ErrorCode.EXPIRATION_AUTH.getMessage())
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(DuplicateHostException.class)
+    public ErrorResponse handleDuplicateHost () {
+        return ErrorResponse.builder()
+                .code(ErrorCode.DUPLICATE.getCode())
+                .status(ErrorCode.DUPLICATE.getStatus())
+                .message(ErrorCode.DUPLICATE.getMessage())
                 .build();
     }
 

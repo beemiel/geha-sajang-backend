@@ -179,9 +179,9 @@ include::{snippets}/terms-controller-test/list/http-response.adoc[]
 include::{snippets}/terms-controller-test/list/response-fields.adoc[]
 
 == 회원가입 관련 API
-중복 검사를 실시합니다.
+회원가입을 실시합니다.
 
-중복이 있는🙆‍♀️⭕ 경우 **true**를,
+중복 검사에서 중복이 있는🙆‍♀️⭕ 경우 **true**를,
 
 중복이 없는🙅‍♀️❌ 경우에는 **false**를 반환합니다.
 
@@ -279,7 +279,7 @@ include::{snippets}/sign-up-controller-test/join-image-cannot-convert-file/http-
 - Response Fields
 include::{snippets}/sign-up-controller-test/join-image-cannot-convert-file/response-fields.adoc[]
 
-==== 500 실패 (중복)
+==== 409 실패 (중복)
 이미 등록된 호스트가 존재합니다.
 
 - HTTP Request

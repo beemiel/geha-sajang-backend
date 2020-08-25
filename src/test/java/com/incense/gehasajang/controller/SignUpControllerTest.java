@@ -235,13 +235,13 @@ class SignUpControllerTest {
                 .nickname("testtest")
                 .password("testtest123")
                 .isAgreeToMarketing(true).build();
-        doThrow(ConstraintViolationException.class).when(signUpService).addHost(any(MainHost.class));
+        doThrow(DuplicateHostException.class).when(signUpService).addHost(any(MainHost.class));
 
         //when
         ResultActions resultActions = createRequest(mainHost);
 
         //then
-        resultActions.andExpect(status().is5xxServerError())
+        resultActions.andExpect(status().isConflict())
                 .andExpect(jsonPath("code").value(ErrorCode.DUPLICATE.getCode()))
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(prettyPrint()),
