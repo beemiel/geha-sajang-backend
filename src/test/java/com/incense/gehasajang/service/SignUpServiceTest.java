@@ -1,11 +1,16 @@
 package com.incense.gehasajang.service;
 
+import com.incense.gehasajang.domain.host.HostAuthKeyRepository;
 import com.incense.gehasajang.domain.host.HostRepository;
+import com.incense.gehasajang.domain.host.MainHost;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,36 +25,44 @@ class SignUpServiceTest {
     @Mock
     private HostRepository hostRepository;
 
+    private HostAuthKeyRepository hostAuthKeyRepository;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        signUpService = new SignUpService(hostRepository);
+        signUpService = new SignUpService(hostRepository, hostAuthKeyRepository, javaMailSender, passwordEncoder);
     }
 
     @Test
     @DisplayName("(서비스)이메일 체크")
     void checkEmail() throws Exception {
         //given
-        given(hostRepository.existsByEmail(any())).willReturn(true);
+        given(hostRepository.existsByEmailAndDeletedAtNull(any())).willReturn(true);
 
         //when
 
         //then
         assertThat(signUpService.checkEmail("email")).isTrue();
-        verify(hostRepository).existsByEmail(any());
+        verify(hostRepository).existsByEmailAndDeletedAtNull(any());
     }
 
     @Test
     @DisplayName("(서비스)이름 체크")
     void checkName() throws Exception {
         //given
-        given(hostRepository.existsByNickname(any())).willReturn(true);
+        given(hostRepository.existsByNicknameAndDeletedAtNull(any())).willReturn(true);
 
         //when
 
         //then
         assertThat(signUpService.checkName("name")).isTrue();
-        verify(hostRepository).existsByNickname(any());
+        verify(hostRepository).existsByNicknameAndDeletedAtNull(any());
     }
 
 }

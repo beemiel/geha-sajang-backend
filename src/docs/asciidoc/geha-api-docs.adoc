@@ -290,3 +290,79 @@ include::{snippets}/sign-up-controller-test/join-duplication/http-response.adoc[
 
 - Response Fields
 include::{snippets}/sign-up-controller-test/join-duplication/response-fields.adoc[]
+
+=== GET Email Auth
+회원가입시 호스트 이메일로 전송되는 인증 링크와 연결된 인증 API입니다.
+
+==== 201 성공
+성공적으로 인증되었습니다.
+인증이 완료되면 인증 완료 문구만 String으로 반환됩니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/join-confirm/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/join-confirm/http-response.adoc[]
+
+- Request Parameters
+include::{snippets}/sign-up-controller-test/join-confirm/request-parameters.adoc[]
+
+==== 401 실패 (인증키 불일치)
+authKey 불일치로 인증에 실패했습니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/fail-to-auth/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/fail-to-auth/http-response.adoc[]
+
+- Response Fields
+include::{snippets}/sign-up-controller-test/fail-to-auth/response-fields.adoc[]
+
+==== 401 실패 (인증 중복)
+이미 인증된 호스트입니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/duplicate-auth/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/duplicate-auth/http-response.adoc[]
+
+- Response Fields
+include::{snippets}/sign-up-controller-test/duplicate-auth/response-fields.adoc[]
+
+==== 401 실패 (인증키 만료)
+authKey의 만료시간이 초과되었습니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/expiration/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/expiration/http-response.adoc[]
+
+- Response Fields
+include::{snippets}/sign-up-controller-test/expiration/response-fields.adoc[]
+
+==== 404 실패 (호스트)
+요청한 email에 해당하는 호스트가 존재하지 않습니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/not-found-host/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/not-found-host/http-response.adoc[]
+
+- Response Fields
+include::{snippets}/sign-up-controller-test/not-found-host/response-fields.adoc[]
+
+==== 500 실패 (메일 전송)
+메일 전송에 실패했습니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/fail-to-send-mail/http-request.adoc[]
+
+- HTTP Response
+include::{snippets}/sign-up-controller-test/fail-to-send-mail/http-response.adoc[]
+
+- Response Fields
+include::{snippets}/sign-up-controller-test/fail-to-send-mail/response-fields.adoc[]
