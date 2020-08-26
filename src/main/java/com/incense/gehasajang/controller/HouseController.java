@@ -36,8 +36,8 @@ public class HouseController {
     }
 
     @PostMapping()
-    public ResponseEntity<Void> create(@Valid HouseDto houseDto, MultipartFile file, String extra) throws IOException {
-        String imgPath = s3Service.upload(file, "house");
+    public ResponseEntity<Void> create(@Valid HouseDto houseDto, MultipartFile image, String extra) throws IOException {
+        String imgPath = s3Service.upload(image, "house");
         House house = toHouse(houseDto, imgPath);
         houseService.addHouse(house, extra);
         return ResponseEntity.status(HttpStatus.CREATED).build();

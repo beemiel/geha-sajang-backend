@@ -28,33 +28,33 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String upload(MultipartFile multipartFile, String dirName) throws IOException {
-        if(multipartFile.isEmpty()){
+    public String upload(MultipartFile image, String dirName) throws IOException {
+        if(image==null || image.isEmpty()){
             return "";
         }
 
-        File uploadFile = convert(multipartFile)
+        File uploadFile = convert(image)
                 .orElseThrow(CannotConvertException::new);
 
         return upload(uploadFile, dirName);
     }
 
-    private String upload(File uploadFile, String dirName) {
+    private String upload(File image, String dirName) {
         StringBuffer fileName = new StringBuffer(dirName);
         fileName.append("/");
-        fileName.append(uploadFile.getName());
+        fileName.append(image.getName());
         fileName.append("-");
         fileName.append(UUID.randomUUID().toString().replace("-", ""));
         fileName.append("-");
         fileName.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
 
-        String uploadImageUrl = putS3(uploadFile, fileName.toString());
-        removeNewFile(uploadFile);
+        String uploadImageUrl = putS3(image, fileName.toString());
+        removeNewFile(image);
         return uploadImageUrl;
     }
 
-    private String putS3(File uploadFile, String fileName) {
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
+    private String putS3(File image, String fileName) {
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, image).withCannedAcl(CannedAccessControlList.PublicRead));
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
@@ -66,11 +66,11 @@ public class S3Service {
         }
     }
 
-    private Optional<File> convert(MultipartFile file) throws IOException {
-        File convertFile = new File(file.getOriginalFilename());
+    private Optional<File> convert(MultipartFile image) throws IOException {
+        File convertFile = new File(image.getOriginalFilename());
         if(convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
+                fos.write(image.getBytes());
             }
             return Optional.of(convertFile);
         }
