@@ -105,7 +105,7 @@ class HouseControllerTest {
                 .build();
 
         //when
-        ResultActions resultActions = create(houseDto, extra);
+        ResultActions resultActions = createRequest(houseDto, extra);
 
         //then
         resultActions.andExpect(status().isCreated())
@@ -114,7 +114,7 @@ class HouseControllerTest {
                                 .scheme(CommonString.SCHEMA)
                                 .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestPartBody("file"),
+                        requestPartBody("image"),
                         requestParameters(
                                 parameterWithName("name").description("이름(50자이내 필수값)"),
                                 parameterWithName("mainNumber").description("전화번호(숫자만, 11자이내 필수값)"),
@@ -138,7 +138,7 @@ class HouseControllerTest {
                 .mainNumber("01012-3456-11178")
                 .build();
         //when
-        ResultActions resultActions = create(houseDto, extra);
+        ResultActions resultActions = createRequest(houseDto, extra);
 
         //then
         resultActions.andExpect(status().isBadRequest())
@@ -179,7 +179,7 @@ class HouseControllerTest {
         doThrow(NumberExceededException.class).when(houseService).addHouse(any(House.class), any(String.class));
 
         //when
-        ResultActions resultActions = create(houseDto, extra);
+        ResultActions resultActions = createRequest(houseDto, extra);
 
         //then
         resultActions.andExpect(status().isBadRequest())
@@ -213,7 +213,7 @@ class HouseControllerTest {
         doThrow(MaxUploadSizeExceededException.class).when(s3Service).upload(any(MultipartFile.class), any(String.class));
 
         //when
-        ResultActions resultActions = create(houseDto, extra);
+        ResultActions resultActions = createRequest(houseDto, extra);
 
         //then
         resultActions.andExpect(status().is5xxServerError())
@@ -247,7 +247,7 @@ class HouseControllerTest {
         doThrow(CannotConvertException.class).when(s3Service).upload(any(MultipartFile.class), any(String.class));
 
         //when
-        ResultActions resultActions = create(houseDto, extra);
+        ResultActions resultActions = createRequest(houseDto, extra);
 
         //then
         resultActions.andExpect(status().is5xxServerError())
@@ -313,11 +313,11 @@ class HouseControllerTest {
                 ));
     }
 
-    private ResultActions create(HouseDto houseDto, String extra) throws Exception {
-        MockMultipartFile imageFile = new MockMultipartFile("file", "image", "image/jpg", "image".getBytes());
+    private ResultActions createRequest(HouseDto houseDto, String extra) throws Exception {
+        MockMultipartFile image = new MockMultipartFile("image", "image", "image/jpg", "image".getBytes());
 
         return mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/houses")
-                .file(imageFile)
+                .file("image",image.getBytes())
                 .param("name", houseDto.getName())
                 .param("mainNumber", houseDto.getMainNumber())
                 .param("extra", extra)

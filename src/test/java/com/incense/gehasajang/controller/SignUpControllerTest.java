@@ -131,7 +131,7 @@ class SignUpControllerTest {
                                 .scheme(CommonString.SCHEMA)
                                 .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestPartBody("file"),
+                        requestPartBody("image"),
                         requestParameters(
                                 parameterWithName("email").description("이메일(형식 필수)"),
                                 parameterWithName("nickname").description("닉네임(2~10자 이내)"),
@@ -421,10 +421,10 @@ class SignUpControllerTest {
     
     
     private ResultActions createRequest(MainHost mainHost) throws Exception {
-        MockMultipartFile imageFile = new MockMultipartFile("file", "image", "image/jpg", "image".getBytes());
+        MockMultipartFile image = new MockMultipartFile("image", "image", "image/jpg", "image".getBytes());
 
         return mockMvc.perform(multipart("/api/v1/users")
-                .file(imageFile)
+                .file("image", image.getBytes())
                 .param("email", mainHost.getEmail())
                 .param("nickname", mainHost.getNickname())
                 .param("password", mainHost.getPassword())
