@@ -33,8 +33,8 @@ public class SignUpController {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @PostMapping()
-    public ResponseEntity<Void> join(@Valid HostDto hostDto, MultipartFile file) throws IOException {
-        hostDto.setProfileImage(s3Service.upload(file, "host"));
+    public ResponseEntity<Void> join(@Valid HostDto hostDto, MultipartFile image) throws IOException {
+        hostDto.setProfileImage(s3Service.upload(image, "host"));
         signUpService.addHost(toMainHost(hostDto));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
