@@ -3,7 +3,10 @@ package com.incense.gehasajang.domain.room;
 import com.incense.gehasajang.domain.UnbookedRoom;
 import com.incense.gehasajang.domain.bed.Bed;
 import com.incense.gehasajang.domain.house.House;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,8 +14,9 @@ import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
-@Entity
 @Getter
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Room {
 
     @Id
@@ -39,10 +43,6 @@ public class Room {
 
     private String offPeakAmount;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
     private LocalDateTime deletedAt;
 
     @OneToMany(mappedBy = "room")
@@ -50,5 +50,25 @@ public class Room {
 
     @OneToMany(mappedBy = "room")
     private List<UnbookedRoom> unbookedRooms;
+
+    @Builder
+    public Room(Long id, House house, String name, RoomType roomType, String memo, int maxCapacity, int defaultCapacity, String peakAmount, String offPeakAmount, LocalDateTime deletedAt, List<Bed> beds, List<UnbookedRoom> unbookedRooms) {
+        this.id = id;
+        this.house = house;
+        this.name = name;
+        this.roomType = roomType;
+        this.memo = memo;
+        this.maxCapacity = maxCapacity;
+        this.defaultCapacity = defaultCapacity;
+        this.peakAmount = peakAmount;
+        this.offPeakAmount = offPeakAmount;
+        this.deletedAt = deletedAt;
+        this.beds = beds;
+        this.unbookedRooms = unbookedRooms;
+    }
+
+    public Long getHouseId() {
+        return this.house.getId();
+    }
 
 }
