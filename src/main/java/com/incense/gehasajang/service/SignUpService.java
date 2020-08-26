@@ -42,8 +42,10 @@ public class SignUpService {
             throw new DuplicateHostException();
         }
 
+        mainHost.hashPassword(passwordEncoder);
         Host savedHost = hostRepository.save(mainHost);
         HostAuthKey savedKey = hostAuthKeyRepository.save(createAuthKey(savedHost));
+
         sendMail(mailSender ,mainHost.getEmail(), savedKey.getAuthKey());
     }
 
@@ -73,12 +75,14 @@ public class SignUpService {
     }
 
     private HostAuthKey createAuthKey(Host savedHost) {
-        String key = passwordEncoder.encode(savedHost.getEmail());
-        return HostAuthKey.builder()
+        HostAuthKey hostAuthKey = HostAuthKey.builder()
                 .host(savedHost)
-                .authKey(key)
+                .authKey(savedHost.getEmail())
                 .expirationDate(LocalDateTime.now().plusDays(1))
                 .build();
+        hostAuthKey.hashAuthKey(passwordEncoder);
+
+        return hostAuthKey;
     }
 
     private void sendMail(JavaMailSender mailSender, String hostEmail, String key) {
@@ -97,7 +101,7 @@ public class SignUpService {
                     .append("<h1>[게하사장 이메일 인증]</h1>")
                     .append("<h3>링크는 메일 전송 후 24시간 이내에만 유효합니다.</h3>")
                     .append("<p>아래 링크를 클릭하시면 이메일 인증이 완료됩니다.</p>")
-                    .append("<a href='http://localhost:8080/api/v1/users/auth?email=")
+                    .append(CommonString.MAIL_AUTH_LINK)
                     .append(hostEmail)
                     .append("&authkey=")
                     .append(key)

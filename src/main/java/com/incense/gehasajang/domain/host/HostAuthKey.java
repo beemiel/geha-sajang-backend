@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -33,5 +34,9 @@ public class HostAuthKey {
         this.host = host;
         this.expirationDate = expirationDate;
         this.authKey = authKey;
+    }
+
+    public void hashAuthKey(BCryptPasswordEncoder passwordEncoder) {
+        authKey = passwordEncoder.encode(authKey);
     }
 }
