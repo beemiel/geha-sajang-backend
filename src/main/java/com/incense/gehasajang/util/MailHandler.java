@@ -110,6 +110,7 @@ public class MailHandler {
         try {
             sender.send(message);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new CannotSendMailException();
         }
     }

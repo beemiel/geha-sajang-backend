@@ -1,5 +1,6 @@
 package com.incense.gehasajang.domain.host;
 
+import com.github.dozermapper.core.Mapping;
 import com.incense.gehasajang.domain.Address;
 import com.incense.gehasajang.domain.HostHouse;
 import lombok.AccessLevel;
@@ -38,6 +39,27 @@ public class MainHost extends Host {
 
     public void changeAuthPass() {
         isPassEmailAuth = true;
+    }
+
+    public String getCity() {
+        return this.address.getCity();
+    }
+
+    public String getStreet() {
+        return this.address.getStreet();
+    }
+
+    public String getPostcode() {
+        return this.address.getPostcode();
+    }
+
+    public String getDetail() {
+        return this.address.getDetail();
+    }
+
+    @PrePersist
+    public void prePersist() {
+        address = address == null ? new Address("","","","") : address;
     }
 
 }

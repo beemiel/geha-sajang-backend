@@ -2,7 +2,11 @@ package com.incense.gehasajang.domain.host;
 
 import com.incense.gehasajang.domain.BaseTimeEntity;
 import com.incense.gehasajang.domain.HostHouse;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -35,5 +39,13 @@ public abstract class Host extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "host")
     private List<HostHouse> hostHouses;
+
+    public void hashPassword(BCryptPasswordEncoder passwordEncoder) {
+        password = passwordEncoder.encode(password);
+    }
+
+    public boolean checkPassword(String password, BCryptPasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(password, this.password);
+    }
 
 }
