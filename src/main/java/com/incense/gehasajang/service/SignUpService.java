@@ -2,6 +2,7 @@ package com.incense.gehasajang.service;
 
 import com.incense.gehasajang.domain.host.*;
 import com.incense.gehasajang.exception.*;
+import com.incense.gehasajang.util.CommonString;
 import com.incense.gehasajang.util.MailHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -88,7 +89,7 @@ public class SignUpService {
             mailHandler.setTo(hostEmail);
 
             //제목
-            mailHandler.setSubject("[게하사장] 인증을 완료해주세요.");
+            mailHandler.setSubject(CommonString.MAIL_SUBJECT);
 
             //내용(HTML 레이아웃)
             StringBuffer sb = new StringBuffer()
@@ -104,7 +105,7 @@ public class SignUpService {
             mailHandler.setText(sb.toString(), true);
 
             //이미지 추가
-            mailHandler.setInline("logo", "static/logoblack.png");
+            mailHandler.setInline("logo", CommonString.LOGO_PATH);
 
             //전송
             mailHandler.send();
