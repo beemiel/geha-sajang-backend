@@ -1,6 +1,8 @@
 package com.incense.gehasajang.util;
 
 import com.incense.gehasajang.exception.CannotSendMailException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -10,6 +12,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class MailHandler {
     private JavaMailSender sender;
@@ -86,7 +89,15 @@ public class MailHandler {
      * @throws IOException
      */
     public void setInline(String contentId, String pathToInline) throws MessagingException, IOException {
-        File file = new ClassPathResource(pathToInline).getFile();
+        InputStream inputStream = new ClassPathResource(pathToInline).getInputStream();
+        File file = File.createTempFile("logoblackTemp", ".png");
+        file.deleteOnExit();
+        try {
+            FileUtils.copyInputStreamToFile(inputStream, file);
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+        }
+
         FileSystemResource fsr = new FileSystemResource(file);
 
         messageHelper.addInline(contentId, fsr);
