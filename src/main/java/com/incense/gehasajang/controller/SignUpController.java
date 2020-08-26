@@ -1,7 +1,6 @@
 package com.incense.gehasajang.controller;
 
-import com.incense.gehasajang.domain.Address;
-import com.incense.gehasajang.domain.host.Host;
+import com.github.dozermapper.core.Mapper;
 import com.incense.gehasajang.domain.host.MainHost;
 import com.incense.gehasajang.dto.host.EmailCheckDto;
 import com.incense.gehasajang.dto.host.HostDto;
@@ -14,7 +13,6 @@ import com.incense.gehasajang.service.SignUpService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,12 +28,13 @@ public class SignUpController {
 
     private final S3Service s3Service;
 
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final Mapper mapper;
 
     @PostMapping()
     public ResponseEntity<Void> join(@Valid HostDto hostDto, MultipartFile image) throws IOException {
         hostDto.setProfileImage(s3Service.upload(image, "host"));
-        signUpService.addHost(toMainHost(hostDto));
+        MainHost host = mapper.map(hostDto, MainHost.class);
+        signUpService.addHost(host);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -53,17 +52,6 @@ public class SignUpController {
     @PostMapping("/check-name")
     public ResponseEntity<Boolean> nameDuplicateCheck(@RequestBody @Valid NicknameCheckDto name) {
         return ResponseEntity.ok(signUpService.checkName(name.getNickname()));
-    }
-
-    private Host toMainHost(HostDto hostDto) {
-        return MainHost.builder()
-                .email(hostDto.getEmail())
-                .nickname(hostDto.getNickname())
-                .password(passwordEncoder.encode(hostDto.getPassword()))
-                .profileImage(hostDto.getProfileImage())
-                .address(new Address(hostDto.getCity(), hostDto.getStreet(), hostDto.getPostcode(), hostDto.getDetail()))
-                .isAgreeToMarketing(hostDto.isAgreeToMarketing())
-                .build();
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
