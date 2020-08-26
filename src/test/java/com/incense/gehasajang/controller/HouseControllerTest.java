@@ -10,6 +10,7 @@ import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.exception.NumberExceededException;
 import com.incense.gehasajang.service.HouseService;
 import com.incense.gehasajang.service.S3Service;
+import com.incense.gehasajang.util.CommonString;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,14 +105,16 @@ class HouseControllerTest {
                 .build();
 
         //when
-        ResultActions resultActions = create(houseDto, extra);
+        ResultActions resultActions = createRequest(houseDto, extra);
 
         //then
         resultActions.andExpect(status().isCreated())
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestPartBody("file"),
+                        requestPartBody("image"),
                         requestParameters(
                                 parameterWithName("name").description("이름(50자이내 필수값)"),
                                 parameterWithName("mainNumber").description("전화번호(숫자만, 11자이내 필수값)"),
@@ -135,12 +138,14 @@ class HouseControllerTest {
                 .mainNumber("01012-3456-11178")
                 .build();
         //when
-        ResultActions resultActions = create(houseDto, extra);
+        ResultActions resultActions = createRequest(houseDto, extra);
 
         //then
         resultActions.andExpect(status().isBadRequest())
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestParameters(
                                 parameterWithName("name").description("이름(50자이내 필수값)"),
@@ -174,13 +179,15 @@ class HouseControllerTest {
         doThrow(NumberExceededException.class).when(houseService).addHouse(any(House.class), any(String.class));
 
         //when
-        ResultActions resultActions = create(houseDto, extra);
+        ResultActions resultActions = createRequest(houseDto, extra);
 
         //then
         resultActions.andExpect(status().isBadRequest())
                 .andExpect(jsonPath("code").value(ErrorCode.NUMBER_EXCEED.getCode()))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -206,13 +213,15 @@ class HouseControllerTest {
         doThrow(MaxUploadSizeExceededException.class).when(s3Service).upload(any(MultipartFile.class), any(String.class));
 
         //when
-        ResultActions resultActions = create(houseDto, extra);
+        ResultActions resultActions = createRequest(houseDto, extra);
 
         //then
         resultActions.andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("code").value(ErrorCode.FILE_SIZE_LIMIT_EXCEED.getCode()))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -238,13 +247,15 @@ class HouseControllerTest {
         doThrow(CannotConvertException.class).when(s3Service).upload(any(MultipartFile.class), any(String.class));
 
         //when
-        ResultActions resultActions = create(houseDto, extra);
+        ResultActions resultActions = createRequest(houseDto, extra);
 
         //then
         resultActions.andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("code").value(ErrorCode.CANNOT_CONVERT_FILE.getCode()))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -258,7 +269,9 @@ class HouseControllerTest {
         return mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/houses/{houseId}", houseId)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("houseId").description("요청하고자 하는 house id")
@@ -284,7 +297,9 @@ class HouseControllerTest {
         return mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/houses/{houseId}", houseId)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("houseId").description("요청하고자 하는 house id")
@@ -298,11 +313,11 @@ class HouseControllerTest {
                 ));
     }
 
-    private ResultActions create(HouseDto houseDto, String extra) throws Exception {
-        MockMultipartFile imageFile = new MockMultipartFile("file", "image", "image/jpg", "image".getBytes());
+    private ResultActions createRequest(HouseDto houseDto, String extra) throws Exception {
+        MockMultipartFile image = new MockMultipartFile("image", "image", "image/jpg", "image".getBytes());
 
         return mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/houses")
-                .file(imageFile)
+                .file("image",image.getBytes())
                 .param("name", houseDto.getName())
                 .param("mainNumber", houseDto.getMainNumber())
                 .param("extra", extra)

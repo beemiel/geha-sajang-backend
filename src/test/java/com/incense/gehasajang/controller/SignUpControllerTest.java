@@ -8,7 +8,7 @@ import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.*;
 import com.incense.gehasajang.service.S3Service;
 import com.incense.gehasajang.service.SignUpService;
-import org.hibernate.exception.ConstraintViolationException;
+import com.incense.gehasajang.util.CommonString;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +70,9 @@ class SignUpControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("email").description("중복 검사 요청할 이메일")
@@ -95,7 +97,9 @@ class SignUpControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("nickname").description("중복 검사 요청할 닉네임")
@@ -123,9 +127,11 @@ class SignUpControllerTest {
         //then
         resultActions.andExpect(status().isCreated())
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestPartBody("file"),
+                        requestPartBody("image"),
                         requestParameters(
                                 parameterWithName("email").description("이메일(형식 필수)"),
                                 parameterWithName("nickname").description("닉네임(2~10자 이내)"),
@@ -151,7 +157,9 @@ class SignUpControllerTest {
         //then
         resultActions.andExpect(status().isBadRequest())
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestParameters(
                                 parameterWithName("email").description("이메일(형식 필수)"),
@@ -188,7 +196,9 @@ class SignUpControllerTest {
         resultActions.andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("code").value(ErrorCode.FILE_SIZE_LIMIT_EXCEED.getCode()))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -216,7 +226,9 @@ class SignUpControllerTest {
         resultActions.andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("code").value(ErrorCode.CANNOT_CONVERT_FILE.getCode()))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -244,7 +256,9 @@ class SignUpControllerTest {
         resultActions.andExpect(status().isConflict())
                 .andExpect(jsonPath("code").value(ErrorCode.DUPLICATE.getCode()))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -266,7 +280,9 @@ class SignUpControllerTest {
         confirmRequest(email, authkey)
                 .andExpect(status().isCreated())
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestParameters(
                                 parameterWithName("email").description("호스트 이메일"),
@@ -290,7 +306,9 @@ class SignUpControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("code").value(ErrorCode.FAIL_TO_AUTH.getCode()))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -313,7 +331,9 @@ class SignUpControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("code").value(ErrorCode.DUPLICATE_AUTH.getCode()))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -336,7 +356,9 @@ class SignUpControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("code").value(ErrorCode.EXPIRATION_AUTH.getCode()))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -359,7 +381,9 @@ class SignUpControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("code").value(ErrorCode.HOST_NOT_FOUND.getCode()))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -382,7 +406,9 @@ class SignUpControllerTest {
                 .andExpect(status().is5xxServerError())
                 .andExpect(jsonPath("code").value(ErrorCode.CANNOT_SEND_MAIL.getCode()))
                 .andDo(document("{class-name}/{method-name}",
-                        preprocessRequest(prettyPrint()),
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -395,10 +421,10 @@ class SignUpControllerTest {
     
     
     private ResultActions createRequest(MainHost mainHost) throws Exception {
-        MockMultipartFile imageFile = new MockMultipartFile("file", "image", "image/jpg", "image".getBytes());
+        MockMultipartFile image = new MockMultipartFile("image", "image", "image/jpg", "image".getBytes());
 
         return mockMvc.perform(multipart("/api/v1/users")
-                .file(imageFile)
+                .file("image", image.getBytes())
                 .param("email", mainHost.getEmail())
                 .param("nickname", mainHost.getNickname())
                 .param("password", mainHost.getPassword())
