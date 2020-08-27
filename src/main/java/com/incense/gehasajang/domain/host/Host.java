@@ -38,7 +38,7 @@ public abstract class Host extends BaseTimeEntity {
 
     private String thumbnailImage;
 
-    private boolean isActive;
+    private boolean isActive = true;
 
     private LocalDateTime deletedAt;
 

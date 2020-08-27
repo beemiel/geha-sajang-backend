@@ -26,7 +26,7 @@ create table host (
     nickname varchar(255) not null,
     password varchar(255) not null,
     is_agree_to_marketing boolean,
-    is_pass_email_auth boolean default false,
+    is_pass_email_auth boolean,
     profile_image varchar(255),
     thumbnail_image varchar(255),
     city varchar(255),

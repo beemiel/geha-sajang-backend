@@ -115,7 +115,7 @@ class SignUpControllerTest {
     void join() throws Exception {
         //given
         MainHost mainHost = MainHost.builder()
-                .email("test@email.com")
+                .account("test@email.com")
                 .nickname("testtest")
                 .password("testtest123")
                 .isAgreeToMarketing(true).build();
@@ -146,7 +146,7 @@ class SignUpControllerTest {
     void join_validation() throws Exception {
         //given
         MainHost mainHost = MainHost.builder()
-                .email("email")
+                .account("email")
                 .nickname("a")
                 .password("1")
                 .isAgreeToMarketing(true).build();
@@ -183,7 +183,7 @@ class SignUpControllerTest {
     void joinImageFileExceededException() throws Exception {
         //given
         MainHost mainHost = MainHost.builder()
-                .email("test@email.com")
+                .account("test@email.com")
                 .nickname("testtest")
                 .password("testtest123")
                 .isAgreeToMarketing(true).build();
@@ -213,7 +213,7 @@ class SignUpControllerTest {
     void joinImageCannotConvertFile() throws Exception {
         //given
         MainHost mainHost = MainHost.builder()
-                .email("test@email.com")
+                .account("test@email.com")
                 .nickname("testtest")
                 .password("testtest123")
                 .isAgreeToMarketing(true).build();
@@ -243,7 +243,7 @@ class SignUpControllerTest {
     void joinDuplication() throws Exception {
         //given
         MainHost mainHost = MainHost.builder()
-                .email("test@email.com")
+                .account("test@email.com")
                 .nickname("testtest")
                 .password("testtest123")
                 .isAgreeToMarketing(true).build();
