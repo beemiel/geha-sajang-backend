@@ -14,6 +14,13 @@ public enum  ErrorCode {
     FAIL_TO_AUTH("US_003", "인증키가 올바르지 않습니다.", 401),
     DUPLICATE_AUTH("US_004", "이미 인증이 완료된 호스트입니다.", 401),
     EXPIRATION_AUTH("US_005", "만료된 인증키입니다.", 401),
+    FAIL_TO_SIGN_IN("US_006", "계정 혹은 비밀번호가 올바르지 않습니다.", 401),
+    EXPIRED_TOKEN("US_007", "만료된 토큰입니다.", 401),
+    INVALID_TOKEN("US_008", "유효하지 않은 토큰입니다.", 401),
+    UNAUTH_MAIL("US_009", "이메일 인증이 완료되지 않았습니다.", 401),
+    DELETED("US_010", "삭제된 계정입니다.", 401),
+    DISABLED("US_011", "비활성화된 계정입니다.", 401),
+
 
     //공통
     INPUT_VALUE_INVALID("CO_001", "입력값이 올바르지 않습니다.", 400),
