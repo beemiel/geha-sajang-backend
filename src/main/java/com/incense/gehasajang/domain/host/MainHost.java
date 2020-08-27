@@ -31,8 +31,8 @@ public class MainHost extends Host {
     private HostAuthKey authKey;
 
     @Builder
-    public MainHost(Long id, String email, String nickname, String password, String profileImage, String thumbnailImage, LocalDateTime deletedAt, List<HostHouse> hostHouses, Address address, boolean isAgreeToMarketing) {
-        super(id, email, nickname, password, profileImage, thumbnailImage, deletedAt, hostHouses);
+    public MainHost(Long id, String account, String nickname, String password, String type, String profileImage, String thumbnailImage, boolean isActive, LocalDateTime deletedAt, List<HostHouse> hostHouses, Address address, boolean isAgreeToMarketing, boolean isPassEmailAuth, HostAuthKey authKey) {
+        super(id, account, nickname, password, type, profileImage, thumbnailImage, isActive, deletedAt, hostHouses);
         this.address = address;
         this.isAgreeToMarketing = isAgreeToMarketing;
     }

@@ -44,7 +44,7 @@ class HostRepositoryTest {
         hosts.forEach(host -> hostRepository.save(host));
 
         hosts.forEach(host -> {
-            hostAuthKeyRepository.save(HostAuthKey.builder().authKey(host.getEmail()).host(host).expirationDate(LocalDateTime.now().plusDays(1)).build());
+            hostAuthKeyRepository.save(HostAuthKey.builder().authKey(host.getAccount()).host(host).expirationDate(LocalDateTime.now().plusDays(1)).build());
         });
     }
 
@@ -62,7 +62,7 @@ class HostRepositoryTest {
     @ParameterizedTest(name = "{index}/{arguments} TEST")
     void duplicateEmail(String email, boolean expectedValue) throws Exception {
         //when
-        boolean realValue = hostRepository.existsByEmailAndDeletedAtNull(email);
+        boolean realValue = hostRepository.existsByAccountAndDeletedAtNull(email);
 
         //then
         assertThat(realValue).isEqualTo(expectedValue);
@@ -88,13 +88,13 @@ class HostRepositoryTest {
     void findHostTest(String email) throws Exception {
 
         //when
-        MainHost host = hostRepository.findMainHostByEmail(email).orElseGet(
+        MainHost host = hostRepository.findMainHostByAccount(email).orElseGet(
                 () -> MainHost.builder().email("null").build()
         );
 
         //then
         assertAll(
-                () -> assertThat(host.getEmail()).isEqualTo(email),
+                () -> assertThat(host.getAccount()).isEqualTo(email),
                 () -> assertThat(host.getDeletedAt()).isNull(),
                 () -> assertThat(host.getAuthKey().getAuthKey()).isEqualTo(email),
                 () -> assertThat(host.isAgreeToMarketing()).isTrue()

@@ -5,6 +5,7 @@ import com.incense.gehasajang.exception.*;
 import com.incense.gehasajang.util.CommonString;
 import com.incense.gehasajang.util.MailHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class SignUpService {
 
     private final HostRepository hostRepository;
@@ -25,8 +27,8 @@ public class SignUpService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public boolean checkEmail(String email) {
-        return hostRepository.existsByEmailAndDeletedAtNull(email);
+    public boolean checkAccount(String email) {
+        return hostRepository.existsByAccountAndDeletedAtNull(email);
     }
 
     public boolean checkName(String nickname) {
@@ -34,7 +36,7 @@ public class SignUpService {
     }
 
     public void addHost(Host mainHost) {
-        if(checkEmail(mainHost.getEmail())) {
+        if(checkAccount(mainHost.getAccount())) {
             throw new DuplicateHostException();
         }
 
@@ -46,12 +48,12 @@ public class SignUpService {
         Host savedHost = hostRepository.save(mainHost);
         HostAuthKey savedKey = hostAuthKeyRepository.save(createAuthKey(savedHost));
 
-        sendMail(mailSender ,mainHost.getEmail(), savedKey.getAuthKey());
+        sendMail(mailSender ,mainHost.getAccount(), savedKey.getAuthKey());
     }
 
-    public void confirm(String email, String authkey) {
+    public void confirm(String account, String authkey) {
         //email 불일치
-        MainHost host = hostRepository.findMainHostByEmail(email)
+        MainHost host = hostRepository.findMainHostByAccount(account)
                 .orElseThrow(NotFoundDataException::new);
 
         //이미 인증함
@@ -77,7 +79,7 @@ public class SignUpService {
     private HostAuthKey createAuthKey(Host savedHost) {
         HostAuthKey hostAuthKey = HostAuthKey.builder()
                 .host(savedHost)
-                .authKey(savedHost.getEmail())
+                .authKey(savedHost.getAccount())
                 .expirationDate(LocalDateTime.now().plusDays(1))
                 .build();
         hostAuthKey.hashAuthKey(passwordEncoder);

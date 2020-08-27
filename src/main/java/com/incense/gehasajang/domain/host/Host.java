@@ -25,15 +25,20 @@ public abstract class Host extends BaseTimeEntity {
     @Column(name = "host_id")
     private Long id;
 
-    private String email;
+    private String account;
 
     private String nickname;
 
     private String password;
 
+    @Column(insertable = false, updatable = false)
+    private String type;
+
     private String profileImage;
 
     private String thumbnailImage;
+
+    private boolean isActive;
 
     private LocalDateTime deletedAt;
 

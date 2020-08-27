@@ -61,7 +61,7 @@ class SignUpControllerTest {
     void checkEmail() throws Exception {
         //given
         EmailCheckDto emailCheckDto = EmailCheckDto.builder().email("email@gmail.com").build();
-        given(signUpService.checkEmail(anyString())).willReturn(true);
+        given(signUpService.checkAccount(anyString())).willReturn(true);
 
         //when
         mockMvc.perform(post("/api/v1/users/check-email")
@@ -80,7 +80,7 @@ class SignUpControllerTest {
                 ));
 
         //then
-        verify(signUpService).checkEmail(anyString());
+        verify(signUpService).checkAccount(anyString());
     }
 
     @Test
@@ -425,7 +425,7 @@ class SignUpControllerTest {
 
         return mockMvc.perform(multipart("/api/v1/users")
                 .file("image", image.getBytes())
-                .param("email", mainHost.getEmail())
+                .param("email", mainHost.getAccount())
                 .param("nickname", mainHost.getNickname())
                 .param("password", mainHost.getPassword())
                 .param("isAgreeToMarketing", mainHost.isAgreeToMarketing() + "")

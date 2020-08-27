@@ -46,7 +46,7 @@ public class SignUpController {
 
     @PostMapping("/check-email")
     public ResponseEntity<Boolean> emailDuplicateCheck(@RequestBody @Valid EmailCheckDto email) {
-        return ResponseEntity.ok(signUpService.checkEmail(email.getEmail()));
+        return ResponseEntity.ok(signUpService.checkAccount(email.getEmail()));
     }
 
     @PostMapping("/check-name")

@@ -22,7 +22,7 @@ drop table if exists terms;
 create table host (
     host_id bigint auto_increment,
     type varchar(31) not null,
-    email varchar(255) not null,
+    account varchar(255) not null,
     nickname varchar(255) not null,
     password varchar(255) not null,
     is_agree_to_marketing boolean,
