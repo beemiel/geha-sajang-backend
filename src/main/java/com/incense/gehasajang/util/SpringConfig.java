@@ -25,9 +25,11 @@ public class SpringConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         long MAX_AGE_SECS = 3600;
         registry.addMapping("/**")
+                //TODO: 2020-08-27 allowedOrigins 클라것만 허용하기 -lynn
                 .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
+                .exposedHeaders("JWT")
                 .allowCredentials(true)
                 .maxAge(MAX_AGE_SECS);
     }
