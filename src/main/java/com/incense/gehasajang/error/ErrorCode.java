@@ -20,6 +20,7 @@ public enum  ErrorCode {
     UNAUTH_MAIL("US_009", "이메일 인증이 완료되지 않았습니다.", 401),
     DELETED("US_010", "삭제된 계정입니다.", 401),
     DISABLED("US_011", "비활성화된 계정입니다.", 401),
+    NON_LOGIN("US_012", "로그인을 해주세요.", 401),
 
 
     //공통

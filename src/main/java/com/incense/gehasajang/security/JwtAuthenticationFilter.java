@@ -1,8 +1,11 @@
 package com.incense.gehasajang.security;
 
+import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.util.JwtProperties;
 import com.incense.gehasajang.util.JwtUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -50,7 +53,18 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         }
 
         String token = authorization.substring(JwtProperties.TOKEN_PREFIX.length());
-        Claims claims = jwtUtil.parseToken(token);
+
+        Claims claims = null;
+
+        try {
+            claims = jwtUtil.parseToken(token);
+        } catch (ExpiredJwtException e) {
+            e.printStackTrace();
+            request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN.getCode());
+        } catch (JwtException e) {
+            e.printStackTrace();
+            request.setAttribute("exception", ErrorCode.INVALID_TOKEN.getCode());
+        }
 
         return new UserAuthentication(claims);
     }
