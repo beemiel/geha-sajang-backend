@@ -59,10 +59,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         try {
             claims = jwtUtil.parseToken(token);
         } catch (ExpiredJwtException e) {
-            e.printStackTrace();
             request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN.getCode());
         } catch (JwtException e) {
-            e.printStackTrace();
             request.setAttribute("exception", ErrorCode.INVALID_TOKEN.getCode());
         }
 

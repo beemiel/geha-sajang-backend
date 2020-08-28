@@ -59,6 +59,9 @@ API서버이므로 기본 Url은 **/api/v1(버전)/~** 입니다.
 | `401 Unauthorized`
 | 인증에 실패했습니다.
 
+| `403 FORBIDDEN`
+| 권한이 없습니다.
+
 | `404 Not Found`
 | 리소스를 찾을 수 없습니다.
 
@@ -148,6 +151,10 @@ House 관련
 |  401
 |  로그인을 해주세요.
 
+| `US_013`
+|  403
+|  해당 리소스에 접근 권한이 없습니다.
+
 |===
 
 이미지 관련
@@ -187,6 +194,15 @@ House 관련
 
 - Http Response
 ```
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+
+{
+    "message": "로그인을 해주세요.",
+    "code": "US_012",
+    "status": 401,
+    "errors": []
+}
 ```
 
 === 토큰이 만료된 경우
@@ -196,6 +212,15 @@ House 관련
 
 - Http Response
 ```
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+
+{
+    "message": "만료된 토큰입니다.",
+    "code": "US_007",
+    "status": 401,
+    "errors": []
+}
 ```
 
 === 토큰이 잘못된 경우
@@ -203,6 +228,15 @@ House 관련
 
 - Http Response
 ```
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+
+{
+    "message": "유효하지 않은 토큰입니다.",
+    "code": "US_008",
+    "status": 401,
+    "errors": []
+}
 ```
 
 === 해당 리소스에 권한이 없는 경우
@@ -213,6 +247,15 @@ House 관련
 
 - Http Response
 ```
+HTTP/1.1 403 FORBIDDEN
+Content-Type: application/json;charset=UTF-8
+
+{
+    "message": "해당 리소스에 접근 권한이 없습니다.",
+    "code": "US_013",
+    "status": 403,
+    "errors": []
+}
 ```
 
 == House 관련 API

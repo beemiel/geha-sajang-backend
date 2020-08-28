@@ -21,7 +21,7 @@ public enum  ErrorCode {
     DELETED("US_010", "삭제된 계정입니다.", 401),
     DISABLED("US_011", "비활성화된 계정입니다.", 401),
     NON_LOGIN("US_012", "로그인을 해주세요.", 401),
-
+    ACCESS_DENIED("US_013", "해당 리소스에 접근 권한이 없습니다.", 403),
 
     //공통
     INPUT_VALUE_INVALID("CO_001", "입력값이 올바르지 않습니다.", 400),
