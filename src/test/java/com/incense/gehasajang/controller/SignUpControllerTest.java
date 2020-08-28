@@ -133,7 +133,7 @@ class SignUpControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestPartBody("image"),
                         requestParameters(
-                                parameterWithName("email").description("이메일(형식 필수)"),
+                                parameterWithName("account").description("이메일(형식 필수)"),
                                 parameterWithName("nickname").description("닉네임(2~10자 이내)"),
                                 parameterWithName("password").description("문자+숫자 8~16자 이내"),
                                 parameterWithName("isAgreeToMarketing").description("마케팅 약관 동의 여부")
@@ -162,7 +162,7 @@ class SignUpControllerTest {
                                 .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestParameters(
-                                parameterWithName("email").description("이메일(형식 필수)"),
+                                parameterWithName("account").description("이메일(형식 필수)"),
                                 parameterWithName("nickname").description("닉네임(2~10자 이내)"),
                                 parameterWithName("password").description("문자+숫자 8~16자 이내"),
                                 parameterWithName("isAgreeToMarketing").description("마케팅 약관 동의 여부")
@@ -425,7 +425,7 @@ class SignUpControllerTest {
 
         return mockMvc.perform(multipart("/api/v1/users")
                 .file("image", image.getBytes())
-                .param("email", mainHost.getAccount())
+                .param("account", mainHost.getAccount())
                 .param("nickname", mainHost.getNickname())
                 .param("password", mainHost.getPassword())
                 .param("isAgreeToMarketing", mainHost.isAgreeToMarketing() + "")
