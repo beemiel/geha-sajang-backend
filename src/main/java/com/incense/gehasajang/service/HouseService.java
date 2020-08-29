@@ -51,7 +51,7 @@ public class HouseService {
 
     //TODO: 2020-08-24 cascade 설정 추가한 뒤 아래 메서드 수정 or 삭제 -lynn
     private void addHouseExtraInfo(String extra, House saveHouse) {
-        String[] extraInfos = extra.split(CommonString.SEPORATOR);
+        String[] extraInfos = extra.split(CommonString.SEPARATOR);
         checkExtraLength(extraInfos);
 
         Set<String> extras = Arrays.stream(extraInfos).collect(Collectors.toSet());
