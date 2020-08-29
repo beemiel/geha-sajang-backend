@@ -1,11 +1,10 @@
 package com.incense.gehasajang.controller;
 
 
-import com.incense.gehasajang.domain.Address;
 import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.domain.house.HouseExtraInfo;
-import com.incense.gehasajang.dto.house.HouseDto;
-import com.incense.gehasajang.dto.house.HouseExtraInfoDto;
+import com.incense.gehasajang.model.dto.house.HouseDto;
+import com.incense.gehasajang.model.dto.house.HouseExtraInfoDto;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.error.ErrorResponse;
 import com.incense.gehasajang.exception.NotFoundDataException;

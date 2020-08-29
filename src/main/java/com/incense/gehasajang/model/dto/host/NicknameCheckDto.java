@@ -1,4 +1,4 @@
-package com.incense.gehasajang.dto.host;
+package com.incense.gehasajang.model.dto.host;
 
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package com.incense.gehasajang.dto.house;
+package com.incense.gehasajang.model.dto.house;
 
 import lombok.Builder;
 import lombok.Getter;

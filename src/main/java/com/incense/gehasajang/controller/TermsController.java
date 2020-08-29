@@ -3,7 +3,7 @@ package com.incense.gehasajang.controller;
 import com.github.dozermapper.core.Mapper;
 import com.incense.gehasajang.domain.terms.Terms;
 import com.incense.gehasajang.domain.terms.TermsRepository;
-import com.incense.gehasajang.dto.terms.TermsDto;
+import com.incense.gehasajang.model.dto.terms.TermsDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package com.incense.gehasajang.dto.signin;
+package com.incense.gehasajang.model.dto.signin;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

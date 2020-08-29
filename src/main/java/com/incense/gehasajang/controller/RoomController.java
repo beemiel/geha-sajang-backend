@@ -2,7 +2,7 @@ package com.incense.gehasajang.controller;
 
 import com.github.dozermapper.core.Mapper;
 import com.incense.gehasajang.domain.room.Room;
-import com.incense.gehasajang.dto.RoomDto;
+import com.incense.gehasajang.model.dto.RoomDto;
 import com.incense.gehasajang.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

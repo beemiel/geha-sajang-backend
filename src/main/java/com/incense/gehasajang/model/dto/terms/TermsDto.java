@@ -1,4 +1,4 @@
-package com.incense.gehasajang.dto.terms;
+package com.incense.gehasajang.model.dto.terms;
 
 import com.github.dozermapper.core.Mapping;
 import lombok.*;

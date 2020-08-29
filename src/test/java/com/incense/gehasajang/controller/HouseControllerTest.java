@@ -4,7 +4,7 @@ import com.incense.gehasajang.domain.Address;
 import com.incense.gehasajang.domain.host.HostRole;
 import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.domain.house.HouseExtraInfo;
-import com.incense.gehasajang.dto.house.HouseDto;
+import com.incense.gehasajang.model.dto.house.HouseDto;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.CannotConvertException;
 import com.incense.gehasajang.exception.NotFoundDataException;

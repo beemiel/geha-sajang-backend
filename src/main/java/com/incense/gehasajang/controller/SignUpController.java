@@ -2,9 +2,9 @@ package com.incense.gehasajang.controller;
 
 import com.github.dozermapper.core.Mapper;
 import com.incense.gehasajang.domain.host.MainHost;
-import com.incense.gehasajang.dto.host.EmailCheckDto;
-import com.incense.gehasajang.dto.host.HostDto;
-import com.incense.gehasajang.dto.host.NicknameCheckDto;
+import com.incense.gehasajang.model.dto.host.EmailCheckDto;
+import com.incense.gehasajang.model.dto.host.HostDto;
+import com.incense.gehasajang.model.dto.host.NicknameCheckDto;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.error.ErrorResponse;
 import com.incense.gehasajang.exception.*;

@@ -1,4 +1,4 @@
-package com.incense.gehasajang.dto;
+package com.incense.gehasajang.model.dto;
 
 import com.github.dozermapper.core.Mapping;
 import lombok.Builder;

@@ -1,7 +1,7 @@
 package com.incense.gehasajang.controller;
 
-import com.incense.gehasajang.dto.signin.SignInRequestDto;
-import com.incense.gehasajang.dto.signin.SignInResponseDto;
+import com.incense.gehasajang.model.dto.signin.SignInRequestDto;
+import com.incense.gehasajang.model.dto.signin.SignInResponseDto;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.error.ErrorResponse;
 import com.incense.gehasajang.exception.*;

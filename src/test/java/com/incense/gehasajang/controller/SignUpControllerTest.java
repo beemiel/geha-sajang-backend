@@ -2,8 +2,8 @@ package com.incense.gehasajang.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.incense.gehasajang.domain.host.MainHost;
-import com.incense.gehasajang.dto.host.EmailCheckDto;
-import com.incense.gehasajang.dto.host.NicknameCheckDto;
+import com.incense.gehasajang.model.dto.host.EmailCheckDto;
+import com.incense.gehasajang.model.dto.host.NicknameCheckDto;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.*;
 import com.incense.gehasajang.service.S3Service;

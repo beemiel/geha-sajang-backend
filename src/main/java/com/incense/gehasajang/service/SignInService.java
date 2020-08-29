@@ -3,7 +3,7 @@ package com.incense.gehasajang.service;
 import com.incense.gehasajang.domain.host.Host;
 import com.incense.gehasajang.domain.host.HostRepository;
 import com.incense.gehasajang.domain.host.HostRole;
-import com.incense.gehasajang.dto.signin.SignInResponseDto;
+import com.incense.gehasajang.model.dto.signin.SignInResponseDto;
 import com.incense.gehasajang.exception.*;
 import com.incense.gehasajang.util.JwtUtil;
 import lombok.RequiredArgsConstructor;

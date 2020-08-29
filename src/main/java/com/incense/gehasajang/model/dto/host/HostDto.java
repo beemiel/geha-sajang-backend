@@ -1,4 +1,4 @@
-package com.incense.gehasajang.dto.host;
+package com.incense.gehasajang.model.dto.host;
 
 import com.github.dozermapper.core.Mapping;
 import lombok.AccessLevel;
