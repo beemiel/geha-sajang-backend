@@ -1,9 +1,6 @@
 package com.incense.gehasajang.error;
 
-import com.incense.gehasajang.exception.CannotConvertException;
-import com.incense.gehasajang.exception.CannotSendMailException;
-import com.incense.gehasajang.exception.NotFoundDataException;
-import com.incense.gehasajang.exception.NumberExceededException;
+import com.incense.gehasajang.exception.*;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
@@ -78,6 +75,13 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(CannotSendMailException.class)
     public ErrorResponse handleCannotSendMailException (){
         return buildError(ErrorCode.CANNOT_SEND_MAIL);
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ErrorResponse handleAccessDenied (){
+        return buildError(ErrorCode.ACCESS_DENIED);
     }
 
     private List<ErrorResponse.FieldError> getFieldErrors(BindingResult bindingResult) {

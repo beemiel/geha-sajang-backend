@@ -6,11 +6,17 @@ import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.domain.house.HouseExtraInfo;
 import com.incense.gehasajang.dto.house.HouseDto;
 import com.incense.gehasajang.dto.house.HouseExtraInfoDto;
+import com.incense.gehasajang.error.ErrorCode;
+import com.incense.gehasajang.error.ErrorResponse;
+import com.incense.gehasajang.exception.NotFoundDataException;
+import com.incense.gehasajang.security.UserAuthentication;
 import com.incense.gehasajang.service.HouseService;
 import com.incense.gehasajang.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,21 +31,29 @@ import java.util.stream.Collectors;
 public class HouseController {
 
     private final HouseService houseService;
-
     private final S3Service s3Service;
 
     @GetMapping("/{houseId}")
-    public ResponseEntity<HouseDto> detail(@PathVariable Long houseId) {
-        House house = houseService.getHouse(houseId);
+    public ResponseEntity<HouseDto> detail(
+            @PathVariable Long houseId,
+            @AuthenticationPrincipal UserAuthentication authentication
+    ) {
+        House house = houseService.getHouse(houseId, authentication.getAccount());
         HouseDto houseDto = toHouseDto(house);
         return ResponseEntity.ok(houseDto);
     }
 
     @PostMapping()
-    public ResponseEntity<Void> create(@Valid HouseDto houseDto, MultipartFile image, String extra) throws IOException {
+    @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_MAIN')")
+    public ResponseEntity<Void> create(
+            @Valid HouseDto houseDto,
+            MultipartFile image,
+            String extra,
+            @AuthenticationPrincipal UserAuthentication authentication
+    ) throws IOException {
         String imgPath = s3Service.upload(image, "house");
         House house = toHouse(houseDto, imgPath);
-        houseService.addHouse(house, extra);
+        houseService.addHouse(house, extra, authentication.getAccount());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -61,7 +75,6 @@ public class HouseController {
     private House toHouse(HouseDto houseDto, String imgPath) {
         return House.builder()
                 .name(houseDto.getName())
-                .address(new Address(houseDto.getCity(), houseDto.getStreet(), houseDto.getPostcode(), houseDto.getDetail()))
                 .mainImage(imgPath)
                 .thumbnailImage(houseDto.getThumbnailImage())
                 .mainNumber(houseDto.getMainNumber())
@@ -76,6 +89,16 @@ public class HouseController {
                                 .title(houseExtraInfo.getTitle())
                                 .build())
                 .collect(Collectors.toList());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundDataException.class)
+    public ErrorResponse handleNotFound (){
+        return ErrorResponse.builder()
+                .code(ErrorCode.HOST_NOT_FOUND.getCode())
+                .status(ErrorCode.HOST_NOT_FOUND.getStatus())
+                .message(ErrorCode.HOST_NOT_FOUND.getMessage())
+                .build();
     }
 
 }

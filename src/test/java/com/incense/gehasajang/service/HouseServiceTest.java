@@ -1,10 +1,10 @@
 package com.incense.gehasajang.service;
 
 import com.incense.gehasajang.domain.Address;
-import com.incense.gehasajang.domain.house.HouseExtraInfo;
-import com.incense.gehasajang.domain.house.HouseExtraInfoRepository;
-import com.incense.gehasajang.domain.house.HouseRepository;
-import com.incense.gehasajang.domain.house.House;
+import com.incense.gehasajang.domain.host.Host;
+import com.incense.gehasajang.domain.host.HostRepository;
+import com.incense.gehasajang.domain.host.MainHost;
+import com.incense.gehasajang.domain.house.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +16,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class HouseServiceTest {
 
@@ -29,10 +28,16 @@ class HouseServiceTest {
     @Mock
     private HouseExtraInfoRepository houseExtraInfoRepository;
 
+    @Mock
+    private HostHouseRepository hostHouseRepository;
+
+    @Mock
+    private HostRepository hostRepository;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        houseService = new HouseService(houseRepository, houseExtraInfoRepository);
+        houseService = new HouseService(houseRepository, hostRepository, houseExtraInfoRepository, hostHouseRepository);
     }
 
     @Test
@@ -43,10 +48,11 @@ class HouseServiceTest {
                 .name("게스트하우스")
                 .address(new Address("city", "street", "postcode", "detail"))
                 .build();
+        given(hostRepository.findHouseByAccountAndHouseId(any(), any())).willReturn(Optional.of(1L));
         given(houseRepository.findById(1L)).willReturn(Optional.of(returnHouse));
 
         //when
-        House house = houseService.getHouse(1L);
+        House house = houseService.getHouse(1L, "account");
 
         //then
         assertThat(house.getName()).isEqualTo("게스트하우스");
@@ -63,8 +69,10 @@ class HouseServiceTest {
                 .mainNumber("01012345678")
                 .mainImage("메인 이미지")
                 .build();
+        given(hostRepository.findByAccount(any())).willReturn(Optional.ofNullable(MainHost.builder().build()));
+
         //when
-        houseService.addHouse(house, extra);
+        houseService.addHouse(house, extra, "account");
 
         //then
         verify(houseRepository).save(house);
@@ -81,8 +89,10 @@ class HouseServiceTest {
                 .mainNumber("01012345678")
                 .mainImage("메인 이미지")
                 .build();
+        given(hostRepository.findByAccount(any())).willReturn(Optional.ofNullable(MainHost.builder().build()));
+
         //when
-        houseService.addHouse(house, extra);
+        houseService.addHouse(house, extra, "account");
 
         //then
         verify(houseRepository).save(house);
