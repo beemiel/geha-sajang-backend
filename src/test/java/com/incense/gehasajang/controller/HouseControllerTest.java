@@ -145,8 +145,6 @@ class HouseControllerTest {
         verify(houseService).addHouse(any(House.class), any(String.class), any());
     }
 
-    //TODO: 2020-08-19 호스트가 소속된 게스트 하우스가 맞는지 확인 test 작성  -lynn
-
     @Test
     public void validation() throws Exception {
         //given
