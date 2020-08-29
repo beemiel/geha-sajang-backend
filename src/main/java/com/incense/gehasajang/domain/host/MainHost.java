@@ -1,8 +1,7 @@
 package com.incense.gehasajang.domain.host;
 
-import com.github.dozermapper.core.Mapping;
 import com.incense.gehasajang.domain.Address;
-import com.incense.gehasajang.domain.HostHouse;
+import com.incense.gehasajang.domain.house.HostHouse;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

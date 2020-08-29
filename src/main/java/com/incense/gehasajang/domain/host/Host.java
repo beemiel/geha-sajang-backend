@@ -1,7 +1,7 @@
 package com.incense.gehasajang.domain.host;
 
 import com.incense.gehasajang.domain.BaseTimeEntity;
-import com.incense.gehasajang.domain.HostHouse;
+import com.incense.gehasajang.domain.house.HostHouse;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

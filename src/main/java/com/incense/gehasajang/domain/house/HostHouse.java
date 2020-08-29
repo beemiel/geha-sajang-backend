@@ -1,7 +1,8 @@
-package com.incense.gehasajang.domain;
+package com.incense.gehasajang.domain.house;
 
 import com.incense.gehasajang.domain.host.Host;
 import com.incense.gehasajang.domain.house.House;
+import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -25,4 +26,9 @@ public class HostHouse {
     @JoinColumn(name = "house_id")
     private House house;
 
+    @Builder
+    public HostHouse(Host host, House house) {
+        this.host = host;
+        this.house = house;
+    }
 }

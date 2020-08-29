@@ -16,8 +16,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        //TODO: 2020-08-28 IOException은 어떻게 처리하지.. 이건 그냥 redirect 시킬까 -lynn
-
         String exception = (String)request.getAttribute("exception");
         ErrorCode errorCode;
 

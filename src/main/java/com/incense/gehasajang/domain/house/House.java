@@ -2,7 +2,6 @@ package com.incense.gehasajang.domain.house;
 
 import com.incense.gehasajang.domain.Address;
 import com.incense.gehasajang.domain.BaseTimeEntity;
-import com.incense.gehasajang.domain.HostHouse;
 import com.incense.gehasajang.domain.Invitation;
 import com.incense.gehasajang.domain.booking.Booking;
 import com.incense.gehasajang.domain.room.Room;
@@ -69,5 +68,10 @@ public class House extends BaseTimeEntity {
         this.thumbnailImage = thumbnailImage;
         this.mainNumber = mainNumber;
         this.houseExtraInfos = houseExtraInfos;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        address = address == null ? new Address("","","","") : address;
     }
 }
