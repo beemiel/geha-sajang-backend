@@ -51,17 +51,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
                 .and()
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers("/*/*/signin", "/*/*/users/**", "/exception/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/terms").permitAll()
+                .antMatchers("/*/*/signin", "/*/*/users/**", "/*/*/signout").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/terms", "/").permitAll()
                 .anyRequest().hasRole("SUB")
+
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
                 .accessDeniedHandler(new CustomAccessDeniedHandler())
-                .and().addFilter(filter);
+
+                .and()
+                .addFilter(filter)
+
+                .logout()
+                .logoutUrl("/api/v1/signout")
+                .logoutSuccessUrl("/")
+                .deleteCookies("JWT");
     }
 
 
