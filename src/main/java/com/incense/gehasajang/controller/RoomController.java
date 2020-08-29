@@ -4,6 +4,7 @@ package com.incense.gehasajang.controller;
 import com.github.dozermapper.core.Mapper;
 import com.incense.gehasajang.domain.room.Room;
 import com.incense.gehasajang.model.dto.RoomDto;
+import com.incense.gehasajang.model.param.room.RoomDetailParam;
 import com.incense.gehasajang.security.UserAuthentication;
 import com.incense.gehasajang.service.RoomService;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,13 @@ public class RoomController {
             @AuthenticationPrincipal UserAuthentication authentication
     ) {
 
-        Room room = roomService.getRoom(houseId, roomId);
+        RoomDetailParam detailParam = RoomDetailParam.builder()
+                .houseId(houseId)
+                .roomId(roomId)
+                .account(authentication.getAccount())
+                .build();
+
+        Room room = roomService.getRoom(detailParam);
         return ResponseEntity.ok(mapper.map(room, RoomDto.class));
     }
 }

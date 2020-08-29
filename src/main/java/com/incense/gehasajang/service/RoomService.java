@@ -3,6 +3,7 @@ package com.incense.gehasajang.service;
 import com.incense.gehasajang.domain.room.Room;
 import com.incense.gehasajang.domain.room.RoomRepository;
 import com.incense.gehasajang.exception.NotFoundDataException;
+import com.incense.gehasajang.model.param.room.RoomDetailParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,7 @@ public class RoomService {
         return roomRepository.findAllByHouse_Id(houseId);
     }
 
-    public Room getRoom(Long houseId, Long roomId) {
-        return roomRepository.findById(roomId).orElseThrow(NotFoundDataException::new);
+    public Room getRoom(RoomDetailParam detailParam) {
+        return roomRepository.findById(detailParam.getRoomId()).orElseThrow(NotFoundDataException::new);
     }
 }
