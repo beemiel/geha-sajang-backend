@@ -8,6 +8,6 @@ public class CommonString {
 
     public static final String MAIL_SUBJECT = "[게하사장] 인증을 완료해주세요.";
     public static final String LOGO_PATH = "static/logoblack.png";
-    public static final String MAIL_AUTH_LINK = "<a href=http://localhost:8080/api/v1/users/auth?email=";
+    public static final String MAIL_AUTH_LINK = "<a href='http://13.124.108.177:8080/api/v1/users/auth?email=";
 
 }

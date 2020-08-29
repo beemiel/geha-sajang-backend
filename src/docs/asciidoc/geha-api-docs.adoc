@@ -56,6 +56,12 @@ API서버이므로 기본 Url은 **/api/v1(버전)/~** 입니다.
 | `400 Bad Request`
 | 잘못된 요청입니다.
 
+| `401 Unauthorized`
+| 인증에 실패했습니다.
+
+| `403 FORBIDDEN`
+| 권한이 없습니다.
+
 | `404 Not Found`
 | 리소스를 찾을 수 없습니다.
 
@@ -117,6 +123,38 @@ House 관련
 |  401
 |  만료된 인증키입니다.
 
+| `US_006`
+|  401
+|  계정 혹은 비밀번호가 올바르지 않습니다.
+
+| `US_007`
+|  401
+|  만료된 토큰입니다.
+
+| `US_008`
+|  401
+|  유효하지 않은 토큰입니다.
+
+| `US_009`
+|  401
+|  이메일 인증이 완료되지 않았습니다.
+
+| `US_010`
+|  401
+|  삭제된 계정입니다.
+
+| `US_011`
+|  401
+|  비활성화된 계정입니다.
+
+| `US_012`
+|  401
+|  로그인을 해주세요.
+
+| `US_013`
+|  403
+|  해당 리소스에 접근 권한이 없습니다.
+
 |===
 
 이미지 관련
@@ -142,6 +180,83 @@ House 관련
 |  메일 전송에 실패했습니다
 
 |===
+
+== 🍓공통 예외🍓
+해당 섹션에 있는 예외들은 반드시 인증 및 인가를 거친 뒤에 접근 가능한 리소스를 요청할 경우
+나타날 수 있는 예외들입니다.
+
+그냥 회원가입/로그인 빼고 다~ 라고 생각하면 되겠네요.. 글로발😀
+
+=== 토큰이 없는 경우
+토큰이 없는 경우 발생합니다.
+
+토큰이 없다는 것은 로그인을 하지 않았다는 의미입니다.
+
+- Http Response
+```
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+
+{
+    "message": "로그인을 해주세요.",
+    "code": "US_012",
+    "status": 401,
+    "errors": []
+}
+```
+
+=== 토큰이 만료된 경우
+토큰의 유효기간이 만료된 경우 발생합니다.
+
+현재 토큰의 유효기간은 10일입니다. JWT토큰 치고는 긴데 리프레시 토큰을 적용하게 된다면 줄어들 예정입니다.
+
+- Http Response
+```
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+
+{
+    "message": "만료된 토큰입니다.",
+    "code": "US_007",
+    "status": 401,
+    "errors": []
+}
+```
+
+=== 토큰이 잘못된 경우
+토큰의 시그니처가 맞지 않을 경우 발생합니다.
+
+- Http Response
+```
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+
+{
+    "message": "유효하지 않은 토큰입니다.",
+    "code": "US_008",
+    "status": 401,
+    "errors": []
+}
+```
+
+=== 해당 리소스에 권한이 없는 경우
+접근 권한이 없을 경우 발생합니다.
+
+우리 서비스에서는 호스트와 스태프, 두 종류의 권한이 있으니
+스태프가 권한이 없는 리소스를 요청할 경우 발생합니다.
+
+- Http Response
+```
+HTTP/1.1 403 FORBIDDEN
+Content-Type: application/json;charset=UTF-8
+
+{
+    "message": "해당 리소스에 접근 권한이 없습니다.",
+    "code": "US_013",
+    "status": 403,
+    "errors": []
+}
+```
 
 == House 관련 API
 
@@ -676,3 +791,106 @@ Content-Type: application/json;charset=UTF-8
 
 - Response Fields
 include::{snippets}/sign-up-controller-test/fail-to-send-mail/response-fields.adoc[]
+
+== 로그인 관련 API
+
+=== POST /signin
+로그인을 시도합니다.
+
+- HTTP Request
+include::{snippets}/sign-in-controller-test/signin/http-request.adoc[]
+
+- Request Fields
+include::{snippets}/sign-in-controller-test/signin/request-fields.adoc[]
+
+==== 200 성공
+token을 반환합니다.
+
+- HTTP Response
+```
+HTTP/1.1 200 OK
+
+{
+  "accessToken" : "eyJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50IjoiZm9vIiwicm9sZSI6Im1haW4ifQ.4U2WhbbFLmBIQD3yZQ9j1EmD5AGIG6skcXykkJ_2Q7o"
+}
+```
+
+- Response Fields
+include::{snippets}/sign-in-controller-test/signin/response-fields.adoc[]
+
+==== 404 실패
+회원을 찾을 수 없습니다.
+
+- HTTP Response
+```
+HTTP/1.1 404 Not Found
+
+{
+  "message" : "호스트를 찾을 수 없습니다.",
+  "code" : "US_002",
+  "status" : 404,
+  "errors" : [ ]
+}
+```
+
+==== 401 실패 (비밀번호)
+계정 혹은 비밀번호가 틀립니다.
+
+- HTTP Response
+```
+HTTP/1.1 401 Unauthorized
+
+{
+  "message" : "계정 혹은 비밀번호가 올바르지 않습니다.",
+  "code" : "US_006",
+  "status" : 401,
+  "errors" : [ ]
+}
+```
+
+==== 401 실패 (삭제)
+삭제된 계정입니다.
+
+- HTTP Response
+```
+HTTP/1.1 401 Unauthorized
+
+{
+  "message" : "삭제된 계정입니다.",
+  "code" : "US_010",
+  "status" : 401,
+  "errors" : [ ]
+}
+
+```
+
+==== 401 실패 (비활성화)
+비활성화된 계정입니다.
+
+- HTTP Response
+```
+HTTP/1.1 401 Unauthorized
+
+{
+  "message" : "비활성화된 계정입니다.",
+  "code" : "US_011",
+  "status" : 401,
+  "errors" : [ ]
+}
+
+```
+
+==== 401 실패 (이메일 인증)
+이메일 인증이 되지 않은 계정입니다.
+
+- HTTP Response
+```
+HTTP/1.1 401 Unauthorized
+
+{
+  "message" : "이메일 인증이 완료되지 않았습니다.",
+  "code" : "US_009",
+  "status" : 401,
+  "errors" : [ ]
+}
+```

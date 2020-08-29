@@ -1,6 +1,7 @@
 package com.incense.gehasajang.controller;
 
 import com.incense.gehasajang.domain.Address;
+import com.incense.gehasajang.domain.host.HostRole;
 import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.domain.house.HouseExtraInfo;
 import com.incense.gehasajang.dto.house.HouseDto;
@@ -8,9 +9,15 @@ import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.CannotConvertException;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.exception.NumberExceededException;
+import com.incense.gehasajang.security.UserAuthentication;
 import com.incense.gehasajang.service.HouseService;
 import com.incense.gehasajang.service.S3Service;
 import com.incense.gehasajang.util.CommonString;
+import com.incense.gehasajang.util.JwtUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +43,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -52,6 +60,20 @@ class HouseControllerTest {
     @MockBean
     private S3Service s3Service;
 
+    private UserAuthentication userAuthentication;
+
+    private JwtUtil jwtUtil;
+
+    private String jwt;
+
+    @BeforeEach
+    public void setUp() {
+        jwtUtil = new JwtUtil(Keys.secretKeyFor(SignatureAlgorithm.HS256));
+        jwt = jwtUtil.createToken("test@naver.com", HostRole.ROLE_MAIN.getType());
+        Claims claims = jwtUtil.parseToken(jwt);
+        userAuthentication = new UserAuthentication(claims);
+    }
+
     @Test
     @DisplayName("게스트_하우스_정보를_가져온다.")
     void getHouseInfoSuccess() throws Exception {
@@ -65,7 +87,7 @@ class HouseControllerTest {
                         HouseExtraInfo.builder().title("추가3").build()
                 ))
                 .build();
-        given(houseService.getHouse(1L)).willReturn(house);
+        given(houseService.getHouse(any(), any())).willReturn(house);
 
         //when
         ResultActions resultActions = successRequestHouseInfo(1L);
@@ -80,14 +102,14 @@ class HouseControllerTest {
     @DisplayName("게스트_하우스_정보를_가져오지_못한다.")
     public void getHouseInfoFail() throws Exception {
         //given
-        given(houseService.getHouse(2L)).willThrow(new NotFoundDataException());
+        given(houseService.getHouse(any(), any())).willThrow(new NotFoundDataException());
 
         //when
         ResultActions resultActions = failRequestHouseInfo(2L);
 
         //then
         resultActions.andExpect(status().isNotFound());
-        verify(houseService).getHouse(2L);
+        verify(houseService).getHouse(any(), any());
     }
 
     @Test
@@ -120,14 +142,8 @@ class HouseControllerTest {
                                 parameterWithName("mainNumber").description("전화번호(숫자만, 11자이내 필수값)"),
                                 parameterWithName("extra").description("게스트 하우스 추가 정보")
                         )));
-        verify(houseService).addHouse(any(House.class), any(String.class));
+        verify(houseService).addHouse(any(House.class), any(String.class), any());
     }
-
-    //TODO: 2020-08-18 로그인 확인 test 작성  -lynn
-
-    //TODO: 2020-08-18 권한 인증 test 작성  -lynn
-
-    //TODO: 2020-08-19 호스트가 소속된 게스트 하우스가 맞는지 확인 test 작성  -lynn
 
     @Test
     public void validation() throws Exception {
@@ -176,7 +192,7 @@ class HouseControllerTest {
                 .mainNumber("01012345678")
                 .mainImage("메인 이미지")
                 .build();
-        doThrow(NumberExceededException.class).when(houseService).addHouse(any(House.class), any(String.class));
+        doThrow(NumberExceededException.class).when(houseService).addHouse(any(House.class), any(String.class), any());
 
         //when
         ResultActions resultActions = createRequest(houseDto, extra);
@@ -267,6 +283,7 @@ class HouseControllerTest {
 
     private ResultActions successRequestHouseInfo(Long houseId) throws Exception {
         return mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/houses/{houseId}", houseId)
+                .with(authentication(userAuthentication))
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
@@ -295,6 +312,7 @@ class HouseControllerTest {
 
     private ResultActions failRequestHouseInfo(Long houseId) throws Exception {
         return mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/houses/{houseId}", houseId)
+                .with(authentication(userAuthentication))
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
@@ -321,6 +339,7 @@ class HouseControllerTest {
                 .param("name", houseDto.getName())
                 .param("mainNumber", houseDto.getMainNumber())
                 .param("extra", extra)
+                .with(authentication(userAuthentication))
                 .contentType(MediaType.MULTIPART_FORM_DATA));
 
     }

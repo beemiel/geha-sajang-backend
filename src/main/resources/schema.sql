@@ -22,11 +22,11 @@ drop table if exists terms;
 create table host (
     host_id bigint auto_increment,
     type varchar(31) not null,
-    email varchar(255) not null,
+    account varchar(255) not null,
     nickname varchar(255) not null,
     password varchar(255) not null,
     is_agree_to_marketing boolean,
-    is_pass_email_auth boolean default false,
+    is_pass_email_auth boolean,
     profile_image varchar(255),
     thumbnail_image varchar(255),
     city varchar(255),

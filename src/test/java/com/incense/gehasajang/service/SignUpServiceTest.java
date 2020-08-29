@@ -2,14 +2,12 @@ package com.incense.gehasajang.service;
 
 import com.incense.gehasajang.domain.host.HostAuthKeyRepository;
 import com.incense.gehasajang.domain.host.HostRepository;
-import com.incense.gehasajang.domain.host.MainHost;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -45,13 +43,13 @@ class SignUpServiceTest {
     @DisplayName("(서비스)이메일 체크")
     void checkEmail() throws Exception {
         //given
-        given(hostRepository.existsByEmailAndDeletedAtNull(any())).willReturn(true);
+        given(hostRepository.existsByAccountAndDeletedAtNull(any())).willReturn(true);
 
         //when
 
         //then
-        assertThat(signUpService.checkEmail("email")).isTrue();
-        verify(hostRepository).existsByEmailAndDeletedAtNull(any());
+        assertThat(signUpService.checkAccount("email")).isTrue();
+        verify(hostRepository).existsByAccountAndDeletedAtNull(any());
     }
 
     @Test

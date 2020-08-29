@@ -1,9 +1,9 @@
 package com.incense.gehasajang.service;
 
-import com.incense.gehasajang.domain.house.House;
-import com.incense.gehasajang.domain.house.HouseExtraInfo;
-import com.incense.gehasajang.domain.house.HouseExtraInfoRepository;
-import com.incense.gehasajang.domain.house.HouseRepository;
+import com.incense.gehasajang.domain.host.Host;
+import com.incense.gehasajang.domain.host.HostRepository;
+import com.incense.gehasajang.domain.house.*;
+import com.incense.gehasajang.exception.AccessDeniedException;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.exception.NumberExceededException;
 import com.incense.gehasajang.util.CommonString;
@@ -21,23 +21,32 @@ import java.util.stream.Collectors;
 public class HouseService {
 
     private final HouseRepository houseRepository;
-
+    private final HostRepository hostRepository;
     private final HouseExtraInfoRepository houseExtraInfoRepository;
+    private final HostHouseRepository hostHouseRepository;
 
-    public House getHouse(Long houseId) {
-        return houseRepository.findById(houseId)
-                .orElseThrow(NotFoundDataException::new);
+    public House getHouse(Long houseId, String account) {
+        authorityCheck(houseId, account);
+        return houseRepository.findById(houseId).orElseThrow(NotFoundDataException::new);
     }
 
     @Transactional
-    public void addHouse(House house, String extra) {
+    public void addHouse(House house, String extra, String account) {
         House saveHouse = houseRepository.save(house);
+
+        addHostHouse(saveHouse, account);
 
         if(extra==null || extra.isEmpty()) {
             return;
         }
 
         addHouseExtraInfo(extra, saveHouse);
+    }
+
+    private void addHostHouse(House savedHouse, String account) {
+        Host host = hostRepository.findByAccount(account).orElseThrow(NotFoundDataException::new);
+        HostHouse hostHouse = HostHouse.builder().host(host).house(savedHouse).build();
+        hostHouseRepository.save(hostHouse);
     }
 
     //TODO: 2020-08-24 cascade 설정 추가한 뒤 아래 메서드 수정 or 삭제 -lynn
@@ -55,6 +64,10 @@ public class HouseService {
         if(extraInfos.length > 16) {
             throw new NumberExceededException();
         }
+    }
+
+    private void authorityCheck(Long houseId, String account) {
+        hostRepository.findHouseByAccountAndHouseId(account, houseId).orElseThrow(AccessDeniedException::new);
     }
 
 }

@@ -1,8 +1,7 @@
 package com.incense.gehasajang.domain.host;
 
-import com.incense.gehasajang.domain.HostHouse;
+import com.incense.gehasajang.domain.house.HostHouse;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,11 +16,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SubHost extends Host {
 
-    private boolean isActive;
-
-    @Builder
-    public SubHost(Long id, String email, String nickname, String password, String profileImage, String thumbnailImage, LocalDateTime deletedAt, List<HostHouse> hostHouses) {
-        super(id, email, nickname, password, profileImage, thumbnailImage, deletedAt, hostHouses);
+    public SubHost(Long id, String account, String nickname, String password, String type, String profileImage, String thumbnailImage, boolean isActive, LocalDateTime deletedAt, List<HostHouse> hostHouses) {
+        super(id, account, nickname, password, type, profileImage, thumbnailImage, isActive, deletedAt, hostHouses);
     }
-
 }

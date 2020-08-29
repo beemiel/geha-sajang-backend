@@ -1,7 +1,7 @@
 package com.incense.gehasajang.domain.host;
 
 import com.incense.gehasajang.domain.BaseTimeEntity;
-import com.incense.gehasajang.domain.HostHouse;
+import com.incense.gehasajang.domain.house.HostHouse;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,15 +25,20 @@ public abstract class Host extends BaseTimeEntity {
     @Column(name = "host_id")
     private Long id;
 
-    private String email;
+    private String account;
 
     private String nickname;
 
     private String password;
 
+    @Column(insertable = false, updatable = false)
+    private String type;
+
     private String profileImage;
 
     private String thumbnailImage;
+
+    private boolean isActive = true;
 
     private LocalDateTime deletedAt;
 

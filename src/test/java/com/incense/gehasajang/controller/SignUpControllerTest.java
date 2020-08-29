@@ -61,7 +61,7 @@ class SignUpControllerTest {
     void checkEmail() throws Exception {
         //given
         EmailCheckDto emailCheckDto = EmailCheckDto.builder().email("email@gmail.com").build();
-        given(signUpService.checkEmail(anyString())).willReturn(true);
+        given(signUpService.checkAccount(anyString())).willReturn(true);
 
         //when
         mockMvc.perform(post("/api/v1/users/check-email")
@@ -80,7 +80,7 @@ class SignUpControllerTest {
                 ));
 
         //then
-        verify(signUpService).checkEmail(anyString());
+        verify(signUpService).checkAccount(anyString());
     }
 
     @Test
@@ -115,7 +115,7 @@ class SignUpControllerTest {
     void join() throws Exception {
         //given
         MainHost mainHost = MainHost.builder()
-                .email("test@email.com")
+                .account("test@email.com")
                 .nickname("testtest")
                 .password("testtest123")
                 .isAgreeToMarketing(true).build();
@@ -133,7 +133,7 @@ class SignUpControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestPartBody("image"),
                         requestParameters(
-                                parameterWithName("email").description("이메일(형식 필수)"),
+                                parameterWithName("account").description("이메일(형식 필수)"),
                                 parameterWithName("nickname").description("닉네임(2~10자 이내)"),
                                 parameterWithName("password").description("문자+숫자 8~16자 이내"),
                                 parameterWithName("isAgreeToMarketing").description("마케팅 약관 동의 여부")
@@ -146,7 +146,7 @@ class SignUpControllerTest {
     void join_validation() throws Exception {
         //given
         MainHost mainHost = MainHost.builder()
-                .email("email")
+                .account("email")
                 .nickname("a")
                 .password("1")
                 .isAgreeToMarketing(true).build();
@@ -162,7 +162,7 @@ class SignUpControllerTest {
                                 .host(CommonString.HOST),prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestParameters(
-                                parameterWithName("email").description("이메일(형식 필수)"),
+                                parameterWithName("account").description("이메일(형식 필수)"),
                                 parameterWithName("nickname").description("닉네임(2~10자 이내)"),
                                 parameterWithName("password").description("문자+숫자 8~16자 이내"),
                                 parameterWithName("isAgreeToMarketing").description("마케팅 약관 동의 여부")
@@ -183,7 +183,7 @@ class SignUpControllerTest {
     void joinImageFileExceededException() throws Exception {
         //given
         MainHost mainHost = MainHost.builder()
-                .email("test@email.com")
+                .account("test@email.com")
                 .nickname("testtest")
                 .password("testtest123")
                 .isAgreeToMarketing(true).build();
@@ -213,7 +213,7 @@ class SignUpControllerTest {
     void joinImageCannotConvertFile() throws Exception {
         //given
         MainHost mainHost = MainHost.builder()
-                .email("test@email.com")
+                .account("test@email.com")
                 .nickname("testtest")
                 .password("testtest123")
                 .isAgreeToMarketing(true).build();
@@ -243,7 +243,7 @@ class SignUpControllerTest {
     void joinDuplication() throws Exception {
         //given
         MainHost mainHost = MainHost.builder()
-                .email("test@email.com")
+                .account("test@email.com")
                 .nickname("testtest")
                 .password("testtest123")
                 .isAgreeToMarketing(true).build();
@@ -425,7 +425,7 @@ class SignUpControllerTest {
 
         return mockMvc.perform(multipart("/api/v1/users")
                 .file("image", image.getBytes())
-                .param("email", mainHost.getEmail())
+                .param("account", mainHost.getAccount())
                 .param("nickname", mainHost.getNickname())
                 .param("password", mainHost.getPassword())
                 .param("isAgreeToMarketing", mainHost.isAgreeToMarketing() + "")
