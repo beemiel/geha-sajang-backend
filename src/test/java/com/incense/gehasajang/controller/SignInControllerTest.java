@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.incense.gehasajang.domain.host.HostRole;
 import com.incense.gehasajang.domain.host.MainHost;
 import com.incense.gehasajang.dto.signin.SignInRequestDto;
+import com.incense.gehasajang.dto.signin.SignInResponseDto;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.*;
 import com.incense.gehasajang.service.SignInService;
@@ -50,8 +51,9 @@ class SignInControllerTest {
     void signin() throws Exception {
         //given
         SignInRequestDto requestDto = SignInRequestDto.builder().account("foo").password("foo").build();
+        SignInResponseDto responseDto = SignInResponseDto.builder().accessToken("token").registerState("unregistered").build();
         MainHost host = MainHost.builder().account("foo").type("main").build();
-        given(signInService.authenticate(any(), any())).willReturn(host);
+        given(signInService.authenticate(any(), any())).willReturn(responseDto);
 
         //when
         signinRequest(requestDto).andExpect(status().isOk()).andExpect(content().string(containsString("accessToken")))
@@ -65,7 +67,8 @@ class SignInControllerTest {
                                 fieldWithPath("password").description("계정 비밀번호")
                         ),
                         responseFields(
-                                fieldWithPath("accessToken").description("로그인에 성공하면 만들어지는 JWT 토큰")
+                                fieldWithPath("accessToken").description("로그인에 성공하면 만들어지는 JWT 토큰"),
+                                fieldWithPath("registerState").description("등록 진행 상태")
                         )));
     }
 

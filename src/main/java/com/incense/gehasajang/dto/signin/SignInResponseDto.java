@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class SignInResponseDto {
 
     private String accessToken;
+    private String registerState;
 
 }

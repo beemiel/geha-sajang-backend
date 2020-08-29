@@ -1,13 +1,11 @@
 package com.incense.gehasajang.controller;
 
-import com.incense.gehasajang.domain.host.Host;
 import com.incense.gehasajang.dto.signin.SignInRequestDto;
 import com.incense.gehasajang.dto.signin.SignInResponseDto;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.error.ErrorResponse;
 import com.incense.gehasajang.exception.*;
 import com.incense.gehasajang.service.SignInService;
-import com.incense.gehasajang.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +19,13 @@ import javax.validation.Valid;
 public class SignInController {
 
     private final SignInService signInService;
-    private final JwtUtil jwtUtil;
 
     @PostMapping("/signin")
     public ResponseEntity<SignInResponseDto>signIn(
             @Valid @RequestBody SignInRequestDto requestDto
     ) {
-        Host host = signInService.authenticate(requestDto.getAccount(), requestDto.getPassword());
-        String token = jwtUtil.createToken(host.getAccount(), host.getType());
-
-        return ResponseEntity.ok(new SignInResponseDto(token));
+        SignInResponseDto signInResponseDto = signInService.authenticate(requestDto.getAccount(), requestDto.getPassword());
+        return ResponseEntity.ok(signInResponseDto);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
