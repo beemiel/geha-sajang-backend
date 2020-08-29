@@ -1,6 +1,10 @@
 package com.incense.gehasajang.security;
 
+import com.incense.gehasajang.util.JwtProperties;
 import com.incense.gehasajang.util.JwtUtil;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,12 +17,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsUtils;
 
+import javax.crypto.SecretKey;
 import javax.servlet.Filter;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private SecretKey secret = Keys.secretKeyFor(SignatureAlgorithm.HS256);;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -27,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public JwtUtil jwtUtil() {
-        return new JwtUtil();
+        return new JwtUtil(secret);
     }
 
     @Override

@@ -2,8 +2,6 @@ package com.incense.gehasajang.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.SecretKey;
@@ -14,8 +12,8 @@ public class JwtUtil {
 
     private SecretKey key;
 
-    public JwtUtil() {
-        key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    public JwtUtil(SecretKey secretKey) {
+        key = secretKey;
     }
 
 
