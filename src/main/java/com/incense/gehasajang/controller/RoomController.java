@@ -1,11 +1,14 @@
 package com.incense.gehasajang.controller;
 
+
 import com.github.dozermapper.core.Mapper;
 import com.incense.gehasajang.domain.room.Room;
 import com.incense.gehasajang.model.dto.RoomDto;
+import com.incense.gehasajang.security.UserAuthentication;
 import com.incense.gehasajang.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,10 +34,14 @@ public class RoomController {
         return ResponseEntity.ok(rooms.stream().map(room -> mapper.map(room, RoomDto.class)).collect(Collectors.toList()));
     }
 
-    @GetMapping("/{roomsId}")
-    public void detail(
-            @PathVariable Long roomsId
+    @GetMapping("/{roomId}")
+    public ResponseEntity<RoomDto> detail(
+            @PathVariable Long houseId,
+            @PathVariable Long roomId,
+            @AuthenticationPrincipal UserAuthentication authentication
     ) {
-        // TODO: roomId 에 해당하는 room 조회
+
+        Room room = roomService.getRoom(houseId, roomId);
+        return ResponseEntity.ok(mapper.map(room, RoomDto.class));
     }
 }
