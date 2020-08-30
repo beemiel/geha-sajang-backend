@@ -1,5 +1,6 @@
 package com.incense.gehasajang.util;
 
+import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.CannotSendMailException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -21,6 +22,7 @@ public class MailHandler {
 
     /**
      * 생성자
+     *
      * @param mailSender
      * @throws MessagingException
      */
@@ -32,6 +34,7 @@ public class MailHandler {
 
     /**
      * 보내는 사람 이메일
+     *
      * @param fromAddress
      * @throws MessagingException
      */
@@ -40,7 +43,8 @@ public class MailHandler {
     }
 
     /**
-     *  받는 사람 이메일
+     * 받는 사람 이메일
+     *
      * @param email
      * @throws MessagingException
      */
@@ -49,7 +53,8 @@ public class MailHandler {
     }
 
     /**
-     *  제목
+     * 제목
+     *
      * @param subject
      * @throws MessagingException
      */
@@ -58,7 +63,8 @@ public class MailHandler {
     }
 
     /**
-     *  메일 내용
+     * 메일 내용
+     *
      * @param text
      * @param useHtml
      * @throws MessagingException
@@ -68,7 +74,8 @@ public class MailHandler {
     }
 
     /**
-     *  첨부 파일
+     * 첨부 파일
+     *
      * @param displayFileName
      * @param pathToAttachment
      * @throws MessagingException
@@ -82,7 +89,8 @@ public class MailHandler {
     }
 
     /**
-     *  이미지 삽입
+     * 이미지 삽입
+     *
      * @param contentId
      * @param pathToInline
      * @throws MessagingException
@@ -111,7 +119,7 @@ public class MailHandler {
             sender.send(message);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new CannotSendMailException();
+            throw new CannotSendMailException(ErrorCode.CANNOT_SEND_MAIL);
         }
     }
 

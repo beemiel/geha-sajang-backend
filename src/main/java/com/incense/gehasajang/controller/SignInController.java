@@ -21,61 +21,38 @@ public class SignInController {
     private final SignInService signInService;
 
     @PostMapping("/signin")
-    public ResponseEntity<SignInResponseDto>signIn(
+    public ResponseEntity<SignInResponseDto> signIn(
             @Valid @RequestBody SignInRequestDto requestDto
     ) {
         SignInResponseDto signInResponseDto = signInService.authenticate(requestDto.getAccount(), requestDto.getPassword());
         return ResponseEntity.ok(signInResponseDto);
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundDataException.class)
-    public ErrorResponse handleNotFound (){
-        return ErrorResponse.builder()
-                .code(ErrorCode.HOST_NOT_FOUND.getCode())
-                .status(ErrorCode.HOST_NOT_FOUND.getStatus())
-                .message(ErrorCode.HOST_NOT_FOUND.getMessage())
-                .build();
-    }
-
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(FailToAuthenticationException.class)
-    public ErrorResponse handleFailToAuth (){
-        return ErrorResponse.builder()
-                .code(ErrorCode.FAIL_TO_SIGN_IN.getCode())
-                .status(ErrorCode.FAIL_TO_SIGN_IN.getStatus())
-                .message(ErrorCode.FAIL_TO_SIGN_IN.getMessage())
-                .build();
-    }
-
+    /**
+     * 삭제된 계정일 경우
+     */
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(DeletedHostException.class)
-    public ErrorResponse handleDeletedHost (){
-        return ErrorResponse.builder()
-                .code(ErrorCode.DELETED.getCode())
-                .status(ErrorCode.DELETED.getStatus())
-                .message(ErrorCode.DELETED.getMessage())
-                .build();
+    public ErrorResponse handleDeletedHost(DeletedHostException e) {
+        return ErrorResponse.buildError(e.getErrorCode());
     }
 
+    /**
+     * 비활성화 계정일 경우
+     */
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(DisabledHostException.class)
-    public ErrorResponse handleDisabledHost (){
-        return ErrorResponse.builder()
-                .code(ErrorCode.DISABLED.getCode())
-                .status(ErrorCode.DISABLED.getStatus())
-                .message(ErrorCode.DISABLED.getMessage())
-                .build();
+    public ErrorResponse handleDisabledHost(DisabledHostException e) {
+        return ErrorResponse.buildError(e.getErrorCode());
     }
 
+    /**
+     * 메일 인증이 완료되지 않은 경우
+     */
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UnAuthMailException.class)
-    public ErrorResponse handleUnauthMail (){
-        return ErrorResponse.builder()
-                .code(ErrorCode.UNAUTH_MAIL.getCode())
-                .status(ErrorCode.UNAUTH_MAIL.getStatus())
-                .message(ErrorCode.UNAUTH_MAIL.getMessage())
-                .build();
+    public ErrorResponse handleUnauthMail(UnAuthMailException e) {
+        return ErrorResponse.buildError(e.getErrorCode());
     }
 
 }
