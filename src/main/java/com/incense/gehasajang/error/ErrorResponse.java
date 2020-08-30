@@ -22,6 +22,14 @@ public class ErrorResponse {
         this.errors = initErrors(errors);
     }
 
+    public static ErrorResponse buildError(ErrorCode errorCode) {
+        return ErrorResponse.builder()
+                .code(errorCode.getCode())
+                .status(errorCode.getStatus())
+                .message(errorCode.getMessage())
+                .build();
+    }
+
     private List<FieldError> initErrors(List<FieldError> errors) {
         return (errors == null) ? new ArrayList<>() : errors;
     }

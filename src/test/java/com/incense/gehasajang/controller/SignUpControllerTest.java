@@ -72,7 +72,7 @@ class SignUpControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("email").description("중복 검사 요청할 이메일")
@@ -99,7 +99,7 @@ class SignUpControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("nickname").description("중복 검사 요청할 닉네임")
@@ -129,7 +129,7 @@ class SignUpControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestPartBody("image"),
                         requestParameters(
@@ -159,7 +159,7 @@ class SignUpControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestParameters(
                                 parameterWithName("account").description("이메일(형식 필수)"),
@@ -198,7 +198,7 @@ class SignUpControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -228,7 +228,7 @@ class SignUpControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -247,7 +247,7 @@ class SignUpControllerTest {
                 .nickname("testtest")
                 .password("testtest123")
                 .isAgreeToMarketing(true).build();
-        doThrow(DuplicateHostException.class).when(signUpService).addHost(any(MainHost.class));
+        doThrow(new DuplicateHostException(ErrorCode.DUPLICATE)).when(signUpService).addHost(any(MainHost.class));
 
         //when
         ResultActions resultActions = createRequest(mainHost);
@@ -258,7 +258,7 @@ class SignUpControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -282,7 +282,7 @@ class SignUpControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestParameters(
                                 parameterWithName("email").description("호스트 이메일"),
@@ -299,7 +299,7 @@ class SignUpControllerTest {
         //given
         String email = "4incense@gmail.com";
         String authkey = "testkey";
-        doThrow(new FailToAuthenticationException()).when(signUpService).confirm(any(), any());
+        doThrow(new FailToAuthenticationException(ErrorCode.FAIL_TO_AUTH)).when(signUpService).confirm(any(), any());
 
         //when
         confirmRequest(email, authkey)
@@ -308,7 +308,7 @@ class SignUpControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -317,14 +317,14 @@ class SignUpControllerTest {
                                 fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다.")
                         )));
     }
-    
+
     @Test
     @DisplayName("인증 중복")
     void duplicateAuth() throws Exception {
         //given
         String email = "4incense@gmail.com";
         String authkey = "testkey";
-        doThrow(new DuplicateAuthException()).when(signUpService).confirm(any(), any());
+        doThrow(new DuplicateAuthException(ErrorCode.DUPLICATE_AUTH)).when(signUpService).confirm(any(), any());
 
         //when
         confirmRequest(email, authkey)
@@ -333,7 +333,7 @@ class SignUpControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -349,7 +349,7 @@ class SignUpControllerTest {
         //given
         String email = "4incense@gmail.com";
         String authkey = "testkey";
-        doThrow(new ExpirationException()).when(signUpService).confirm(any(), any());
+        doThrow(new ExpirationException(ErrorCode.EXPIRATION_AUTH)).when(signUpService).confirm(any(), any());
 
         //when
         confirmRequest(email, authkey)
@@ -358,7 +358,7 @@ class SignUpControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -367,14 +367,14 @@ class SignUpControllerTest {
                                 fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다.")
                         )));
     }
-    
+
     @Test
     @DisplayName("호스트 없음")
     void notFoundHost() throws Exception {
         //given
         String email = "4incense@gmail.com";
         String authkey = "testkey";
-        doThrow(new NotFoundDataException()).when(signUpService).confirm(any(), any());
+        doThrow(new NotFoundDataException(ErrorCode.HOST_NOT_FOUND)).when(signUpService).confirm(any(), any());
 
         //when
         confirmRequest(email, authkey)
@@ -383,7 +383,7 @@ class SignUpControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -392,14 +392,14 @@ class SignUpControllerTest {
                                 fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다.")
                         )));
     }
-    
+
     @Test
     @DisplayName("메일 전송 실패")
     void FailToSendMail() throws Exception {
         //given
         String email = "4incense@gmail.com";
         String authkey = "testkey";
-        doThrow(new CannotSendMailException()).when(signUpService).confirm(any(), any());
+        doThrow(new CannotSendMailException(ErrorCode.CANNOT_SEND_MAIL)).when(signUpService).confirm(any(), any());
 
         //when
         confirmRequest(email, authkey)
@@ -408,7 +408,7 @@ class SignUpControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -417,9 +417,8 @@ class SignUpControllerTest {
                                 fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다.")
                         )));
     }
-    
-    
-    
+
+
     private ResultActions createRequest(MainHost mainHost) throws Exception {
         MockMultipartFile image = new MockMultipartFile("image", "image", "image/jpg", "image".getBytes());
 

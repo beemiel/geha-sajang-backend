@@ -1,6 +1,15 @@
 package com.incense.gehasajang.exception;
 
-public class NotFoundDataException extends RuntimeException {
+import com.incense.gehasajang.error.ErrorCode;
 
-    public NotFoundDataException() {}
+public class NotFoundDataException extends RuntimeException {
+    private ErrorCode errorCode;
+
+    public NotFoundDataException(ErrorCode errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public ErrorCode getErrorCode() {
+        return errorCode;
+    }
 }

@@ -76,7 +76,7 @@ class SignInControllerTest {
     void notFoundHost() throws Exception {
         //given
         SignInRequestDto requestDto = SignInRequestDto.builder().account("foo").password("foo").build();
-        doThrow(NotFoundDataException.class).when(signInService).authenticate(any(), any());
+        doThrow(new NotFoundDataException(ErrorCode.HOST_NOT_FOUND)).when(signInService).authenticate(any(), any());
 
         //when
         signinRequest(requestDto).andExpect(status().isNotFound()).andExpect(jsonPath("code").value(ErrorCode.HOST_NOT_FOUND.getCode()))
@@ -85,7 +85,7 @@ class SignInControllerTest {
                                 .scheme(CommonString.SCHEMA)
                                 .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint())
-                        ));
+                ));
     }
 
     @Test
@@ -93,7 +93,7 @@ class SignInControllerTest {
     void wrongPassword() throws Exception {
         //given
         SignInRequestDto requestDto = SignInRequestDto.builder().account("foo").password("foo").build();
-        doThrow(FailToAuthenticationException.class).when(signInService).authenticate(any(), any());
+        doThrow(new FailToAuthenticationException(ErrorCode.FAIL_TO_SIGN_IN)).when(signInService).authenticate(any(), any());
 
         //when
         signinRequest(requestDto).andExpect(status().isUnauthorized()).andExpect(jsonPath("code").value(ErrorCode.FAIL_TO_SIGN_IN.getCode()))
@@ -110,7 +110,7 @@ class SignInControllerTest {
     void disabled() throws Exception {
         //given
         SignInRequestDto requestDto = SignInRequestDto.builder().account("foo").password("foo").build();
-        doThrow(DisabledHostException.class).when(signInService).authenticate(any(), any());
+        doThrow(new DisabledHostException(ErrorCode.DISABLED)).when(signInService).authenticate(any(), any());
 
         //when
         signinRequest(requestDto).andExpect(status().isUnauthorized()).andExpect(jsonPath("code").value(ErrorCode.DISABLED.getCode()))
@@ -127,7 +127,7 @@ class SignInControllerTest {
     void deleted() throws Exception {
         //given
         SignInRequestDto requestDto = SignInRequestDto.builder().account("foo").password("foo").build();
-        doThrow(DeletedHostException.class).when(signInService).authenticate(any(), any());
+        doThrow(new DeletedHostException(ErrorCode.DELETED)).when(signInService).authenticate(any(), any());
 
         //when
         signinRequest(requestDto).andExpect(status().isUnauthorized()).andExpect(jsonPath("code").value(ErrorCode.DELETED.getCode()))
@@ -144,7 +144,7 @@ class SignInControllerTest {
     void unAuthMail() throws Exception {
         //given
         SignInRequestDto requestDto = SignInRequestDto.builder().account("foo").password("foo").build();
-        doThrow(UnAuthMailException.class).when(signInService).authenticate(any(), any());
+        doThrow(new UnAuthMailException(ErrorCode.UNAUTH_MAIL)).when(signInService).authenticate(any(), any());
 
         //when
         signinRequest(requestDto).andExpect(status().isUnauthorized()).andExpect(jsonPath("code").value(ErrorCode.UNAUTH_MAIL.getCode()))
@@ -161,7 +161,6 @@ class SignInControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDto)));
     }
-
 
 
 }

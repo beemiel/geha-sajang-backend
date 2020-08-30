@@ -3,6 +3,7 @@ package com.incense.gehasajang.controller;
 
 import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.domain.house.HouseExtraInfo;
+import com.incense.gehasajang.exception.NumberExceededException;
 import com.incense.gehasajang.model.dto.house.HouseDto;
 import com.incense.gehasajang.model.dto.house.HouseExtraInfoDto;
 import com.incense.gehasajang.error.ErrorCode;
@@ -90,14 +91,13 @@ public class HouseController {
                 .collect(Collectors.toList());
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundDataException.class)
-    public ErrorResponse handleNotFound (){
-        return ErrorResponse.builder()
-                .code(ErrorCode.HOST_NOT_FOUND.getCode())
-                .status(ErrorCode.HOST_NOT_FOUND.getStatus())
-                .message(ErrorCode.HOST_NOT_FOUND.getMessage())
-                .build();
+    /**
+     * 하우스 추가 정보가 최대 개수를 초과
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NumberExceededException.class)
+    public ErrorResponse handleNumberExceededException(NumberExceededException e) {
+        return ErrorResponse.buildError(e.getErrorCode());
     }
 
 }

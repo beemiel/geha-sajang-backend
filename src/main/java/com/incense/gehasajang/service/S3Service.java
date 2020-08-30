@@ -3,6 +3,7 @@ package com.incense.gehasajang.service;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.CannotConvertException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +30,12 @@ public class S3Service {
     private String bucket;
 
     public String upload(MultipartFile image, String dirName) throws IOException {
-        if(image==null || image.isEmpty()){
+        if (image == null || image.isEmpty()) {
             return "";
         }
 
         File uploadFile = convert(image)
-                .orElseThrow(CannotConvertException::new);
+                .orElseThrow(() -> new CannotConvertException(ErrorCode.CANNOT_CONVERT_FILE));
 
         return upload(uploadFile, dirName);
     }
@@ -59,7 +60,7 @@ public class S3Service {
     }
 
     private void removeNewFile(File targetFile) {
-        if(targetFile.delete()) {
+        if (targetFile.delete()) {
             log.info("파일이 삭제되었습니다.");
         } else {
             log.info("파일이 삭제되지 않았습니다.");
@@ -68,7 +69,7 @@ public class S3Service {
 
     private Optional<File> convert(MultipartFile image) throws IOException {
         File convertFile = new File(image.getOriginalFilename());
-        if(convertFile.createNewFile()) {
+        if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                 fos.write(image.getBytes());
             }
