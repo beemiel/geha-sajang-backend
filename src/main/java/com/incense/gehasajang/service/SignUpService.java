@@ -1,6 +1,7 @@
 package com.incense.gehasajang.service;
 
 import com.incense.gehasajang.domain.host.*;
+import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.*;
 import com.incense.gehasajang.util.CommonString;
 import com.incense.gehasajang.util.MailHandler;
@@ -36,44 +37,44 @@ public class SignUpService {
     }
 
     public void addHost(Host mainHost) {
-        if(checkAccount(mainHost.getAccount())) {
-            throw new DuplicateHostException();
+        if (checkAccount(mainHost.getAccount())) {
+            throw new DuplicateHostException(ErrorCode.DUPLICATE);
         }
 
-        if(checkName(mainHost.getNickname())) {
-            throw new DuplicateHostException();
+        if (checkName(mainHost.getNickname())) {
+            throw new DuplicateHostException(ErrorCode.DUPLICATE);
         }
 
         mainHost.hashPassword(passwordEncoder);
         Host savedHost = hostRepository.save(mainHost);
         HostAuthKey savedKey = hostAuthKeyRepository.save(createAuthKey(savedHost));
 
-        sendMail(mailSender ,mainHost.getAccount(), savedKey.getAuthKey());
+        sendMail(mailSender, mainHost.getAccount(), savedKey.getAuthKey());
     }
 
     public void confirm(String account, String authkey) {
         //email 불일치
         MainHost host = hostRepository.findMainHostByAccount(account)
-                .orElseThrow(NotFoundDataException::new);
+                .orElseThrow(() -> new NotFoundDataException(ErrorCode.HOST_NOT_FOUND));
 
         //이미 인증함
-        if(host.isPassEmailAuth()) {
-            throw new DuplicateAuthException();
+        if (host.isPassEmailAuth()) {
+            throw new DuplicateAuthException(ErrorCode.DUPLICATE_AUTH);
         }
 
         //인증키 만료
-        if(host.getAuthKey().getExpirationDate().isBefore(LocalDateTime.now())){
-            throw new ExpirationException();
+        if (host.getAuthKey().getExpirationDate().isBefore(LocalDateTime.now())) {
+            throw new ExpirationException(ErrorCode.EXPIRATION_AUTH);
         }
 
-        if(host.getAuthKey().getAuthKey().equals(authkey)){
+        if (host.getAuthKey().getAuthKey().equals(authkey)) {
             host.changeAuthPass();
             hostRepository.save(host);
             return;
         }
 
         //인증키 불일치
-        throw new FailToAuthenticationException();
+        throw new FailToAuthenticationException(ErrorCode.FAIL_TO_AUTH);
     }
 
     private HostAuthKey createAuthKey(Host savedHost) {
@@ -117,7 +118,7 @@ public class SignUpService {
             mailHandler.send();
         } catch (Exception e) {
             e.printStackTrace();
-            throw new CannotSendMailException();
+            throw new CannotSendMailException(ErrorCode.CANNOT_SEND_MAIL);
         }
     }
 

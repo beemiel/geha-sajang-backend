@@ -54,54 +54,40 @@ public class SignUpController {
         return ResponseEntity.ok(signUpService.checkName(name.getNickname()));
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundDataException.class)
-    public ErrorResponse handleNotFound (){
-        return ErrorResponse.builder()
-                .code(ErrorCode.HOST_NOT_FOUND.getCode())
-                .status(ErrorCode.HOST_NOT_FOUND.getStatus())
-                .message(ErrorCode.HOST_NOT_FOUND.getMessage())
-                .build();
-    }
-
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(FailToAuthenticationException.class)
-    public ErrorResponse handleFailToAuth (){
-        return ErrorResponse.builder()
-                .code(ErrorCode.FAIL_TO_AUTH.getCode())
-                .status(ErrorCode.FAIL_TO_AUTH.getStatus())
-                .message(ErrorCode.FAIL_TO_AUTH.getMessage())
-                .build();
-    }
-
+    /**
+     * 중복 인증 요청
+     */
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(DuplicateAuthException.class)
-    public ErrorResponse handleDuplicateAuth (){
-        return ErrorResponse.builder()
-                .code(ErrorCode.DUPLICATE_AUTH.getCode())
-                .status(ErrorCode.DUPLICATE_AUTH.getStatus())
-                .message(ErrorCode.DUPLICATE_AUTH.getMessage())
-                .build();
+    public ErrorResponse handleDuplicateAuth(DuplicateAuthException e) {
+        return ErrorResponse.buildError(e.getErrorCode());
     }
 
+    /**
+     * 만료된 인증키
+     */
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(ExpirationException.class)
-    public ErrorResponse handleExpiration (){
-        return ErrorResponse.builder()
-                .code(ErrorCode.EXPIRATION_AUTH.getCode())
-                .status(ErrorCode.EXPIRATION_AUTH.getStatus())
-                .message(ErrorCode.EXPIRATION_AUTH.getMessage())
-                .build();
+    public ErrorResponse handleExpiration(ExpirationException e) {
+        return ErrorResponse.buildError(e.getErrorCode());
     }
 
+    /**
+     * 이미 등록된 호스트
+     */
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(DuplicateHostException.class)
-    public ErrorResponse handleDuplicateHost () {
-        return ErrorResponse.builder()
-                .code(ErrorCode.DUPLICATE.getCode())
-                .status(ErrorCode.DUPLICATE.getStatus())
-                .message(ErrorCode.DUPLICATE.getMessage())
-                .build();
+    public ErrorResponse handleDuplicateHost(DuplicateHostException e) {
+        return ErrorResponse.buildError(e.getErrorCode());
+    }
+
+    /**
+     * 메일 전송 실패
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(CannotSendMailException.class)
+    public ErrorResponse handleCannotSendMailException(CannotSendMailException e) {
+        return ErrorResponse.buildError(e.getErrorCode());
     }
 
 }

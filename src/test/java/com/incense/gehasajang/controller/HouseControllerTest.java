@@ -102,7 +102,7 @@ class HouseControllerTest {
     @DisplayName("게스트_하우스_정보를_가져오지_못한다.")
     public void getHouseInfoFail() throws Exception {
         //given
-        given(houseService.getHouse(any(), any())).willThrow(new NotFoundDataException());
+        given(houseService.getHouse(any(), any())).willThrow(new NotFoundDataException(ErrorCode.HOUSE_NOT_FOUND));
 
         //when
         ResultActions resultActions = failRequestHouseInfo(2L);
@@ -134,7 +134,7 @@ class HouseControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestPartBody("image"),
                         requestParameters(
@@ -161,7 +161,7 @@ class HouseControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestParameters(
                                 parameterWithName("name").description("이름(50자이내 필수값)"),
@@ -178,7 +178,7 @@ class HouseControllerTest {
                                 fieldWithPath("errors.[].value").description("서버로 요청했던 값").optional()
                         )));
     }
-    
+
     @Test
     @DisplayName("하우스 추가 정보 개수 초과")
     public void numberExceededException() throws Exception {
@@ -192,7 +192,7 @@ class HouseControllerTest {
                 .mainNumber("01012345678")
                 .mainImage("메인 이미지")
                 .build();
-        doThrow(NumberExceededException.class).when(houseService).addHouse(any(House.class), any(String.class), any());
+        doThrow(new NumberExceededException(ErrorCode.NUMBER_EXCEED)).when(houseService).addHouse(any(House.class), any(String.class), any());
 
         //when
         ResultActions resultActions = createRequest(houseDto, extra);
@@ -203,7 +203,7 @@ class HouseControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -237,7 +237,7 @@ class HouseControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -271,7 +271,7 @@ class HouseControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("message").description("에러의 상세 메세지"),
@@ -288,7 +288,7 @@ class HouseControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("houseId").description("요청하고자 하는 house id")
@@ -317,7 +317,7 @@ class HouseControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("houseId").description("요청하고자 하는 house id")
@@ -327,7 +327,7 @@ class HouseControllerTest {
                                 fieldWithPath("status").description("상태 코드"),
                                 fieldWithPath("code").description("직접 정의한 에러 코드"),
                                 fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다.")
-                                )
+                        )
                 ));
     }
 
@@ -335,7 +335,7 @@ class HouseControllerTest {
         MockMultipartFile image = new MockMultipartFile("image", "image", "image/jpg", "image".getBytes());
 
         return mockMvc.perform(MockMvcRequestBuilders.multipart("/api/v1/houses")
-                .file("image",image.getBytes())
+                .file("image", image.getBytes())
                 .param("name", houseDto.getName())
                 .param("mainNumber", houseDto.getMainNumber())
                 .param("extra", extra)

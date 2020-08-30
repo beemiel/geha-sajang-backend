@@ -1,6 +1,15 @@
 package com.incense.gehasajang.exception;
 
-public class NumberExceededException extends RuntimeException {
+import com.incense.gehasajang.error.ErrorCode;
 
-    public NumberExceededException() {}
+public class NumberExceededException extends RuntimeException {
+    private ErrorCode errorCode;
+
+    public NumberExceededException(ErrorCode errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public ErrorCode getErrorCode() {
+        return errorCode;
+    }
 }
