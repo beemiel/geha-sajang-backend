@@ -4,7 +4,6 @@ import com.incense.gehasajang.domain.host.HostRepository;
 import com.incense.gehasajang.domain.room.Room;
 import com.incense.gehasajang.domain.room.RoomRepository;
 import com.incense.gehasajang.exception.AccessDeniedException;
-import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.model.param.room.RoomDetailParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,8 +25,8 @@ public class RoomService {
 
     public Room getRoom(RoomDetailParam detailParam) {
         authorityCheck(detailParam);
-        return roomRepository.findById(detailParam.getRoomId())
-                .orElseThrow(NotFoundDataException::new);
+        return roomRepository.findByIdAndHouse_Id(detailParam.getRoomId(), detailParam.getHouseId())
+                .orElseThrow(AccessDeniedException::new);
     }
 
     private void authorityCheck(RoomDetailParam detailParam) {
