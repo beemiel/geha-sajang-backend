@@ -8,12 +8,11 @@ import com.incense.gehasajang.model.param.room.RoomDetailParam;
 import com.incense.gehasajang.security.UserAuthentication;
 import com.incense.gehasajang.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,5 +49,14 @@ public class RoomController {
 
         Room room = roomService.getRoom(detailParam);
         return ResponseEntity.ok(mapper.map(room, RoomDto.class));
+    }
+
+    @PostMapping
+    @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_MAIN')")
+    public ResponseEntity<Void> create(
+            RoomDto roomDto
+    ) {
+        roomService.addRoom(mapper.map(roomDto, Room.class));
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

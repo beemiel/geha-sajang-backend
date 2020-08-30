@@ -35,4 +35,9 @@ public class RoomService {
         hostRepository.findHouseByAccountAndHouseId(detailParam.getAccount(), detailParam.getHouseId())
                 .orElseThrow(() -> new AccessDeniedException(ErrorCode.ACCESS_DENIED));
     }
+
+    @Transactional
+    public void addRoom(Room room) {
+        roomRepository.save(room);
+    }
 }
