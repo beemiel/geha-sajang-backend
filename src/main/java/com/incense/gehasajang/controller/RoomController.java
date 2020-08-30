@@ -3,7 +3,7 @@ package com.incense.gehasajang.controller;
 
 import com.github.dozermapper.core.Mapper;
 import com.incense.gehasajang.domain.room.Room;
-import com.incense.gehasajang.model.dto.RoomDto;
+import com.incense.gehasajang.model.dto.room.RoomDto;
 import com.incense.gehasajang.model.param.room.RoomDetailParam;
 import com.incense.gehasajang.security.UserAuthentication;
 import com.incense.gehasajang.service.RoomService;

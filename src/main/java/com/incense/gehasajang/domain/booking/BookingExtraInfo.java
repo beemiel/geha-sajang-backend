@@ -21,8 +21,7 @@ public class BookingExtraInfo {
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
-    @Enumerated(EnumType.STRING)
-    private AttendStatus attendStatus;
+    private Boolean isAttend;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "house_extra_info_id")

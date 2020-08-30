@@ -208,7 +208,7 @@ create table booked_room (
 create table booking_extra_info (
     booking_extra_info_id bigint auto_increment,
     attend_date timestamp not null,
-    attend_status varchar(255) not null,
+    is_attend boolean,
     memo varchar(255),
     people_count integer not null,
     house_extra_info_id bigint references house_extra_info(house_extra_info_id),

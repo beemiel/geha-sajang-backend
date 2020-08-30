@@ -1,4 +1,4 @@
-package com.incense.gehasajang.model.dto;
+package com.incense.gehasajang.model.dto.room;
 
 import com.github.dozermapper.core.Mapping;
 import lombok.Builder;
