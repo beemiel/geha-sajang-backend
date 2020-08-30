@@ -58,7 +58,7 @@ public class MainHost extends Host {
 
     @PrePersist
     public void prePersist() {
-        address = address == null ? new Address("","","","") : address;
+        address = address == null ? new Address("", "", "", "") : address;
     }
 
 }

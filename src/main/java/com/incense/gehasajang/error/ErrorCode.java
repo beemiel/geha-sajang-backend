@@ -3,7 +3,7 @@ package com.incense.gehasajang.error;
 import lombok.Getter;
 
 @Getter
-public enum  ErrorCode {
+public enum ErrorCode {
     //하우스 관련
     HOUSE_NOT_FOUND("HO_001", "해당 하우스를 찾을 수 없습니다.", 404),
     NUMBER_EXCEED("HO_002", "지정된 숫자를 초과하였습니다.", 400),

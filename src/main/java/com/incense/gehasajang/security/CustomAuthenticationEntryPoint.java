@@ -16,7 +16,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        String exception = (String)request.getAttribute("exception");
+        String exception = (String) request.getAttribute("exception");
         ErrorCode errorCode;
 
         log.debug("log: exception: {} ", exception);
@@ -24,7 +24,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         /**
          * 토큰 없는 경우
          */
-        if(exception == null) {
+        if (exception == null) {
             errorCode = ErrorCode.NON_LOGIN;
             setResponse(response, errorCode);
             return;
@@ -33,7 +33,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         /**
          * 토큰 만료된 경우
          */
-        if(exception.equals(ErrorCode.EXPIRED_TOKEN.getCode())) {
+        if (exception.equals(ErrorCode.EXPIRED_TOKEN.getCode())) {
             errorCode = ErrorCode.EXPIRED_TOKEN;
             setResponse(response, errorCode);
             return;
@@ -42,7 +42,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         /**
          * 토큰 시그니처가 다른 경우
          */
-        if(exception.equals(ErrorCode.INVALID_TOKEN.getCode())) {
+        if (exception.equals(ErrorCode.INVALID_TOKEN.getCode())) {
             errorCode = ErrorCode.INVALID_TOKEN;
             setResponse(response, errorCode);
         }
@@ -55,7 +55,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().println("{ \"message\" : \"" + errorCode.getMessage()
-                + "\", \"code\" : \"" +  errorCode.getCode()
+                + "\", \"code\" : \"" + errorCode.getCode()
                 + "\", \"status\" : " + errorCode.getStatus()
                 + ", \"errors\" : [ ] }");
     }

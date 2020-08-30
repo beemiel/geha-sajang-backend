@@ -18,11 +18,11 @@ public class JwtUtil {
 
 
     public Claims parseToken(String token) {
-                    return Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     public String createToken(String account, String role) {

@@ -54,10 +54,6 @@ public class HostDto {
     @Mapping("isAgreeToMarketing")
     private boolean isAgreeToMarketing;
 
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
-    }
-
     @Builder
     public HostDto(Long hostId, String nickname, String account, String password, String profileImage, String thumbnailImage, String city, String street, String postcode, String detail, boolean isAgreeToMarketing) {
         this.hostId = hostId;
@@ -71,5 +67,9 @@ public class HostDto {
         this.postcode = postcode;
         this.detail = detail;
         this.isAgreeToMarketing = isAgreeToMarketing;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 }

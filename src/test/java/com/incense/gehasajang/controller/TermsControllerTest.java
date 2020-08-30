@@ -54,7 +54,7 @@ class TermsControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
                                 fieldWithPath("[].terms_id").description("id").type(Long.class),

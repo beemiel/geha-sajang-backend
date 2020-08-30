@@ -1,10 +1,8 @@
 package com.incense.gehasajang.security;
 
-import com.incense.gehasajang.util.JwtProperties;
 import com.incense.gehasajang.util.JwtUtil;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,7 +23,8 @@ import javax.servlet.Filter;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private SecretKey secret = Keys.secretKeyFor(SignatureAlgorithm.HS256);;
+    private SecretKey secret = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    ;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {

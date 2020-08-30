@@ -1,7 +1,6 @@
 package com.incense.gehasajang.service;
 
 import com.incense.gehasajang.domain.Address;
-import com.incense.gehasajang.domain.host.Host;
 import com.incense.gehasajang.domain.host.HostRepository;
 import com.incense.gehasajang.domain.host.MainHost;
 import com.incense.gehasajang.domain.house.*;
@@ -16,7 +15,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class HouseServiceTest {
 

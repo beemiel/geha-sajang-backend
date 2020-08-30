@@ -2,12 +2,14 @@ package com.incense.gehasajang.controller;
 
 import com.github.dozermapper.core.Mapper;
 import com.incense.gehasajang.domain.host.MainHost;
+import com.incense.gehasajang.error.ErrorResponse;
+import com.incense.gehasajang.exception.CannotSendMailException;
+import com.incense.gehasajang.exception.DuplicateAuthException;
+import com.incense.gehasajang.exception.DuplicateHostException;
+import com.incense.gehasajang.exception.ExpirationException;
 import com.incense.gehasajang.model.dto.host.EmailCheckDto;
 import com.incense.gehasajang.model.dto.host.HostDto;
 import com.incense.gehasajang.model.dto.host.NicknameCheckDto;
-import com.incense.gehasajang.error.ErrorCode;
-import com.incense.gehasajang.error.ErrorResponse;
-import com.incense.gehasajang.exception.*;
 import com.incense.gehasajang.service.S3Service;
 import com.incense.gehasajang.service.SignUpService;
 import lombok.RequiredArgsConstructor;
