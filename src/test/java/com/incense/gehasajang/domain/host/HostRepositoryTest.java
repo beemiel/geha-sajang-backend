@@ -1,6 +1,7 @@
 package com.incense.gehasajang.domain.host;
 
 import com.incense.gehasajang.domain.Address;
+import com.incense.gehasajang.domain.house.HostHouseRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,6 +32,9 @@ class HostRepositoryTest {
     @Autowired
     private HostAuthKeyRepository hostAuthKeyRepository;
 
+    @Autowired
+    private HostHouseRepository hostHouseRepository;
+
     @BeforeEach
     public void setUp() {
         List<Host> hosts = Arrays.asList(
@@ -38,7 +42,8 @@ class HostRepositoryTest {
                 MainHost.builder().account("joyjoy@gmail.com").nickname("joy").password("joyjoy123123").address(new Address("", "", "", "")).isAgreeToMarketing(false).deletedAt(LocalDateTime.now()).build(),
                 MainHost.builder().account("lean@gmail.com").nickname("lena").password("lena1234").address(new Address("", "", "", "")).isAgreeToMarketing(false).deletedAt(LocalDateTime.now()).build(),
                 MainHost.builder().account("lynn@gmail.com").nickname("lynn").password("lynn1234").address(new Address("", "", "", "")).isAgreeToMarketing(true).build(),
-                MainHost.builder().account("4incense@gmail.com").nickname("4incense").password("4incensese").address(new Address("", "", "", "")).isAgreeToMarketing(true).build()
+                MainHost.builder().account("4incense@gmail.com").nickname("4incense").password("4incensese").address(new Address("", "", "", "")).isAgreeToMarketing(true).build(),
+                MainHost.builder().account("test@gmail.com").nickname("test").password("test").address(new Address("", "", "", "")).isAgreeToMarketing(true).build()
         );
 
         hosts.forEach(host -> hostRepository.save(host));
@@ -50,6 +55,7 @@ class HostRepositoryTest {
 
     @AfterEach
     public void clean() {
+        hostHouseRepository.deleteAll();
         hostAuthKeyRepository.deleteAll();
         hostRepository.deleteAll();
     }

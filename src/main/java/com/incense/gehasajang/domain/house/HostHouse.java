@@ -1,8 +1,10 @@
 package com.incense.gehasajang.domain.house;
 
 import com.incense.gehasajang.domain.host.Host;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -10,6 +12,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class HostHouse {
 
     @Id
