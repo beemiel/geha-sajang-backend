@@ -28,7 +28,7 @@ VALUES (1, 'main', 'maxmax@4incense.com', 'max', '123456', true, false, '', '', 
        (2, 'main', 'joyjoy@4incense.com', 'joy', '123456', true, false,'', '', '', '', '', '', false, now(), now(), now()),
        (3, 'main', 'lena@4incense.com', 'lena', '123456', true, false,'', '', '', '', '', '', false, now(), now(), now()),
        (4, 'main', 'lynn@4incense.com', 'lynn', '123456', true, false, '', '', '', '', '', '', false, now(), now(), null),
-       (5, 'main', 'official@4incense.com', '4incense', '123456', true, false, '', '', '', '', '', '', false, now(), now(), null),
+       (5, 'main', 'official@4incense.com', '4incense', '$2a$10$U368wBp94Ag7n3BK5tTa/uUhHaiCTilnVPAI/zE2RkU7K208vsdVW', true, true, '', '', '', '', '', '', true, now(), now(), null),
        (6, 'main', 'bluuminn@gmail.com', 'maxious', '$2a$10$XnAZV.f/q0Sl4sc1wXCKEOa.j.mH9ZTnqkl.nReKAzuE/x4AeNBj.', false, true, '', '', '', '', '', '', true, now(), now(), null);
 
 INSERT INTO host_auth_key
@@ -36,4 +36,5 @@ VALUES (1, 4, 'testtestkeykey', now()),
        (2, 5, 'testkey', '2020-08-26');
 
 INSERT INTO host_house
-VALUES (1, 6, 1);
+VALUES (1, 6, 1),
+       (2, 5, 2);

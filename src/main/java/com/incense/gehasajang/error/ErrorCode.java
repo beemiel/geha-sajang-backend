@@ -8,6 +8,9 @@ public enum ErrorCode {
     HOUSE_NOT_FOUND("HO_001", "해당 하우스를 찾을 수 없습니다.", 404),
     NUMBER_EXCEED("HO_002", "지정된 숫자를 초과하였습니다.", 400),
 
+    //룸 관련
+    ROOM_NOT_FOUND("RO_001", "방을 찾을 수 없습니다.", 404),
+
     //유저 관련
     DUPLICATE("US_001", "이미 등록된 호스트입니다.", 409),
     HOST_NOT_FOUND("US_002", "호스트를 찾을 수 없습니다.", 404),
