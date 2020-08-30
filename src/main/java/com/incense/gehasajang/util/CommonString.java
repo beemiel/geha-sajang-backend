@@ -4,7 +4,7 @@ public class CommonString {
     public static final String SCHEMA = "http";
     public static final String HOST = "13.124.108.177";
 
-    public static final String SEPORATOR = "☆§♥♨☎";
+    public static final String SEPARATOR = "☆§♥♨☎";
 
     public static final String MAIL_SUBJECT = "[게하사장] 인증을 완료해주세요.";
     public static final String LOGO_PATH = "static/logoblack.png";

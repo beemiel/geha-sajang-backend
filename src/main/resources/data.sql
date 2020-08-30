@@ -24,12 +24,16 @@ INSERT INTO room VALUES (3, 4, 6, null, 'test_room_3', 30000, 40000, 'MULTIPLE',
 INSERT INTO room VALUES (4, 2, 3, null, 'test_room_4', 40000, 50000, 'MULTIPLE', 1, now(), null, null);
 
 INSERT INTO host
-VALUES (1, 'main', 'maxmax@gmail.com', 'max', '123456', true, false, '', '', '', '', '', '', false, now(),now(), null),
-       (2, 'main', 'joyjoy@gmail.com', 'joy', '123456', true, false,'', '', '', '', '', '', false, now(),now(),now()),
-       (3, 'main', 'lean@gmail.com', 'lena', '123456', true, false,'', '', '', '', '', '', false, now(),now(),now()),
-       (4, 'main', 'lynn@gmail.com', 'lynn', '123456', true, false, '', '', '', '', '', '', false , now(),now(), null),
-       (5, 'main', '4incense@gmail.com', '4incense', '123456', true, false, '', '', '', '', '', '', false , now(),now(),null);
+VALUES (1, 'main', 'maxmax@4incense.com', 'max', '123456', true, false, '', '', '', '', '', '', false, now(), now(), null),
+       (2, 'main', 'joyjoy@4incense.com', 'joy', '123456', true, false,'', '', '', '', '', '', false, now(), now(), now()),
+       (3, 'main', 'lena@4incense.com', 'lena', '123456', true, false,'', '', '', '', '', '', false, now(), now(), now()),
+       (4, 'main', 'lynn@4incense.com', 'lynn', '123456', true, false, '', '', '', '', '', '', false, now(), now(), null),
+       (5, 'main', 'official@4incense.com', '4incense', '123456', true, false, '', '', '', '', '', '', false, now(), now(), null),
+       (6, 'main', 'bluuminn@gmail.com', 'maxious', '$2a$10$XnAZV.f/q0Sl4sc1wXCKEOa.j.mH9ZTnqkl.nReKAzuE/x4AeNBj.', false, true, '', '', '', '', '', '', true, now(), now(), null);
 
 INSERT INTO host_auth_key
 VALUES (1, 4, 'testtestkeykey', now()),
        (2, 5, 'testkey', '2020-08-26');
+
+INSERT INTO host_house
+VALUES (1, 6, 1);

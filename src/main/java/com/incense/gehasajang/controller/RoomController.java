@@ -1,11 +1,15 @@
 package com.incense.gehasajang.controller;
 
+
 import com.github.dozermapper.core.Mapper;
 import com.incense.gehasajang.domain.room.Room;
 import com.incense.gehasajang.model.dto.RoomDto;
+import com.incense.gehasajang.model.param.room.RoomDetailParam;
+import com.incense.gehasajang.security.UserAuthentication;
 import com.incense.gehasajang.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,10 +35,20 @@ public class RoomController {
         return ResponseEntity.ok(rooms.stream().map(room -> mapper.map(room, RoomDto.class)).collect(Collectors.toList()));
     }
 
-    @GetMapping("/{roomsId}")
-    public void detail(
-            @PathVariable Long roomsId
+    @GetMapping("/{roomId}")
+    public ResponseEntity<RoomDto> detail(
+            @PathVariable Long houseId,
+            @PathVariable Long roomId,
+            @AuthenticationPrincipal UserAuthentication authentication
     ) {
-        // TODO: roomId 에 해당하는 room 조회
+
+        RoomDetailParam detailParam = RoomDetailParam.builder()
+                .houseId(houseId)
+                .roomId(roomId)
+                .account(authentication.getAccount())
+                .build();
+
+        Room room = roomService.getRoom(detailParam);
+        return ResponseEntity.ok(mapper.map(room, RoomDto.class));
     }
 }
