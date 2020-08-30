@@ -34,13 +34,13 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         Authentication authentication = getAuthentication(request);
 
-        if(authentication != null) {
+        if (authentication != null) {
             //Controller에서 Authentication 객체를 쓰기 위해 보안 컨텍스트에 인증 객체를 넣어줌
             SecurityContext context = SecurityContextHolder.getContext();
             context.setAuthentication(authentication);
         }
 
-        chain.doFilter(request,response);
+        chain.doFilter(request, response);
     }
 
     /**
@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
      */
     private Authentication getAuthentication(HttpServletRequest request) {
         String authorization = request.getHeader(JwtProperties.HEADER_STRING);
-        if(authorization == null) {
+        if (authorization == null) {
             return null;
         }
 

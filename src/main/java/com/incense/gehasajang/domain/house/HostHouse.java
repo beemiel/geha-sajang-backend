@@ -1,7 +1,6 @@
 package com.incense.gehasajang.domain.house;
 
 import com.incense.gehasajang.domain.host.Host;
-import com.incense.gehasajang.domain.house.House;
 import lombok.Builder;
 import lombok.Getter;
 

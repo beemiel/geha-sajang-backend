@@ -5,8 +5,8 @@ import lombok.Getter;
 @Getter
 public enum HostRole {
 
-    ROLE_MAIN("ROLE_MAIN","main"),
-    ROLE_SUB("ROLE_SUB","sub");
+    ROLE_MAIN("ROLE_MAIN", "main"),
+    ROLE_SUB("ROLE_SUB", "sub");
 
     private final String role;
     private final String type;

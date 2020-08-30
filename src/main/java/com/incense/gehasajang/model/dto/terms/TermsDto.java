@@ -1,7 +1,9 @@
 package com.incense.gehasajang.model.dto.terms;
 
 import com.github.dozermapper.core.Mapping;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

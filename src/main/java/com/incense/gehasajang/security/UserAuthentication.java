@@ -1,6 +1,5 @@
 package com.incense.gehasajang.security;
 
-import com.incense.gehasajang.domain.host.Host;
 import com.incense.gehasajang.domain.host.HostRole;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -26,7 +25,7 @@ public class UserAuthentication extends AbstractAuthenticationToken {
 
         //메인 호스트의 경우 역할 추가
         String role = claims.get("role", String.class);
-        if(role.equals(HostRole.ROLE_MAIN.getType())) {
+        if (role.equals(HostRole.ROLE_MAIN.getType())) {
             authorities.add(new SimpleGrantedAuthority(HostRole.ROLE_MAIN.getRole()));
         }
 

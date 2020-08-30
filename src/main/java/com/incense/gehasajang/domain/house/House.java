@@ -6,7 +6,10 @@ import com.incense.gehasajang.domain.Invitation;
 import com.incense.gehasajang.domain.booking.Booking;
 import com.incense.gehasajang.domain.room.Room;
 import com.incense.gehasajang.domain.sms.SmsTemplate;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -72,6 +75,6 @@ public class House extends BaseTimeEntity {
 
     @PrePersist
     public void prePersist() {
-        address = address == null ? new Address("","","","") : address;
+        address = address == null ? new Address("", "", "", "") : address;
     }
 }

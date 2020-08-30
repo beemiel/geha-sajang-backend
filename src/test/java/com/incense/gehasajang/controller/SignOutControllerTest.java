@@ -25,7 +25,7 @@ class SignOutControllerTest {
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
-                                .host(CommonString.HOST),prettyPrint()),
+                                .host(CommonString.HOST), prettyPrint()),
                         preprocessResponse(prettyPrint())));
     }
 

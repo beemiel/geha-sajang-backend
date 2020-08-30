@@ -34,11 +34,11 @@ class HostRepositoryTest {
     @BeforeEach
     public void setUp() {
         List<Host> hosts = Arrays.asList(
-                MainHost.builder().account("maxmax@gmail.com").nickname("max").password("maxmax123").address(new Address("","","","")).isAgreeToMarketing(true).build(),
-                MainHost.builder().account("joyjoy@gmail.com").nickname("joy").password("joyjoy123123").address(new Address("","","","")).isAgreeToMarketing(false).deletedAt(LocalDateTime.now()).build(),
-                MainHost.builder().account("lean@gmail.com").nickname("lena").password("lena1234").address(new Address("","","","")).isAgreeToMarketing(false).deletedAt(LocalDateTime.now()).build(),
-                MainHost.builder().account("lynn@gmail.com").nickname("lynn").password("lynn1234").address(new Address("","","","")).isAgreeToMarketing(true).build(),
-                MainHost.builder().account("4incense@gmail.com").nickname("4incense").password("4incensese").address(new Address("","","","")).isAgreeToMarketing(true).build()
+                MainHost.builder().account("maxmax@gmail.com").nickname("max").password("maxmax123").address(new Address("", "", "", "")).isAgreeToMarketing(true).build(),
+                MainHost.builder().account("joyjoy@gmail.com").nickname("joy").password("joyjoy123123").address(new Address("", "", "", "")).isAgreeToMarketing(false).deletedAt(LocalDateTime.now()).build(),
+                MainHost.builder().account("lean@gmail.com").nickname("lena").password("lena1234").address(new Address("", "", "", "")).isAgreeToMarketing(false).deletedAt(LocalDateTime.now()).build(),
+                MainHost.builder().account("lynn@gmail.com").nickname("lynn").password("lynn1234").address(new Address("", "", "", "")).isAgreeToMarketing(true).build(),
+                MainHost.builder().account("4incense@gmail.com").nickname("4incense").password("4incensese").address(new Address("", "", "", "")).isAgreeToMarketing(true).build()
         );
 
         hosts.forEach(host -> hostRepository.save(host));
