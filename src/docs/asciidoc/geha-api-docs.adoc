@@ -567,7 +567,7 @@ Host: 13.124.108.177:8080
 | image
 | 이미지 파일(NULL⭕/""⭕)
 
-| email
+| account
 | 이메일(형식 필수)
 
 | nickname
@@ -605,7 +605,7 @@ Content-Type: application/json;charset=UTF-8
     "value" : "1",
     "reason" : "비밀번호는 숫자+문자 조합으로 8~16자로 입력해주세요."
   }, {
-    "field" : "email",
+    "field" : "account",
     "value" : "email",
     "reason" : "이메일 형식을 지켜주세요."
   }, {
