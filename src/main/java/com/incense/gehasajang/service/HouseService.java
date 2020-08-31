@@ -70,7 +70,8 @@ public class HouseService {
     }
 
     private void authorityCheck(Long houseId, String account) {
-        hostRepository.findHouseByAccountAndHouseId(account, houseId).orElseThrow(() -> new AccessDeniedException(ErrorCode.ACCESS_DENIED));
+        hostRepository.findByAccountAndHostHouses_House_Id(account, houseId)
+                .orElseThrow(() -> new AccessDeniedException(ErrorCode.ACCESS_DENIED));
     }
 
 }

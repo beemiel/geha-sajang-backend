@@ -32,7 +32,7 @@ public class RoomService {
     }
 
     private void authorityCheck(RoomDetailParam detailParam) {
-        hostRepository.findHouseByAccountAndHouseId(detailParam.getAccount(), detailParam.getHouseId())
+        hostRepository.findByAccountAndHostHouses_House_Id(detailParam.getAccount(), detailParam.getHouseId())
                 .orElseThrow(() -> new AccessDeniedException(ErrorCode.ACCESS_DENIED));
     }
 }
