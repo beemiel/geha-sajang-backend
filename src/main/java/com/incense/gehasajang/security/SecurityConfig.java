@@ -24,7 +24,6 @@ import javax.servlet.Filter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private SecretKey secret = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    ;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -38,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/docs/**", "/static/**");
+        web.ignoring().antMatchers("/docs/**", "/static/**", "/h2-console/**");
     }
 
     @Override
