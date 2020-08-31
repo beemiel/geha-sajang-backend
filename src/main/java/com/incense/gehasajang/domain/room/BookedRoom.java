@@ -1,4 +1,4 @@
-package com.incense.gehasajang.domain;
+package com.incense.gehasajang.domain.room;
 
 import lombok.Getter;
 
