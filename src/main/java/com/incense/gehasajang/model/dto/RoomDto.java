@@ -1,17 +1,26 @@
 package com.incense.gehasajang.model.dto;
 
 import com.github.dozermapper.core.Mapping;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RoomDto {
 
     @Mapping("id")
     private Long roomId;
 
+    @NotNull(message = "방 이름을 입력해주세요.")
+    @Size(max = 25, message = "25자 이내로 작성해주세요.")
     @Mapping("name")
     private String name;
 
@@ -20,28 +29,22 @@ public class RoomDto {
     @Mapping("memo")
     private String memo;
 
+    @NotBlank(message = "방 타입을 입력해주세요.")
+    @Mapping("roomType")
+    private String roomType;
+
     @Mapping("maxCapacity")
     private int maxCapacity;
 
     @Mapping("defaultCapacity")
     private int defaultCapacity;
 
+    @NotBlank(message = "성수기 가격을 입력해주세요.")
     @Mapping("peakAmount")
     private String peakAmount;
 
+    @NotBlank(message = "비성수기 가격을 입력해주세요.")
     @Mapping("offPeakAmount")
     private String offPeakAmount;
-
-    @Builder
-    public RoomDto(Long roomId, Long houseId, String name, String memo, int maxCapacity, int defaultCapacity, String peakAmount, String offPeakAmount) {
-        this.roomId = roomId;
-        this.houseId = houseId;
-        this.name = name;
-        this.memo = memo;
-        this.maxCapacity = maxCapacity;
-        this.defaultCapacity = defaultCapacity;
-        this.peakAmount = peakAmount;
-        this.offPeakAmount = offPeakAmount;
-    }
 
 }
