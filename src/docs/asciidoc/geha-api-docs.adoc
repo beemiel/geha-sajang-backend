@@ -19,6 +19,12 @@ API서버이므로 기본 Url은 **/api/v1(버전)/~** 입니다.
 
 예) `http://13.124.108.177:8080/api/v1/houses/1`
 
+```
+📢 회원가입/약관/이메일인증/로그인/로그아웃 외에는 모두 🔑jwt 토큰🔑이 필요합니다.
+
+반드시 Authorization 헤더에 `Bearer jwt~~` 를 넣어서 보내주세요.
+```
+
 .Method
 - method는 아래와 같습니다.
 
@@ -910,3 +916,26 @@ include::{snippets}/sign-out-controller-test/sign-out/http-request.adoc[]
 
 - HTTP Response
 include::{snippets}/sign-out-controller-test/sign-out/http-response.adoc[]
+
+== 예약 관련 API
+
+=== POST /houses/{houseId}/bookings
+예약을 등록합니다.
+
+- HTTP Request
+include::{snippets}/booking-controller-test/success-booking/http-request.adoc[]
+
+- Path Parameters
+include::{snippets}/booking-controller-test/success-booking/path-parameters.adoc[]
+
+- Request Fields
+include::{snippets}/booking-controller-test/success-booking/request-fields.adoc[]
+
+==== 200 성공
+예약이 등록되었습니다.
+
+- HTTP Response
+```
+HTTP/1.1 201 Created
+```
+

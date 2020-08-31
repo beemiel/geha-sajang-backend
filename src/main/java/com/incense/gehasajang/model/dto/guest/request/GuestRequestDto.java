@@ -2,7 +2,9 @@ package com.incense.gehasajang.model.dto.guest.request;
 
 import lombok.*;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Data
 @Builder
@@ -18,6 +20,7 @@ public class GuestRequestDto {
 
     private String email;
 
+    @Size(max = 500)
     private String memo;
 
 }
