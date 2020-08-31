@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,12 +52,15 @@ public class RoomController {
         return ResponseEntity.ok(mapper.map(room, RoomDto.class));
     }
 
-    @PostMapping
     @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_MAIN')")
+    @PostMapping
     public ResponseEntity<Void> create(
-            RoomDto roomDto
+            @PathVariable Long houseId,
+            @Valid @RequestBody RoomDto roomDto
     ) {
-        roomService.addRoom(mapper.map(roomDto, Room.class));
+        Room room = mapper.map(roomDto, Room.class);
+        roomService.addRoom(room, houseId);
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
