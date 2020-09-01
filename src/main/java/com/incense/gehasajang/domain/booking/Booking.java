@@ -2,7 +2,10 @@ package com.incense.gehasajang.domain.booking;
 
 import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.house.House;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +15,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Booking {
 
     @Id
@@ -49,4 +53,15 @@ public class Booking {
     @OneToMany(mappedBy = "booking")
     private List<BookingRoomInfo> bookingRoomInfos;
 
+    @Builder
+    public Booking(Long id, House house, Guest guest, LocalDateTime checkIn, LocalDateTime checkOut, Integer maleCount, Integer femaleCount, String requirement) {
+        this.id = id;
+        this.house = house;
+        this.guest = guest;
+        this.checkIn = checkIn;
+        this.checkOut = checkOut;
+        this.maleCount = maleCount;
+        this.femaleCount = femaleCount;
+        this.requirement = requirement;
+    }
 }

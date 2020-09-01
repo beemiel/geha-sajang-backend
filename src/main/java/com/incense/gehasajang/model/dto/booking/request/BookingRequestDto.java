@@ -2,9 +2,10 @@ package com.incense.gehasajang.model.dto.booking.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.dozermapper.core.Mapper;
+import com.incense.gehasajang.domain.booking.Booking;
 import com.incense.gehasajang.domain.booking.BookingExtraInfo;
-import com.incense.gehasajang.domain.booking.BookingRoomInfo;
 import com.incense.gehasajang.domain.guest.Guest;
+import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.model.dto.guest.request.GuestRequestDto;
 import lombok.*;
 
@@ -39,20 +40,29 @@ public class BookingRequestDto {
 
     List<BookingExtraInfoRequestDto> bookingExtraInfos;
 
+    public Booking toBooking(House house, Guest guest) {
+        return Booking.builder()
+                .house(house)
+                .guest(guest)
+                .checkIn(this.checkIn)
+                .checkOut(this.checkOut)
+                .femaleCount(sumFemaleCount())
+                .maleCount(sumMaleCount())
+                .requirement(this.requirement)
+                .build();
+    }
+
     public Guest toGuest(Mapper mapper) {
         return mapper.map(guest, Guest.class);
     }
 
-    public List<BookingRoomInfo> toBookingRoomInfos(Mapper mapper) {
-        return bookingRooms.stream()
-                .map(bookingRoom -> mapper.map(bookingRoom, BookingRoomInfo.class))
-                .collect(Collectors.toList());
+    private int sumFemaleCount() {
+        return this.bookingRooms.stream().mapToInt(BookingRoomRequestDto::getFemaleCount).sum();
     }
 
-    public List<BookingExtraInfo> toBookingExtraInfos(Mapper mapper) {
-        return bookingExtraInfos.stream()
-                .map(extra -> mapper.map(extra, BookingExtraInfo.class))
-                .collect(Collectors.toList());
+    private int sumMaleCount() {
+        return this.bookingRooms.stream().mapToInt(BookingRoomRequestDto::getMaleCount).sum();
     }
+
 
 }
