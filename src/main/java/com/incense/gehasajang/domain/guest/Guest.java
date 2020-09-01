@@ -1,7 +1,9 @@
 package com.incense.gehasajang.domain.guest;
 
 import com.incense.gehasajang.domain.booking.Booking;
+import com.incense.gehasajang.model.dto.guest.request.GuestRequestDto;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,4 +31,16 @@ public class Guest {
     @OneToMany(mappedBy = "guest")
     private List<Booking> bookings;
 
+    @OneToMany(mappedBy = "guest")
+    private List<GuestHouse> guestHouses;
+
+    @Builder
+    public Guest(Long id, String name, String phoneNumber, String email, String memo) {
+        this.id = id;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.memo = memo;
+    }
+    
 }

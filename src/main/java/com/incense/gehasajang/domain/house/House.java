@@ -4,6 +4,7 @@ import com.incense.gehasajang.domain.Address;
 import com.incense.gehasajang.domain.BaseTimeEntity;
 import com.incense.gehasajang.domain.Invitation;
 import com.incense.gehasajang.domain.booking.Booking;
+import com.incense.gehasajang.domain.guest.GuestHouse;
 import com.incense.gehasajang.domain.room.Room;
 import com.incense.gehasajang.domain.sms.SmsTemplate;
 import lombok.AccessLevel;
@@ -61,6 +62,9 @@ public class House extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "house")
     private List<SmsTemplate> smsTemplates;
+
+    @OneToMany(mappedBy = "house")
+    private List<GuestHouse> guestHouses;
 
     @Builder
     public House(String name, Address address, String mainImage, String thumbnailImage, String mainNumber, List<HouseExtraInfo> houseExtraInfos) {
