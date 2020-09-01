@@ -2,6 +2,8 @@ package com.incense.gehasajang.controller;
 
 import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.host.HostRole;
+import com.incense.gehasajang.error.ErrorCode;
+import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.model.dto.guest.response.GuestCheckResponseDto;
 import com.incense.gehasajang.model.param.room.GuestListRequestParam;
 import com.incense.gehasajang.security.UserAuthentication;
@@ -23,10 +25,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -98,6 +102,34 @@ class GuestControllerTest {
                                 fieldWithPath("[].email").description("게스트 이메일"),
                                 fieldWithPath("[].memo").description("게스트 메모"),
                                 fieldWithPath("[].lastBooking").description("게스트의 마지막 checkIn 날짜")
+                        )));
+    }
+
+    @Test
+    @DisplayName("이름으로 게스트 가져오기 실패")
+    void listFail() throws Exception {
+        //given
+        given(guestService.findGuest(any())).willThrow(new NotFoundDataException(ErrorCode.NOT_FOUND_GUEST));
+
+        //when
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/houses/{houseId}/guests", 1)
+                .param("name", "foo")
+                .with(authentication(authentication)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("code").value(ErrorCode.NOT_FOUND_GUEST.getCode()))
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST), prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("houseId").description("요청하고자 하는 house id, 호스트가 속한 하우스가 아닐 경우 403 반환")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").description("에러의 상세 메세지"),
+                                fieldWithPath("status").description("상태 코드"),
+                                fieldWithPath("code").description("직접 정의한 에러 코드"),
+                                fieldWithPath("errors").description("유효성 검사 시 에러가 나면 해당 필드안에 상세한 내용이 배열로 추가된다. 그 외의 경우에는 빈 배열로 보내진다.")
                         )));
     }
 }

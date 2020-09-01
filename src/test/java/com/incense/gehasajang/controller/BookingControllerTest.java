@@ -102,10 +102,12 @@ class BookingControllerTest {
                         parameterWithName("houseId").description("요청하고자 하는 house id, 호스트가 속한 하우스가 아닐 경우 403 반환")
                 ),
                 requestFields(
+                        fieldWithPath("bookingId").description("예약 id"),
                         fieldWithPath("checkIn").description("체크인 날짜. 필수"),
                         fieldWithPath("checkOut").description("체크아웃 날짜. 필수"),
                         fieldWithPath("requirement").description("요구사항. 500자 이내"),
                         fieldWithPath("guest").description("게스트 Request 객체"),
+                        fieldWithPath("guest.guestId").description("게스트 id"),
                         fieldWithPath("guest.name").description("게스트 이름. 필수"),
                         fieldWithPath("guest.phoneNumber").description("게스트 전화번호. 필수"),
                         fieldWithPath("guest.email").description("게스트 이메일"),
@@ -116,6 +118,7 @@ class BookingControllerTest {
                         fieldWithPath("bookingRooms[].maleCount").description("남성 인원수"),
                         fieldWithPath("bookingExtraInfos").description("작성된 하우스 추가 서비스 배열"),
                         fieldWithPath("bookingExtraInfos[].houseExtraInfoId").description("선택한 추가 서비스 id. 필수"),
+                        fieldWithPath("bookingExtraInfos[].bookingExtraInfoId").description("예약 추가 서비스 id"),
                         fieldWithPath("bookingExtraInfos[].isAttend").description("참석여부. true==참석, false==불참, null==미정"),
                         fieldWithPath("bookingExtraInfos[].memo").description("추가 서비스 관련 메모. 200이내"),
                         fieldWithPath("bookingExtraInfos[].attendDate").description("참석일. 필수"),

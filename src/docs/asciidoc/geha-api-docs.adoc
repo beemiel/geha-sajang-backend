@@ -919,6 +919,59 @@ include::{snippets}/sign-out-controller-test/sign-out/http-response.adoc[]
 
 == 예약 관련 API
 
+=== POST /houses/{houseId}/guests?name=
+같은 이름을 가진 게스트 리스트를 가져옵니다.
+
+- HTTP Request
+include::{snippets}/guest-controller-test/list/http-request.adoc[]
+
+- Path Parameters
+include::{snippets}/guest-controller-test/list/path-parameters.adoc[]
+
+==== 200 성공
+- HTTP Response
+```
+HTTP/1.1 200 OK
+
+[ {
+  "guestId" : 1,
+  "name" : "foo",
+  "phoneNumber" : "01000000000",
+  "email" : "foo@gmail.com",
+  "memo" : "test1",
+  "lastBooking" : "2020-08-30T01:25:41.876"
+}, {
+  "guestId" : 2,
+  "name" : "foo2",
+  "phoneNumber" : "01011111111",
+  "email" : "foo2@gmail.com",
+  "memo" : "test2",
+  "lastBooking" : "2020-09-01T01:25:41.876"
+} ]
+```
+
+- Response Fields
+include::{snippets}/guest-controller-test/list/response-fields.adoc[]
+
+==== 404 실패?
+실패라기보다 DB에 존재하지 않는 새로운 게스트라는 의미의 404
+
+- HTTP Response
+```
+HTTP/1.1 404 Not Found
+{
+  "message" : "게스트를 찾을 수 없습니다.",
+  "code" : "GU_001",
+  "status" : 404,
+  "errors" : [ ]
+}
+
+```
+
+- Response Fields
+include::{snippets}/guest-controller-test/list-fail/response-fields.adoc[]
+
+
 === POST /houses/{houseId}/bookings
 예약을 등록합니다.
 
