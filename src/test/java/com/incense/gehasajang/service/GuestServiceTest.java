@@ -2,17 +2,27 @@ package com.incense.gehasajang.service;
 
 import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.guest.GuestRepository;
+import com.incense.gehasajang.error.ErrorCode;
+import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.model.dto.guest.request.GuestRequestDto;
+import com.incense.gehasajang.model.dto.guest.response.GuestCheckResponseDto;
+import com.incense.gehasajang.model.param.room.GuestListRequestParam;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.core.parameters.P;
+
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
 class GuestServiceTest {
@@ -22,10 +32,13 @@ class GuestServiceTest {
     @Mock
     private GuestRepository guestRepository;
 
+    @Mock
+    private AuthorizationService authorizationService;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        guestService = new GuestService(guestRepository);
+        guestService = new GuestService(guestRepository, authorizationService);
     }
 
     @Test
@@ -65,6 +78,46 @@ class GuestServiceTest {
         assertThat(savedGuest.getPhoneNumber()).isEqualTo("01012345678");
         assertThat(savedGuest.getMemo()).isEqualTo("change");
         verify(guestRepository).save(updatedGuest);
+    }
+
+    @Test
+    @DisplayName("게스트 찾기 없음")
+    void findGuestNotFound() throws Exception {
+        //given
+        doNothing().when(authorizationService).checkHouse(any(), any());
+        given(guestRepository.findAllByNameAndBookings_House_Id(any(), any())).willReturn(Collections.emptySet());
+
+        //when
+        NotFoundDataException e = assertThrows(NotFoundDataException.class,
+                () -> {
+                        if (guestRepository.findAllByNameAndBookings_House_Id(any(), any()).isEmpty()) {
+                            throw new NotFoundDataException(ErrorCode.NOT_FOUND_GUEST);
+                        }
+                });
+
+        //then
+        assertThat(e.getErrorCode().getCode()).isEqualTo(ErrorCode.NOT_FOUND_GUEST.getCode());
+    }
+
+    @Test
+    @DisplayName("게스트 찾기 있음")
+    void findGuestSuccess() throws Exception {
+        //given
+        GuestListRequestParam param = GuestListRequestParam.builder().houseId(1L).guestName("foo").hostAccount("host@gmail.com").build();
+
+        Set<Guest> guests = new HashSet<>();
+        guests.add(Guest.builder().id(1L).name("foo").phoneNumber("01011111111").memo("memo").email("foo@gmail.com").build());
+        guests.add(Guest.builder().id(2L).name("foo2").phoneNumber("01022222222").memo("memo2").email("foo2@gmail.com").build());
+
+        doNothing().when(authorizationService).checkHouse(any(), any());
+        given(guestRepository.findAllByNameAndBookings_House_Id(any(), any())).willReturn(guests);
+        given(guestRepository.findLastBookingById(any(), any())).willReturn(LocalDateTime.now());
+
+        //when
+        List<GuestCheckResponseDto> responseDtos = guestService.findGuest(param);
+
+        //then
+        assertThat(responseDtos.size()).isEqualTo(2);
     }
 
 }
