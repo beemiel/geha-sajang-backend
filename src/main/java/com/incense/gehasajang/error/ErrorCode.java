@@ -26,6 +26,9 @@ public enum ErrorCode {
     NON_LOGIN("US_012", "로그인을 해주세요.", 401),
     ACCESS_DENIED("US_013", "해당 리소스에 접근 권한이 없습니다.", 403),
 
+    //게스트 관련
+    NOT_FOUND_GUEST("GU_001", "게스트를 찾을 수 없습니다.", 404),
+
     //공통
     INPUT_VALUE_INVALID("CO_001", "입력값이 올바르지 않습니다.", 400),
 

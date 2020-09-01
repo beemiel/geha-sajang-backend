@@ -42,5 +42,12 @@ public class Guest {
         this.email = email;
         this.memo = memo;
     }
-    
+
+    public Guest changeByInfo(GuestRequestDto guestRequestDto) {
+        name = guestRequestDto.getName();
+        phoneNumber = guestRequestDto.getPhoneNumber();
+        email = guestRequestDto.getEmail();
+        memo = guestRequestDto.getMemo();
+        return this;
+    }
 }
