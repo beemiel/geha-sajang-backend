@@ -2,7 +2,6 @@ package com.incense.gehasajang.model.dto.guest.request;
 
 import lombok.*;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -11,6 +10,8 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GuestRequestDto {
+
+    private Long guestId;
 
     @NotBlank
     private String name;

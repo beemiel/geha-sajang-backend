@@ -3,7 +3,6 @@ package com.incense.gehasajang.model.dto.booking.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -13,6 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookingExtraInfoRequestDto {
+
+    private Long bookingExtraInfoId;
 
     @NotNull
     private Long houseExtraInfoId;
