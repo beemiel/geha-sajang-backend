@@ -3,7 +3,6 @@ drop table if exists booking_extra_info;
 drop table if exists booked_room;
 drop table if exists unbooked_room;
 drop table if exists booking;
-drop table if exists guest_house;
 drop table if exists guest;
 drop table if exists house_extra_info;
 drop table if exists list_item;
@@ -170,15 +169,8 @@ create table guest (
     email varchar(120),
     memo varchar(500),
     name varchar(50) not null,
-    phone_number varchar(10) not null,
+    phone_number varchar(15) not null,
     primary key (guest_id)
-);
-
-create table guest_house (
-    guest_house_id bigint auto_increment,
-    house_id bigint references house(house_id),
-    guest_id bigint references guest(guest_id),
-    primary key (guest_house_id)
 );
 
 create table booking (

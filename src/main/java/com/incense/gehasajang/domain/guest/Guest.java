@@ -31,9 +31,6 @@ public class Guest {
     @OneToMany(mappedBy = "guest")
     private List<Booking> bookings;
 
-    @OneToMany(mappedBy = "guest")
-    private List<GuestHouse> guestHouses;
-
     @Builder
     public Guest(Long id, String name, String phoneNumber, String email, String memo) {
         this.id = id;
