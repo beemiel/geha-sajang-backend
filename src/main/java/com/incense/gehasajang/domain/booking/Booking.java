@@ -1,5 +1,6 @@
 package com.incense.gehasajang.domain.booking;
 
+import com.incense.gehasajang.domain.BaseTimeEntity;
 import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.house.House;
 import lombok.AccessLevel;
@@ -16,7 +17,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Booking {
+public class Booking extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

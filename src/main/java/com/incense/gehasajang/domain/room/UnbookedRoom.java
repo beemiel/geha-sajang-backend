@@ -2,8 +2,10 @@ package com.incense.gehasajang.domain.room;
 
 import com.incense.gehasajang.domain.bed.Bed;
 import com.incense.gehasajang.domain.booking.BookingRoomInfo;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,6 +15,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UnbookedRoom {
 
     @Id
@@ -30,14 +33,14 @@ public class UnbookedRoom {
     @JoinColumn(name = "bed_id")
     private Bed bed;
 
-    private boolean isDownBed;
+    private Boolean isDownBed;
 
-    private boolean isAdditionalBed;
+    private Boolean isAdditionalBed;
 
     private String todayAmount;
 
-    @OneToMany(mappedBy = "unbookedRoom")
-    private List<BookingRoomInfo> bookingRoomInfos;
+    @OneToOne(mappedBy = "unbookedRoom", fetch = LAZY)
+    private BookingRoomInfo bookingRoomInfos;
 
     @OneToOne(mappedBy = "unbookedRoom", fetch = LAZY)
     private BookedRoom bookedRoom;
