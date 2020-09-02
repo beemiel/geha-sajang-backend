@@ -1,9 +1,6 @@
 package com.incense.gehasajang.service;
 
-import com.incense.gehasajang.domain.room.BookedRoomRepository;
-import com.incense.gehasajang.domain.room.RoomRepository;
-import com.incense.gehasajang.domain.room.UnbookedRoom;
-import com.incense.gehasajang.domain.room.UnbookedRoomRepository;
+import com.incense.gehasajang.domain.room.*;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.model.param.unbooked.UnbookedListParam;
@@ -91,4 +88,8 @@ public class UnbookedRoomService {
         });
     }
 
+    public void addBookedRoom(UnbookedRoom unbookedRoom) {
+        BookedRoom bookedRoom = BookedRoom.builder().unbookedRoom(unbookedRoom).build();
+        bookedRoomRepository.save(bookedRoom);
+    }
 }
