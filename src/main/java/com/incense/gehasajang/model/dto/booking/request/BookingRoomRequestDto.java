@@ -17,4 +17,8 @@ public class BookingRoomRequestDto {
 
     private int femaleCount;
 
+    public int sum() {
+        return femaleCount + maleCount;
+    }
+
 }

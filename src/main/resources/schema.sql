@@ -191,8 +191,8 @@ create table booking (
 create table unbooked_room (
     unbooked_room_id bigint auto_increment,
     entry_date timestamp not null,
-    is_additional_bed boolean not null,
-    is_down_bed boolean not null,
+    is_additional_bed boolean,
+    is_down_bed boolean,
     today_amount varchar(255) not null,
     bed_id bigint references bed(bed_id),
     room_id bigint references room(room_id),

@@ -11,6 +11,9 @@ public enum ErrorCode {
     //룸 관련
     ROOM_NOT_FOUND("RO_001", "방을 찾을 수 없습니다.", 404),
 
+    //언북드 룸(재고) 관련
+    NOT_FOUND_UNBOOKED("UN_001", "예약 가능한 방이 없습니다.", 404),
+
     //유저 관련
     DUPLICATE("US_001", "이미 등록된 호스트입니다.", 409),
     HOST_NOT_FOUND("US_002", "호스트를 찾을 수 없습니다.", 404),
