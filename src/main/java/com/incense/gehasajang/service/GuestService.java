@@ -6,7 +6,7 @@ import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.model.dto.guest.response.GuestCheckResponseDto;
 import com.incense.gehasajang.model.dto.guest.request.GuestRequestDto;
-import com.incense.gehasajang.model.param.room.GuestListRequestParam;
+import com.incense.gehasajang.model.param.guest.GuestListRequestParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,7 +1,7 @@
 package com.incense.gehasajang.controller;
 
 import com.incense.gehasajang.model.dto.guest.response.GuestCheckResponseDto;
-import com.incense.gehasajang.model.param.room.GuestListRequestParam;
+import com.incense.gehasajang.model.param.guest.GuestListRequestParam;
 import com.incense.gehasajang.security.UserAuthentication;
 import com.incense.gehasajang.service.GuestService;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.incense.gehasajang.model.param.room;
+package com.incense.gehasajang.model.param.booking;
 
 import com.incense.gehasajang.model.dto.booking.request.BookingRequestDto;
 import lombok.AllArgsConstructor;

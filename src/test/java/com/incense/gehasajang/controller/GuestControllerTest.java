@@ -1,11 +1,9 @@
 package com.incense.gehasajang.controller;
 
-import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.host.HostRole;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.model.dto.guest.response.GuestCheckResponseDto;
-import com.incense.gehasajang.model.param.room.GuestListRequestParam;
 import com.incense.gehasajang.security.UserAuthentication;
 import com.incense.gehasajang.service.GuestService;
 import com.incense.gehasajang.util.CommonString;
@@ -25,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;

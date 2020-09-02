@@ -1,7 +1,7 @@
 package com.incense.gehasajang.controller;
 
 import com.incense.gehasajang.model.dto.booking.request.BookingRequestDto;
-import com.incense.gehasajang.model.param.room.BookingRequestParam;
+import com.incense.gehasajang.model.param.booking.BookingRequestParam;
 import com.incense.gehasajang.security.UserAuthentication;
 import com.incense.gehasajang.service.BookingService;
 import lombok.RequiredArgsConstructor;

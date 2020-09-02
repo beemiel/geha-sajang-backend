@@ -1,4 +1,4 @@
-package com.incense.gehasajang.model.param.room;
+package com.incense.gehasajang.model.param.guest;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
