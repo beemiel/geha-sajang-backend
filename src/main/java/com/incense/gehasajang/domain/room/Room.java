@@ -80,4 +80,8 @@ public class Room extends BaseTimeEntity {
         this.roomType = RoomType.findBy(roomType);
     }
 
+    public String getRoomTypeName() {
+        return roomType.getTypeName();
+    }
+
 }

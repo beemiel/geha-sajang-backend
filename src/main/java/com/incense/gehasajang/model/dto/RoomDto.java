@@ -30,8 +30,7 @@ public class RoomDto {
     private String memo;
 
     @NotBlank(message = "방 타입을 입력해주세요.")
-    @Mapping("roomType")
-    private String roomType;
+    private String roomTypeName;
 
     @Mapping("maxCapacity")
     private int maxCapacity;

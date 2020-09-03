@@ -59,6 +59,7 @@ public class RoomController {
             @Valid @RequestBody RoomDto roomDto
     ) {
         Room room = mapper.map(roomDto, Room.class);
+        room.addRoomType(roomDto.getRoomTypeName());
         roomService.addRoom(room, houseId);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
