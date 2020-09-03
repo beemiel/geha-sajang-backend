@@ -8,6 +8,7 @@ import com.incense.gehasajang.exception.NumberExceededException;
 import com.incense.gehasajang.model.dto.house.HouseDto;
 import com.incense.gehasajang.model.dto.house.HouseExtraInfoDto;
 import com.incense.gehasajang.security.UserAuthentication;
+import com.incense.gehasajang.service.AuthorizationService;
 import com.incense.gehasajang.service.HouseService;
 import com.incense.gehasajang.service.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 public class HouseController {
 
     private final HouseService houseService;
+    private final AuthorizationService authorizationService;
     private final S3Service s3Service;
 
     @GetMapping("/{houseId}")
@@ -36,7 +38,9 @@ public class HouseController {
             @PathVariable Long houseId,
             @AuthenticationPrincipal UserAuthentication authentication
     ) {
-        House house = houseService.getHouse(houseId, authentication.getAccount());
+        authorizationService.checkHouse(houseId, authentication.getAccount());
+        House house = houseService.getHouse(houseId);
+        //TODO: 2020-09-04 매퍼로 바꿀 것 -lynn
         HouseDto houseDto = toHouseDto(house);
         return ResponseEntity.ok(houseDto);
     }

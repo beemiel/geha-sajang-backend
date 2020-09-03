@@ -53,7 +53,7 @@ class HouseServiceTest {
         given(houseRepository.findById(1L)).willReturn(Optional.of(returnHouse));
 
         //when
-        House house = houseService.getHouse(1L, "account");
+        House house = houseService.getHouse(1L);
 
         //then
         assertThat(house.getName()).isEqualTo("게스트하우스");
