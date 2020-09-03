@@ -27,7 +27,8 @@ public enum ErrorCode {
     ACCESS_DENIED("US_013", "해당 리소스에 접근 권한이 없습니다.", 403),
 
     //공통
-    INPUT_VALUE_INVALID("CO_001", "입력값이 올바르지 않습니다.", 400),
+    INPUT_VALUE_INVALID("CO_001", "값을 확인해주세요.", 400),
+    CONSTRUCTOR_VALUE_INVALID("CO_002", "값을 확인해주세요.", 400),
 
     //이미지 관련,
     FILE_SIZE_LIMIT_EXCEED("IMG_001", "10MB이하의 파일만 가능합니다.", 500),
