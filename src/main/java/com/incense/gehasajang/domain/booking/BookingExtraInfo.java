@@ -33,4 +33,12 @@ public class BookingExtraInfo {
 
     private int peopleCount;
 
+    public void addHouseExtraInfo(HouseExtraInfo houseExtraInfo) {
+        this.houseExtraInfo = houseExtraInfo;
+    }
+
+    public void addBooking(Booking booking) {
+        this.booking = booking;
+    }
+
 }

@@ -7,6 +7,7 @@ public enum ErrorCode {
     //하우스 관련
     HOUSE_NOT_FOUND("HO_001", "해당 하우스를 찾을 수 없습니다.", 404),
     NUMBER_EXCEED("HO_002", "지정된 숫자를 초과하였습니다.", 400),
+    NOT_FOUND_HOUSE_EXTRA("HO_003", "추가 서비스를 찾을 수 없습니다.", 404),
 
     //룸 관련
     ROOM_NOT_FOUND("RO_001", "방을 찾을 수 없습니다.", 404),
