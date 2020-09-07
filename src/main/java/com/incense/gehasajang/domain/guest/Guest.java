@@ -1,7 +1,6 @@
 package com.incense.gehasajang.domain.guest;
 
 import com.incense.gehasajang.domain.booking.Booking;
-import com.incense.gehasajang.model.dto.guest.request.GuestRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,11 +39,11 @@ public class Guest {
         this.memo = memo;
     }
 
-    public Guest changeByInfo(GuestRequestDto guestRequestDto) {
-        name = guestRequestDto.getName();
-        phoneNumber = guestRequestDto.getPhoneNumber();
-        email = guestRequestDto.getEmail();
-        memo = guestRequestDto.getMemo();
+    public Guest changeByInfo(Guest guestUpdateInfo) {
+        name = guestUpdateInfo.getName();
+        phoneNumber = guestUpdateInfo.getPhoneNumber();
+        email = guestUpdateInfo.getEmail();
+        memo = guestUpdateInfo.getMemo();
         return this;
     }
 }

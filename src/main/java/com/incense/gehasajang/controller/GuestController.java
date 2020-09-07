@@ -1,8 +1,8 @@
 package com.incense.gehasajang.controller;
 
 import com.incense.gehasajang.model.dto.guest.response.GuestCheckResponseDto;
-import com.incense.gehasajang.model.param.guest.GuestListRequestParam;
 import com.incense.gehasajang.security.UserAuthentication;
+import com.incense.gehasajang.service.AuthorizationService;
 import com.incense.gehasajang.service.GuestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +20,7 @@ import java.util.List;
 @RequestMapping("/api/v1/houses/{houseId}")
 public class GuestController {
 
+    private final AuthorizationService authorizationService;
     private final GuestService guestService;
 
     @GetMapping("/guests")
@@ -29,8 +30,8 @@ public class GuestController {
             @RequestParam String name,
             @AuthenticationPrincipal UserAuthentication authentication
             ) {
-        GuestListRequestParam param = GuestListRequestParam.builder().houseId(houseId).guestName(name).hostAccount(authentication.getAccount()).build();
-        return ResponseEntity.ok(guestService.findGuest(param));
+        authorizationService.checkHouse(houseId, authentication.getAccount());
+        return ResponseEntity.ok(guestService.findGuests(houseId, name));
     }
 
 }

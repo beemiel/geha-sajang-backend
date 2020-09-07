@@ -6,7 +6,6 @@ import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.model.dto.guest.request.GuestRequestDto;
 import com.incense.gehasajang.model.dto.guest.response.GuestCheckResponseDto;
-import com.incense.gehasajang.model.param.guest.GuestListRequestParam;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,13 +13,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 
 class GuestServiceTest {
@@ -30,13 +31,10 @@ class GuestServiceTest {
     @Mock
     private GuestRepository guestRepository;
 
-    @Mock
-    private AuthorizationService authorizationService;
-
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        guestService = new GuestService(guestRepository, authorizationService);
+        guestService = new GuestService(guestRepository);
     }
 
     @Test
@@ -48,7 +46,7 @@ class GuestServiceTest {
         given(guestRepository.save(any())).willReturn(guest);
 
         //when
-        Guest savedGuest = guestService.addGuest(guest, guestRequestDto);
+        Guest savedGuest = guestService.addGuest(guest);
 
         //then
         assertThat(savedGuest.getName()).isEqualTo("foo");
@@ -59,38 +57,17 @@ class GuestServiceTest {
     }
 
     @Test
-    @DisplayName("게스트 수정")
-    void updateGuest() throws Exception {
-        //given
-        Guest guest = Guest.builder().id(1L).name("foo2").phoneNumber("01011111111").email("foo2@gmail.com").memo("memo2").build();
-        GuestRequestDto guestRequestDto = GuestRequestDto.builder().name("test").phoneNumber("01012345678").email("test@gmail.com").memo("change").build();
-        Guest updatedGuest = guest.changeByInfo(guestRequestDto);
-        given(guestRepository.save(any())).willReturn(updatedGuest);
-
-        //when
-        Guest savedGuest = guestService.addGuest(guest, guestRequestDto);
-
-        //then
-        assertThat(savedGuest.getName()).isEqualTo("test");
-        assertThat(savedGuest.getEmail()).isEqualTo("test@gmail.com");
-        assertThat(savedGuest.getPhoneNumber()).isEqualTo("01012345678");
-        assertThat(savedGuest.getMemo()).isEqualTo("change");
-        verify(guestRepository).save(updatedGuest);
-    }
-
-    @Test
     @DisplayName("게스트 찾기 없음")
     void findGuestNotFound() throws Exception {
         //given
-        doNothing().when(authorizationService).checkHouse(any(), any());
         given(guestRepository.findAllByNameAndBookings_House_Id(any(), any())).willReturn(Collections.emptySet());
 
         //when
         NotFoundDataException e = assertThrows(NotFoundDataException.class,
                 () -> {
-                        if (guestRepository.findAllByNameAndBookings_House_Id(any(), any()).isEmpty()) {
-                            throw new NotFoundDataException(ErrorCode.NOT_FOUND_GUEST);
-                        }
+                    if (guestRepository.findAllByNameAndBookings_House_Id(any(), any()).isEmpty()) {
+                        throw new NotFoundDataException(ErrorCode.NOT_FOUND_GUEST);
+                    }
                 });
 
         //then
@@ -101,18 +78,15 @@ class GuestServiceTest {
     @DisplayName("게스트 찾기 있음")
     void findGuestSuccess() throws Exception {
         //given
-        GuestListRequestParam param = GuestListRequestParam.builder().houseId(1L).guestName("foo").hostAccount("host@gmail.com").build();
-
         Set<Guest> guests = new HashSet<>();
         guests.add(Guest.builder().id(1L).name("foo").phoneNumber("01011111111").memo("memo").email("foo@gmail.com").build());
         guests.add(Guest.builder().id(2L).name("foo2").phoneNumber("01022222222").memo("memo2").email("foo2@gmail.com").build());
 
-        doNothing().when(authorizationService).checkHouse(any(), any());
         given(guestRepository.findAllByNameAndBookings_House_Id(any(), any())).willReturn(guests);
         given(guestRepository.findLastBookingById(any(), any())).willReturn(LocalDateTime.now());
 
         //when
-        List<GuestCheckResponseDto> responseDtos = guestService.findGuest(param);
+        List<GuestCheckResponseDto> responseDtos = guestService.findGuests(1L, "foo");
 
         //then
         assertThat(responseDtos.size()).isEqualTo(2);

@@ -2,6 +2,8 @@ package com.incense.gehasajang.domain.guest;
 
 import com.incense.gehasajang.domain.booking.Booking;
 import com.incense.gehasajang.domain.booking.BookingRepository;
+import com.incense.gehasajang.domain.booking.PeopleCount;
+import com.incense.gehasajang.domain.booking.Stay;
 import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.domain.house.HouseRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,11 +49,11 @@ class GuestRepositoryTest {
         guests.forEach(guest -> guestRepository.save(guest));
 
         List<Booking> bookings = Arrays.asList(
-                Booking.builder().guest(guests.get(0)).house(houses.get(1)).checkIn(LocalDateTime.now().minusDays(3)).checkOut(LocalDateTime.now()).femaleCount(2).maleCount(0).requirement("메모1").build(),
-                Booking.builder().guest(guests.get(0)).house(houses.get(1)).checkIn(LocalDateTime.now().minusDays(15)).checkOut(LocalDateTime.now().minusDays(2)).femaleCount(2).maleCount(0).requirement("메모2").build(),
-                Booking.builder().guest(guests.get(1)).house(houses.get(1)).checkIn(LocalDateTime.now().minusDays(5)).checkOut(LocalDateTime.now().minusDays(4)).femaleCount(2).maleCount(0).requirement("메모3").build(),
-                Booking.builder().guest(guests.get(1)).house(houses.get(1)).checkIn(LocalDateTime.now().minusDays(5)).checkOut(LocalDateTime.now().minusDays(6)).femaleCount(2).maleCount(0).requirement("메모4").build(),
-                Booking.builder().guest(guests.get(2)).house(houses.get(1)).checkIn(LocalDateTime.now().minusDays(5)).checkOut(LocalDateTime.now().minusDays(7)).femaleCount(2).maleCount(0).requirement("메모5").build()
+                Booking.builder().guest(guests.get(0)).house(houses.get(1)).stay(new Stay(LocalDateTime.now().minusDays(3), LocalDateTime.now())).peopleCount(new PeopleCount(2, 0)).requirement("메모1").build(),
+                Booking.builder().guest(guests.get(0)).house(houses.get(1)).stay(new Stay(LocalDateTime.now().minusDays(15), LocalDateTime.now().minusDays(2))).peopleCount(new PeopleCount(2, 0)).requirement("메모2").build(),
+                Booking.builder().guest(guests.get(1)).house(houses.get(1)).stay(new Stay(LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(4))).peopleCount(new PeopleCount(2, 0)).requirement("메모3").build(),
+                Booking.builder().guest(guests.get(1)).house(houses.get(1)).stay(new Stay(LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(6))).peopleCount(new PeopleCount(2, 0)).requirement("메모4").build(),
+                Booking.builder().guest(guests.get(2)).house(houses.get(1)).stay(new Stay(LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(7))).peopleCount(new PeopleCount(2, 0)).requirement("메모5").build()
         );
         bookings.forEach(booking -> bookingRepository.save(booking));
     }
