@@ -32,13 +32,11 @@ public class Booking extends BaseTimeEntity {
     @JoinColumn(name = "guest_id")
     private Guest guest;
 
-    private LocalDateTime checkIn;
+    @Embedded
+    private Stay stay;
 
-    private LocalDateTime checkOut;
-
-    private int maleCount;
-
-    private int femaleCount;
+    @Embedded
+    private PeopleCount peopleCount;
 
     private String requirement;
 
@@ -51,14 +49,11 @@ public class Booking extends BaseTimeEntity {
     private List<BookingRoomInfo> bookingRoomInfos;
 
     @Builder
-    public Booking(Long id, House house, Guest guest, LocalDateTime checkIn, LocalDateTime checkOut, Integer maleCount, Integer femaleCount, String requirement) {
-        this.id = id;
+    public Booking(House house, Guest guest, Stay stay, PeopleCount peopleCount, String requirement) {
         this.house = house;
         this.guest = guest;
-        this.checkIn = checkIn;
-        this.checkOut = checkOut;
-        this.maleCount = maleCount;
-        this.femaleCount = femaleCount;
+        this.stay = stay;
+        this.peopleCount = peopleCount;
         this.requirement = requirement;
     }
 }

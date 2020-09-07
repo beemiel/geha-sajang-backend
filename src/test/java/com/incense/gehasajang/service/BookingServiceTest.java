@@ -59,10 +59,10 @@ class BookingServiceTest {
                 () -> assertThat(mappingGuest.getMemo()).isEqualTo("메모일까"),
                 () -> assertThat(mappingGuest.getId()).isNull(),
                 () -> assertThat(booking.getId()).isNull(),
-                () -> assertThat(booking.getCheckIn()).isNotNull(),
-                () -> assertThat(booking.getCheckOut()).isNotNull(),
-                () -> assertThat(booking.getFemaleCount()).isEqualTo(4),
-                () -> assertThat(booking.getMaleCount()).isEqualTo(4),
+                () -> assertThat(booking.getStay().getCheckIn()).isNotNull(),
+                () -> assertThat(booking.getStay().getCheckOut()).isNotNull(),
+                () -> assertThat(booking.getPeopleCount().getFemaleCount()).isEqualTo(4),
+                () -> assertThat(booking.getPeopleCount().getMaleCount()).isEqualTo(4),
                 () -> assertThat(booking.getRequirement()).isEqualTo("요구사항")
         );
     }

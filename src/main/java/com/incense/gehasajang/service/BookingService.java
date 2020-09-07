@@ -6,7 +6,7 @@ import com.incense.gehasajang.domain.booking.BookingRepository;
 import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.model.dto.booking.request.BookingRequestDto;
-import com.incense.gehasajang.model.param.booking.BookingRequestParam;
+import com.incense.gehasajang.model.param.booking.BookingExtraParam;
 import com.incense.gehasajang.model.param.booking.BookingRoomParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,27 +26,30 @@ public class BookingService {
 
     private final Mapper mapper;
 
-    public void addBooking(BookingRequestParam bookingRequestParam) {
-        Long houseId = bookingRequestParam.getHouseId();
-        String account = bookingRequestParam.getAccount();
-        BookingRequestDto requestDto = bookingRequestParam.getRequest();
+    public void addBookingInfo(BookingRequestDto request, Long houseId) {
+        Guest guest = request.toGuest(mapper);
+        Guest savedGuest = guestService.addGuest(guest);
 
-        House savedHouse = houseService.getHouse(houseId, account);
+        House savedHouse = houseService.getHouse(houseId);
 
-        Guest guest = requestDto.toGuest(mapper);
-        Guest savedGuest = guestService.addGuest(guest, requestDto.getGuest());
-
-        Booking booking = requestDto.toBooking(savedHouse, savedGuest);
-        Booking savedBooking = bookingRepository.save(booking);
+        Booking booking = request.toBooking(savedHouse, savedGuest);
+        Booking savedBooking = addBooking(booking);
 
         BookingRoomParam bookingRoomParam = BookingRoomParam.builder()
-                .checkIn(requestDto.getCheckIn())
-                .checkOut(requestDto.getCheckOut())
-                .booking(savedBooking)
-                .bookingRoomInfos(requestDto.getBookingRooms())
-                .build();
+                .houseId(houseId)
+                .savedBooking(savedBooking)
+                .bookingRoomInfos(request.getBookingRooms()).build();
         bookingRoomInfoService.addBookingRoomInfo(bookingRoomParam);
 
-        bookingExtraInfoService.addBookingExtraInfo(savedBooking, requestDto.getBookingExtraInfos());
+        BookingExtraParam bookingExtraParam = BookingExtraParam.builder()
+                .houseId(houseId)
+                .savedBooking(savedBooking)
+                .bookingExtraInfos(request.getBookingExtraInfos()).build();
+        bookingExtraInfoService.addBookingExtraInfo(bookingExtraParam);
     }
+
+    private Booking addBooking(Booking booking) {
+        return bookingRepository.save(booking);
+    }
+
 }

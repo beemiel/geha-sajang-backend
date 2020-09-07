@@ -3,6 +3,8 @@ package com.incense.gehasajang.model.dto.booking.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.dozermapper.core.Mapper;
 import com.incense.gehasajang.domain.booking.Booking;
+import com.incense.gehasajang.domain.booking.PeopleCount;
+import com.incense.gehasajang.domain.booking.Stay;
 import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.model.dto.guest.request.GuestRequestDto;
@@ -42,11 +44,9 @@ public class BookingRequestDto {
         return Booking.builder()
                 .house(house)
                 .guest(guest)
-                .checkIn(this.checkIn)
-                .checkOut(this.checkOut)
-                .femaleCount(sumFemaleCount())
-                .maleCount(sumMaleCount())
-                .requirement(this.requirement)
+                .stay(new Stay(checkIn, checkOut))
+                .peopleCount(new PeopleCount(sumFemaleCount(), sumMaleCount()))
+                .requirement(requirement)
                 .build();
     }
 
