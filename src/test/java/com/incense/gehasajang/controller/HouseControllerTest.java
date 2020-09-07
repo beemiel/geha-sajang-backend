@@ -10,6 +10,7 @@ import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.exception.NumberExceededException;
 import com.incense.gehasajang.model.dto.house.HouseDto;
 import com.incense.gehasajang.security.UserAuthentication;
+import com.incense.gehasajang.service.AuthorizationService;
 import com.incense.gehasajang.service.HouseService;
 import com.incense.gehasajang.service.S3Service;
 import com.incense.gehasajang.util.CommonString;
@@ -58,6 +59,9 @@ class HouseControllerTest {
     private HouseService houseService;
 
     @MockBean
+    private AuthorizationService authorizationService;
+
+    @MockBean
     private S3Service s3Service;
 
     private UserAuthentication userAuthentication;
@@ -87,7 +91,7 @@ class HouseControllerTest {
                         HouseExtraInfo.builder().title("추가3").build()
                 ))
                 .build();
-        given(houseService.getHouse(any(), any())).willReturn(house);
+        given(houseService.getHouse(any())).willReturn(house);
 
         //when
         ResultActions resultActions = successRequestHouseInfo(1L);
@@ -102,14 +106,14 @@ class HouseControllerTest {
     @DisplayName("게스트_하우스_정보를_가져오지_못한다.")
     public void getHouseInfoFail() throws Exception {
         //given
-        given(houseService.getHouse(any(), any())).willThrow(new NotFoundDataException(ErrorCode.HOUSE_NOT_FOUND));
+        given(houseService.getHouse(any())).willThrow(new NotFoundDataException(ErrorCode.HOUSE_NOT_FOUND));
 
         //when
         ResultActions resultActions = failRequestHouseInfo(2L);
 
         //then
         resultActions.andExpect(status().isNotFound());
-        verify(houseService).getHouse(any(), any());
+        verify(houseService).getHouse(any());
     }
 
     @Test

@@ -7,9 +7,16 @@ public enum ErrorCode {
     //하우스 관련
     HOUSE_NOT_FOUND("HO_001", "해당 하우스를 찾을 수 없습니다.", 404),
     NUMBER_EXCEED("HO_002", "지정된 숫자를 초과하였습니다.", 400),
+    NOT_FOUND_HOUSE_EXTRA("HO_003", "추가 서비스를 찾을 수 없습니다.", 404),
 
     //룸 관련
     ROOM_NOT_FOUND("RO_001", "방을 찾을 수 없습니다.", 404),
+
+    //예약 관련
+    ZERO_COUNT("BO_001", "인원수를 입력하세요.", 400),
+
+    //언북드 룸(재고) 관련
+    NOT_FOUND_UNBOOKED("UN_001", "예약 가능한 방이 없습니다.", 404),
 
     //유저 관련
     DUPLICATE("US_001", "이미 등록된 호스트입니다.", 409),
@@ -25,6 +32,9 @@ public enum ErrorCode {
     DISABLED("US_011", "비활성화된 계정입니다.", 401),
     NON_LOGIN("US_012", "로그인을 해주세요.", 401),
     ACCESS_DENIED("US_013", "해당 리소스에 접근 권한이 없습니다.", 403),
+
+    //게스트 관련
+    NOT_FOUND_GUEST("GU_001", "게스트를 찾을 수 없습니다.", 404),
 
     //공통
     INPUT_VALUE_INVALID("CO_001", "입력값이 올바르지 않습니다.", 400),

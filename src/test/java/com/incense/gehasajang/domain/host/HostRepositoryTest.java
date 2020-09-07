@@ -1,29 +1,30 @@
 package com.incense.gehasajang.domain.host;
 
-import com.incense.gehasajang.domain.Address;
+import com.incense.gehasajang.domain.house.HostHouse;
 import com.incense.gehasajang.domain.house.HostHouseRepository;
+import com.incense.gehasajang.domain.house.House;
+import com.incense.gehasajang.domain.house.HouseRepository;
+import com.incense.gehasajang.error.ErrorCode;
+import com.incense.gehasajang.exception.AccessDeniedException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
 class HostRepositoryTest {
 
     @Autowired
@@ -35,29 +36,41 @@ class HostRepositoryTest {
     @Autowired
     private HostHouseRepository hostHouseRepository;
 
+    @Autowired
+    private HouseRepository houseRepository;
+
+    private House house;
+
     @BeforeEach
     public void setUp() {
         List<Host> hosts = Arrays.asList(
-                MainHost.builder().account("maxmax@gmail.com").nickname("max").password("maxmax123").address(new Address("", "", "", "")).isAgreeToMarketing(true).build(),
-                MainHost.builder().account("joyjoy@gmail.com").nickname("joy").password("joyjoy123123").address(new Address("", "", "", "")).isAgreeToMarketing(false).deletedAt(LocalDateTime.now()).build(),
-                MainHost.builder().account("lean@gmail.com").nickname("lena").password("lena1234").address(new Address("", "", "", "")).isAgreeToMarketing(false).deletedAt(LocalDateTime.now()).build(),
-                MainHost.builder().account("lynn@gmail.com").nickname("lynn").password("lynn1234").address(new Address("", "", "", "")).isAgreeToMarketing(true).build(),
-                MainHost.builder().account("4incense@gmail.com").nickname("4incense").password("4incensese").address(new Address("", "", "", "")).isAgreeToMarketing(true).build(),
-                MainHost.builder().account("test@gmail.com").nickname("test").password("test").address(new Address("", "", "", "")).isAgreeToMarketing(true).build()
+                MainHost.builder().account("maxmax@gmail.com").nickname("max").password("maxmax123").isAgreeToMarketing(true).build(),
+                MainHost.builder().account("joyjoy@gmail.com").nickname("joy").password("joyjoy123123").isAgreeToMarketing(false).deletedAt(LocalDateTime.now()).build(),
+                MainHost.builder().account("lynn@gmail.com").nickname("lynn").password("lynn1234").isAgreeToMarketing(true).build()
         );
-
         hosts.forEach(host -> hostRepository.save(host));
 
         hosts.forEach(host -> {
-            hostAuthKeyRepository.save(HostAuthKey.builder().authKey(host.getAccount()).host(host).expirationDate(LocalDateTime.now().plusDays(1)).build());
+            hostAuthKeyRepository.save(HostAuthKey.builder()
+                    .authKey(host.getAccount())
+                    .host(host)
+                    .expirationDate(LocalDateTime.now().plusDays(1))
+                    .build());
         });
+
+        house = House.builder().name("foo house").mainNumber("1234567890").build();
+        houseRepository.save(house);
+
+        HostHouse hostHouse = HostHouse.builder().host(hosts.get(0)).house(house).build();
+        hostHouseRepository.save(hostHouse);
     }
 
     @AfterEach
-    public void clean() {
+    public void deleteAll() {
         hostHouseRepository.deleteAll();
         hostAuthKeyRepository.deleteAll();
         hostRepository.deleteAll();
+        houseRepository.deleteAll();
     }
 
     @DisplayName("이메일 중복 테스트")
@@ -88,23 +101,27 @@ class HostRepositoryTest {
         assertThat(realValue).isEqualTo(expectedValue);
     }
 
-    @ValueSource(strings = {"maxmax@gmail.com", "4incense@gmail.com"})
-    @DisplayName("인증할 호스트 찾기 테스트")
-    @ParameterizedTest(name = "{index}/{arguments} TEST")
-    void findHostTest(String email) throws Exception {
-
+    @Test
+    @DisplayName("하우스 체크 200 테스트")
+    void checkHouseAuth() throws Exception {
         //when
-        MainHost host = hostRepository.findMainHostByAccount(email).orElseGet(
-                () -> MainHost.builder().account("null").build()
-        );
+        Host savedHost = hostRepository.findByAccountAndHostHouses_House_Id("maxmax@gmail.com", house.getId())
+                .orElseThrow(() -> new AccessDeniedException(ErrorCode.ACCESS_DENIED));
 
         //then
-        assertAll(
-                () -> assertThat(host.getAccount()).isEqualTo(email),
-                () -> assertThat(host.getDeletedAt()).isNull(),
-                () -> assertThat(host.getAuthKey().getAuthKey()).isEqualTo(email),
-                () -> assertThat(host.isAgreeToMarketing()).isTrue()
-        );
-
+        assertThat(savedHost.getNickname()).isEqualTo("max");
     }
+
+    @Test
+    @DisplayName("하우스 체크 403 테스트")
+    void checkHouseAuthFail() throws Exception {
+        //when
+        AccessDeniedException e = assertThrows(AccessDeniedException.class,
+                () -> hostRepository.findByAccountAndHostHouses_House_Id("maxmax@gmail.com", 1000L)
+                        .orElseThrow(() -> new AccessDeniedException(ErrorCode.ACCESS_DENIED)));
+
+        //then
+        assertThat(e.getErrorCode().getCode()).isEqualTo(ErrorCode.ACCESS_DENIED.getCode());
+    }
+
 }

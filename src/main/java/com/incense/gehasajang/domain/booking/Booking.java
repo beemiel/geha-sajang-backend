@@ -1,8 +1,12 @@
 package com.incense.gehasajang.domain.booking;
 
+import com.incense.gehasajang.domain.BaseTimeEntity;
 import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.house.House;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,7 +16,8 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
-public class Booking {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Booking extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,19 +32,13 @@ public class Booking {
     @JoinColumn(name = "guest_id")
     private Guest guest;
 
-    private LocalDateTime checkIn;
+    @Embedded
+    private Stay stay;
 
-    private LocalDateTime checkOut;
-
-    private Integer maleCount;
-
-    private Integer femaleCount;
+    @Embedded
+    private PeopleCount peopleCount;
 
     private String requirement;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt;
 
@@ -49,4 +48,12 @@ public class Booking {
     @OneToMany(mappedBy = "booking")
     private List<BookingRoomInfo> bookingRoomInfos;
 
+    @Builder
+    public Booking(House house, Guest guest, Stay stay, PeopleCount peopleCount, String requirement) {
+        this.house = house;
+        this.guest = guest;
+        this.stay = stay;
+        this.peopleCount = peopleCount;
+        this.requirement = requirement;
+    }
 }

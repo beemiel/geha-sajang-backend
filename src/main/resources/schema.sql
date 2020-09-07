@@ -166,10 +166,10 @@ create table house_extra_info (
 
 create table guest (
     guest_id bigint auto_increment,
-    email varchar(255),
-    memo varchar(255),
-    name varchar(255),
-    phone_number varchar(10) not null,
+    email varchar(120),
+    memo varchar(500),
+    name varchar(50) not null,
+    phone_number varchar(15) not null,
     primary key (guest_id)
 );
 
@@ -179,7 +179,7 @@ create table booking (
     check_out timestamp not null,
     female_count integer default 0,
     male_count integer default 0,
-    requirement varchar(255),
+    requirement varchar(500),
     guest_id bigint references guest(guest_id),
     house_id bigint references house(house_id),
     created_at timestamp default CURRENT_TIMESTAMP,
@@ -191,8 +191,8 @@ create table booking (
 create table unbooked_room (
     unbooked_room_id bigint auto_increment,
     entry_date timestamp not null,
-    is_additional_bed boolean not null,
-    is_down_bed boolean not null,
+    is_additional_bed boolean,
+    is_down_bed boolean,
     today_amount varchar(255) not null,
     bed_id bigint references bed(bed_id),
     room_id bigint references room(room_id),
@@ -208,8 +208,8 @@ create table booked_room (
 create table booking_extra_info (
     booking_extra_info_id bigint auto_increment,
     attend_date timestamp not null,
-    attend_status varchar(255) not null,
-    memo varchar(255),
+    is_attend boolean,
+    memo varchar(200),
     people_count integer not null,
     house_extra_info_id bigint references house_extra_info(house_extra_info_id),
     booking_id bigint references booking(booking_id),

@@ -8,6 +8,7 @@ import com.incense.gehasajang.exception.NumberExceededException;
 import com.incense.gehasajang.model.dto.house.HouseDto;
 import com.incense.gehasajang.model.dto.house.HouseExtraInfoDto;
 import com.incense.gehasajang.security.UserAuthentication;
+import com.incense.gehasajang.service.AuthorizationService;
 import com.incense.gehasajang.service.HouseService;
 import com.incense.gehasajang.service.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -15,28 +16,34 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/houses")
 public class HouseController {
 
     private final HouseService houseService;
+    private final AuthorizationService authorizationService;
     private final S3Service s3Service;
 
     @GetMapping("/{houseId}")
     public ResponseEntity<HouseDto> detail(
-            @PathVariable Long houseId,
+            @PathVariable @Min(value = 1) Long houseId,
             @AuthenticationPrincipal UserAuthentication authentication
     ) {
-        House house = houseService.getHouse(houseId, authentication.getAccount());
+        authorizationService.checkHouse(houseId, authentication.getAccount());
+        House house = houseService.getHouse(houseId);
+        //TODO: 2020-09-04 매퍼로 바꿀 것 -lynn
         HouseDto houseDto = toHouseDto(house);
         return ResponseEntity.ok(houseDto);
     }

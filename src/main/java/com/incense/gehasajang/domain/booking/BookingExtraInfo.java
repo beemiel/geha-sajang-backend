@@ -21,8 +21,7 @@ public class BookingExtraInfo {
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
-    @Enumerated(EnumType.STRING)
-    private AttendStatus attendStatus;
+    private Boolean isAttend;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "house_extra_info_id")
@@ -33,5 +32,13 @@ public class BookingExtraInfo {
     private LocalDateTime attendDate;
 
     private int peopleCount;
+
+    public void addHouseExtraInfo(HouseExtraInfo houseExtraInfo) {
+        this.houseExtraInfo = houseExtraInfo;
+    }
+
+    public void addBooking(Booking booking) {
+        this.booking = booking;
+    }
 
 }

@@ -19,6 +19,12 @@ API서버이므로 기본 Url은 **/api/v1(버전)/~** 입니다.
 
 예) `http://13.124.108.177:8080/api/v1/houses/1`
 
+```
+📢 회원가입/약관/이메일인증/로그인/로그아웃 외에는 모두 🔑jwt 토큰🔑이 필요합니다.
+
+반드시 Authorization 헤더에 `Bearer jwt~~` 를 넣어서 보내주세요.
+```
+
 .Method
 - method는 아래와 같습니다.
 
@@ -75,11 +81,11 @@ API서버이므로 기본 Url은 **/api/v1(버전)/~** 입니다.
 .Error Code
 - 내부적으로 사용하는 에러코드는 아래와 같습니다.
 
-??? 주로 유효성 검사
+공통
 |===
 | Error code | Status | Message
 
-| `???`
+| `CO_001`
 |  400
 |  입력값이 올바르지 않습니다
 
@@ -97,9 +103,43 @@ House 관련
 |  400
 |  지정된 숫자를 초과하였습니다.
 
+| `HO_003`
+|  404
+|  추가 서비스를 찾을 수 없습니다.
+
 |===
 
-호스트 관련
+Room 관련
+|===
+| Error code | Status | Message
+
+| `RO_001`
+|  404
+|  방을 찾을 수 없습니다.
+
+|===
+
+Booking 관련
+|===
+| Error code | Status | Message
+
+| `BO_001`
+|  400
+|  인원수를 입력하세요.
+
+|===
+
+재고 관련
+|===
+| Error code | Status | Message
+
+| `UN_001`
+|  404
+|  예약 가능한 방이 없습니다.
+
+|===
+
+Host 관련
 |===
 | Error code | Status | Message
 
@@ -154,6 +194,16 @@ House 관련
 | `US_013`
 |  403
 |  해당 리소스에 접근 권한이 없습니다.
+
+|===
+
+게스트 관련
+|===
+| Error code | Status | Message
+
+| `GU_001`
+|  404
+|  게스트를 찾을 수 없습니다.
 
 |===
 
@@ -567,7 +617,7 @@ Host: 13.124.108.177:8080
 | image
 | 이미지 파일(NULL⭕/""⭕)
 
-| email
+| account
 | 이메일(형식 필수)
 
 | nickname
@@ -605,7 +655,7 @@ Content-Type: application/json;charset=UTF-8
     "value" : "1",
     "reason" : "비밀번호는 숫자+문자 조합으로 8~16자로 입력해주세요."
   }, {
-    "field" : "email",
+    "field" : "account",
     "value" : "email",
     "reason" : "이메일 형식을 지켜주세요."
   }, {
@@ -910,3 +960,150 @@ include::{snippets}/sign-out-controller-test/sign-out/http-request.adoc[]
 
 - HTTP Response
 include::{snippets}/sign-out-controller-test/sign-out/http-response.adoc[]
+
+== 게스트 관련 API
+
+=== POST /houses/{houseId}/guests?name=
+같은 이름을 가진 게스트 리스트를 가져옵니다.
+
+- HTTP Request
+include::{snippets}/guest-controller-test/list/http-request.adoc[]
+
+- Path Parameters
+include::{snippets}/guest-controller-test/list/path-parameters.adoc[]
+
+==== 200 성공
+- HTTP Response
+```
+HTTP/1.1 200 OK
+
+[ {
+  "guestId" : 1,
+  "name" : "foo",
+  "phoneNumber" : "01000000000",
+  "email" : "foo@gmail.com",
+  "memo" : "test1",
+  "lastBooking" : "2020-08-30T01:25:41.876"
+}, {
+  "guestId" : 2,
+  "name" : "foo2",
+  "phoneNumber" : "01011111111",
+  "email" : "foo2@gmail.com",
+  "memo" : "test2",
+  "lastBooking" : "2020-09-01T01:25:41.876"
+} ]
+```
+
+- Response Fields
+include::{snippets}/guest-controller-test/list/response-fields.adoc[]
+
+==== 404 실패?
+실패라기보다 DB에 존재하지 않는 새로운 게스트라는 의미의 404
+
+- HTTP Response
+```
+HTTP/1.1 404 Not Found
+{
+  "message" : "게스트를 찾을 수 없습니다.",
+  "code" : "GU_001",
+  "status" : 404,
+  "errors" : [ ]
+}
+
+```
+
+
+== 예약 관련 API
+
+=== POST /houses/{houseId}/bookings
+예약을 등록합니다.
+
+- HTTP Request
+include::{snippets}/booking-controller-test/success-booking/http-request.adoc[]
+
+- Path Parameters
+include::{snippets}/booking-controller-test/success-booking/path-parameters.adoc[]
+
+- Request Fields
+include::{snippets}/booking-controller-test/success-booking/request-fields.adoc[]
+
+==== 200 성공
+예약이 등록되었습니다.
+
+- HTTP Response
+```
+HTTP/1.1 201 Created
+```
+
+==== 404 게스트
+올바르지 않은 Guest Id가 들어올 경우 발생합니다.
+
+- HTTP Response
+```
+HTTP/1.1 404 Not Found
+
+{
+  "message" : "게스트를 찾을 수 없습니다.",
+  "code" : "GU_001",
+  "status" : 404,
+  "errors" : [ ]
+}
+
+```
+
+==== 404 하우스
+올바르지 않은 House Id가 들어올 경우 발생합니다.
+
+==== 404 룸
+해당 하우스에 존재하지 않는 Room Id 입니다.
+```
+HTTP/1.1 404 Not Found
+
+{
+  "message" : "방을 찾을 수 없습니다.",
+  "code" : "RO_001",
+  "status" : 404,
+  "errors" : [ ]
+}
+```
+
+==== 400 예약 인원이 0
+예약 총 인원이 0일 경우 발생합니다.
+```
+HTTP/1.1 400 Bad Request
+
+{
+  "message" : "인원수를 입력하세요.",
+  "code" : "BO_001",
+  "status" : 400,
+  "errors" : [ ]
+}
+```
+
+==== 404 재고
+요청한 기간에 재고가 충분하지 않은 경우 발생합니다.
+
+예를 들어 7/1~7/3 여3 일 때, **하루라도 재고가 3 미만**이면 발생합니다.
+```
+HTTP/1.1 404 Not Found
+
+{
+  "message" : "예약 가능한 방이 없습니다.",
+  "code" : "UN_001",
+  "status" : 404,
+  "errors" : [ ]
+}
+```
+
+==== 404 House Extra
+해당 하우스에 존재하지 않는 추가 정보를 요청 할 경우 발생합니다.
+```
+HTTP/1.1 404 Not Found
+
+{
+  "message" : "예약 가능한 방이 없습니다.",
+  "code" : "UN_001",
+  "status" : 404,
+  "errors" : [ ]
+}
+```

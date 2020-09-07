@@ -33,7 +33,10 @@ public class SignUpController {
     private final Mapper mapper;
 
     @PostMapping()
-    public ResponseEntity<Void> join(@Valid HostDto hostDto, MultipartFile image) throws IOException {
+    public ResponseEntity<Void> join(
+            @Valid HostDto hostDto,
+            MultipartFile image
+    ) throws IOException {
         hostDto.setProfileImage(s3Service.upload(image, "host"));
         MainHost host = mapper.map(hostDto, MainHost.class);
         signUpService.addHost(host);
@@ -41,18 +44,25 @@ public class SignUpController {
     }
 
     @GetMapping("/auth")
-    public ResponseEntity<String> joinConfirm(@RequestParam String email, @RequestParam String authkey) {
+    public ResponseEntity<String> joinConfirm(
+            @RequestParam String email,
+            @RequestParam String authkey
+    ) {
         signUpService.confirm(email, authkey);
         return ResponseEntity.status(HttpStatus.CREATED).body("인증되었습니다.");
     }
 
     @PostMapping("/check-email")
-    public ResponseEntity<Boolean> emailDuplicateCheck(@RequestBody @Valid EmailCheckDto email) {
+    public ResponseEntity<Boolean> emailDuplicateCheck(
+            @RequestBody @Valid EmailCheckDto email
+    ) {
         return ResponseEntity.ok(signUpService.checkAccount(email.getEmail()));
     }
 
     @PostMapping("/check-name")
-    public ResponseEntity<Boolean> nameDuplicateCheck(@RequestBody @Valid NicknameCheckDto name) {
+    public ResponseEntity<Boolean> nameDuplicateCheck(
+            @RequestBody @Valid NicknameCheckDto name
+    ) {
         return ResponseEntity.ok(signUpService.checkName(name.getNickname()));
     }
 

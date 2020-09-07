@@ -1,6 +1,5 @@
 package com.incense.gehasajang.domain.room;
 
-import com.incense.gehasajang.domain.UnbookedRoom;
 import com.incense.gehasajang.domain.bed.Bed;
 import com.incense.gehasajang.domain.house.House;
 import lombok.AccessLevel;

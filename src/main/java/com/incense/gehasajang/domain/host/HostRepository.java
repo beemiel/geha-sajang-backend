@@ -16,11 +16,7 @@ public interface HostRepository extends JpaRepository<Host, Long> {
             "where exists (select hh.id from h.hostHouses hh where hh.host.id = :hostId)")
     Long findHouseByHostId(@Param(value = "hostId") Long hostId);
 
-    @Query(nativeQuery = true,
-            value = "select h.host_id from host h " +
-                    "join host_house hh on h.host_id = hh.host_id " +
-                    "where h.account = :account and hh.house_id = :houseId")
-    Optional<Long> findHouseByAccountAndHouseId(@Param(value = "account") String account, @Param(value = "houseId") Long houseId);
+    Optional<Host> findByAccountAndHostHouses_House_Id(@Param(value = "account") String account, @Param(value = "houseId") Long houseId);
 
     @Query(nativeQuery = true,
             value = "SELECT h.host_id FROM host h " +

@@ -48,11 +48,12 @@ class HouseServiceTest {
                 .name("게스트하우스")
                 .address(new Address("city", "street", "postcode", "detail"))
                 .build();
-        given(hostRepository.findHouseByAccountAndHouseId(any(), any())).willReturn(Optional.of(1L));
+        MainHost host = MainHost.builder().build();
+        given(hostRepository.findByAccountAndHostHouses_House_Id(any(), any())).willReturn(Optional.ofNullable(host));
         given(houseRepository.findById(1L)).willReturn(Optional.of(returnHouse));
 
         //when
-        House house = houseService.getHouse(1L, "account");
+        House house = houseService.getHouse(1L);
 
         //then
         assertThat(house.getName()).isEqualTo("게스트하우스");
