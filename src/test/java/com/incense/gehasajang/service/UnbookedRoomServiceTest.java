@@ -29,9 +29,6 @@ class UnbookedRoomServiceTest {
     @Mock
     private BookedRoomRepository bookedRoomRepository;
 
-    @Mock
-    private RoomRepository roomRepository;
-
     private String date1 = "2020-08-01";
     private String date2 = "2020-08-02";
     private String date3 = "2020-08-03";
@@ -41,7 +38,7 @@ class UnbookedRoomServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        unbookedRoomService = new UnbookedRoomService(unbookedRoomRepository, bookedRoomRepository, roomRepository);
+        unbookedRoomService = new UnbookedRoomService(unbookedRoomRepository, bookedRoomRepository);
     }
 
     @Test
@@ -52,7 +49,7 @@ class UnbookedRoomServiceTest {
                 checkIn(LocalDate.parse(date1, formatter).atStartOfDay())
                 .checkOut(LocalDate.parse(date4, formatter).atStartOfDay())
                 .roomId(1L)
-                .count(3).build();
+                .amount(3).build();
         Room room = Room.builder().id(1L).defaultCapacity(4).maxCapacity(5).memo("room memo").name("room").peakAmount("10000").offPeakAmount("13000").roomType(RoomType.DORMITORY).build();
         List<UnbookedRoom> roomList = Arrays.asList(
                 UnbookedRoom.builder().id(1L).todayAmount("10000").room(room).entryDate(LocalDate.parse(date1, formatter).atStartOfDay()).build(),

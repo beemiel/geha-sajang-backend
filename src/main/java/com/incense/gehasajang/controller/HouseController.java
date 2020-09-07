@@ -16,14 +16,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/houses")
@@ -35,7 +38,7 @@ public class HouseController {
 
     @GetMapping("/{houseId}")
     public ResponseEntity<HouseDto> detail(
-            @PathVariable Long houseId,
+            @PathVariable @Min(value = 1) Long houseId,
             @AuthenticationPrincipal UserAuthentication authentication
     ) {
         authorizationService.checkHouse(houseId, authentication.getAccount());

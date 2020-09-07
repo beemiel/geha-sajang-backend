@@ -3,7 +3,6 @@ package com.incense.gehasajang.model.dto.booking.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.dozermapper.core.Mapper;
 import com.incense.gehasajang.domain.booking.Booking;
-import com.incense.gehasajang.domain.booking.BookingExtraInfo;
 import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.model.dto.guest.request.GuestRequestDto;
@@ -13,7 +12,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @Builder

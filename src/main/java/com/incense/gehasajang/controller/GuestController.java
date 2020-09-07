@@ -8,10 +8,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Min;
 import java.util.List;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/houses/{houseId}")
@@ -22,7 +25,7 @@ public class GuestController {
     @GetMapping("/guests")
     @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_MAIN')")
     public ResponseEntity<List<GuestCheckResponseDto>> list(
-            @PathVariable Long houseId,
+            @PathVariable @Min(value = 1) Long houseId,
             @RequestParam String name,
             @AuthenticationPrincipal UserAuthentication authentication
             ) {

@@ -14,6 +14,6 @@ public class UnbookedListParam {
     private final LocalDateTime checkIn;
     private final LocalDateTime checkOut;
     private final Long roomId;
-    private final int count;
+    private final int amount;
 
 }

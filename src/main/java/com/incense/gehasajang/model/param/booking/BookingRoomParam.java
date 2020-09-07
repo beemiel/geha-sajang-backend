@@ -16,7 +16,7 @@ public class BookingRoomParam {
 
     private final LocalDateTime checkIn;
     private final LocalDateTime checkOut;
-    private final Booking booking;
+    private final Booking savedBooking;
     private final List<BookingRoomRequestDto> bookingRoomInfos;
 
 }

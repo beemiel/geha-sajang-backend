@@ -36,15 +36,11 @@ public class Booking extends BaseTimeEntity {
 
     private LocalDateTime checkOut;
 
-    private Integer maleCount;
+    private int maleCount;
 
-    private Integer femaleCount;
+    private int femaleCount;
 
     private String requirement;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt;
 

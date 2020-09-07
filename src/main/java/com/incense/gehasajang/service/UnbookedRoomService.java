@@ -22,11 +22,11 @@ public class UnbookedRoomService {
 
     private final UnbookedRoomRepository unbookedRoomRepository;
     private final BookedRoomRepository bookedRoomRepository;
-    private final RoomRepository roomRepository;
 
     //재고, 인원 수  확인
+    @Transactional(readOnly = true)
     public Map<LocalDateTime, List<UnbookedRoom>> getUnbookedRooms(UnbookedListParam unbookedListParam) {
-        int amount = unbookedListParam.getCount();
+        int amount = unbookedListParam.getAmount();
         long duration = Duration.between(unbookedListParam.getCheckIn(), unbookedListParam.getCheckOut()).toDays(); //시간이 모두 00 이어야 하는걸로 알고있음
         int expectedRoomCount = (int) duration * amount;
 
@@ -36,16 +36,19 @@ public class UnbookedRoomService {
 
         List<UnbookedRoom> unbookedRooms = unbookedRoomRepository.findAllUnbooked(unbookedListParam.getRoomId(), dates.get(first), dates.get(last));
 
-        //전체 재고 개수 체크
-        checkTotalCount(unbookedRooms, expectedRoomCount);
-
-        //날짜별 리스트로 분리
+        //TODO: 2020-09-04 리스트 분리할 때 재고 개수 체크 같이 해주기 -lynn
+        //날짜별 리스트로 분리 
         Map<LocalDateTime, List<UnbookedRoom>> stockByDate = getStockByDateFromList(dates, unbookedRooms);
 
         //날짜별 재고 개수 체크
         checkCountByDate(stockByDate, amount);
 
         return stockByDate;
+    }
+
+    public void addBookedRoom(UnbookedRoom unbookedRoom) {
+        BookedRoom bookedRoom = BookedRoom.builder().unbookedRoom(unbookedRoom).build();
+        bookedRoomRepository.save(bookedRoom);
     }
 
     private List<LocalDateTime> getDates(LocalDateTime checkIn, long duration) {
@@ -74,12 +77,6 @@ public class UnbookedRoomService {
         return newRooms;
     }
 
-    private void checkTotalCount(List<UnbookedRoom> unbookedRooms, int expectedRoomCount) {
-        if (unbookedRooms.isEmpty() || unbookedRooms.size() < expectedRoomCount) {
-            throw new NotFoundDataException(ErrorCode.NOT_FOUND_UNBOOKED);
-        }
-    }
-
     private void checkCountByDate(Map<LocalDateTime, List<UnbookedRoom>> stockByDate, int amount) {
         stockByDate.values().forEach((value) -> {
             if (value.size() < amount) {
@@ -88,8 +85,4 @@ public class UnbookedRoomService {
         });
     }
 
-    public void addBookedRoom(UnbookedRoom unbookedRoom) {
-        BookedRoom bookedRoom = BookedRoom.builder().unbookedRoom(unbookedRoom).build();
-        bookedRoomRepository.save(bookedRoom);
-    }
 }

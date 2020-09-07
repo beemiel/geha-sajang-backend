@@ -19,7 +19,7 @@ public class BookingExtraInfoRequestDto {
     @Mapping("id")
     private Long bookingExtraInfoId;
 
-    @NotNull
+    @NotNull(message = "추가 서비스를 선택해주세요.")
     private Long houseExtraInfoId;
 
     @Mapping("isAttend")
