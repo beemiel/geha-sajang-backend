@@ -12,6 +12,9 @@ public enum ErrorCode {
     //룸 관련
     ROOM_NOT_FOUND("RO_001", "방을 찾을 수 없습니다.", 404),
 
+    //예약 관련
+    ZERO_COUNT("BO_001", "인원수를 입력하세요.", 400),
+
     //언북드 룸(재고) 관련
     NOT_FOUND_UNBOOKED("UN_001", "예약 가능한 방이 없습니다.", 404),
 

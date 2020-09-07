@@ -1,5 +1,7 @@
 package com.incense.gehasajang.controller;
 
+import com.incense.gehasajang.error.ErrorResponse;
+import com.incense.gehasajang.exception.ZeroCountException;
 import com.incense.gehasajang.model.dto.booking.request.BookingRequestDto;
 import com.incense.gehasajang.security.UserAuthentication;
 import com.incense.gehasajang.service.AuthorizationService;
@@ -34,6 +36,15 @@ public class BookingController {
         authorizationService.checkHouse(houseId, authentication.getAccount());
         bookingService.addBookingInfo(request, houseId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    /**
+     * 인원수가 0인 경우
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ZeroCountException.class)
+    public ErrorResponse handleZeroCount(ZeroCountException e) {
+        return ErrorResponse.buildError(e.getErrorCode());
     }
 
 }
