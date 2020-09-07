@@ -46,7 +46,7 @@ class GuestServiceTest {
         given(guestRepository.save(any())).willReturn(guest);
 
         //when
-        Guest savedGuest = guestService.addGuest(guest);
+        Guest savedGuest = guestService.addGuest(guest, any());
 
         //then
         assertThat(savedGuest.getName()).isEqualTo("foo");

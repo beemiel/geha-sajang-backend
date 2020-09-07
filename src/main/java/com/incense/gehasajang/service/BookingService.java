@@ -28,7 +28,7 @@ public class BookingService {
 
     public void addBookingInfo(BookingRequestDto request, Long houseId) {
         Guest guest = request.toGuest(mapper);
-        Guest savedGuest = guestService.addGuest(guest);
+        Guest savedGuest = guestService.addGuest(guest, houseId);
 
         House savedHouse = houseService.getHouse(houseId);
 

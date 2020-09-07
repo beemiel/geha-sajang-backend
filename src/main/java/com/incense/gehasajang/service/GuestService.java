@@ -33,21 +33,21 @@ public class GuestService {
 
     //게스트 id가 null이면 insert null이 아니면 update
     @Transactional
-    public Guest addGuest(Guest guestInformation) {
+    public Guest addGuest(Guest guestInformation, Long houseId) {
         if (guestInformation.getId() != null) {
-            Guest updatedGuest = updateGuest(guestInformation);
+            Guest updatedGuest = updateGuest(guestInformation, houseId);
             return guestRepository.save(updatedGuest);
         }
         return guestRepository.save(guestInformation);
     }
 
-    private Guest updateGuest(Guest guestInformation) {
-        Guest guest = findGuest(guestInformation.getId());
+    private Guest updateGuest(Guest guestInformation, Long houseId) {
+        Guest guest = findGuest(guestInformation.getId(), houseId);
         return guest.changeByInfo(guestInformation);
     }
 
-    private Guest findGuest(Long guestId) {
-        return guestRepository.findById(guestId)
+    private Guest findGuest(Long guestId, Long houseId) {
+        return guestRepository.findByIdAndBookings_House_Id(guestId, houseId)
                 .orElseThrow(() -> new NotFoundDataException(ErrorCode.NOT_FOUND_GUEST));
     }
 
@@ -60,6 +60,7 @@ public class GuestService {
                                 .phoneNumber(guest.getPhoneNumber())
                                 .email(guest.getEmail())
                                 .memo(guest.getMemo())
+                                //TODO: 2020-09-08 메서드로 분리할 것 -lynn
                                 .lastBooking(guestRepository.findLastBookingById(guest.getId(), houseId))
                                 .build())
                 .collect(Collectors.toList());
