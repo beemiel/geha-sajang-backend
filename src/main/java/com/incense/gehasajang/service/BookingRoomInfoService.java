@@ -5,10 +5,10 @@ import com.incense.gehasajang.domain.booking.BookingRoomInfo;
 import com.incense.gehasajang.domain.booking.BookingRoomInfoRepository;
 import com.incense.gehasajang.domain.booking.Gender;
 import com.incense.gehasajang.domain.room.UnbookedRoom;
+import com.incense.gehasajang.error.ErrorCode;
+import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.model.dto.booking.request.BookingRoomRequestDto;
 import com.incense.gehasajang.model.param.booking.BookingRoomParam;
-import com.incense.gehasajang.model.param.booking.RoomInfoParam;
-import com.incense.gehasajang.model.param.unbooked.UnbookedListParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,56 +25,63 @@ public class BookingRoomInfoService {
     private final BookingRoomInfoRepository bookingRoomInfoRepository;
 
     private final UnbookedRoomService unbookedRoomService;
+    private final AuthorizationService authorizationService;
+
+    private Booking booking;
 
     public void addBookingRoomInfo(BookingRoomParam bookingRoomParam) {
-        Booking booking = bookingRoomParam.getBooking();
-        List<BookingRoomRequestDto> bookingRoomInfoDtos = bookingRoomParam.getBookingRoomInfos();
+        booking = bookingRoomParam.getSavedBooking();
+        Long houseId = bookingRoomParam.getHouseId();
+        List<BookingRoomRequestDto> bookingRoomInfos = bookingRoomParam.getBookingRoomInfos();
 
-        bookingRoomInfoDtos.forEach(bookingRoomDto -> {
+        bookingRoomInfos.forEach(bookingRoomDto -> {
+            //roomId와 houseId 검증
+            boolean exist = authorizationService.checkRoom(bookingRoomDto.getRoomId(), houseId);
+            if (!exist) {
+                throw new NotFoundDataException(ErrorCode.ROOM_NOT_FOUND);
+            }
+
             //재고, 인원 수  확인 후 가져오기
-            UnbookedListParam unbookedListParam = UnbookedListParam.builder()
-                    .checkIn(bookingRoomParam.getCheckIn())
-                    .checkOut(bookingRoomParam.getCheckOut())
-                    .roomId(bookingRoomDto.getRoomId())
-                    .count(bookingRoomDto.sum()).build();
-            Map<LocalDateTime, List<UnbookedRoom>> unbookedRooms = unbookedRoomService.getUnbookedRooms(unbookedListParam);
+            Map<LocalDateTime, List<UnbookedRoom>> unbookedRooms = unbookedRoomService.getUnbookedRoomsByRoomId(bookingRoomDto, booking.getStay());
 
             //부킹룸 저장 & 재고 삭제
-            RoomInfoParam infoParam = RoomInfoParam.builder()
-                    .booking(booking)
-                    .femaleCount(bookingRoomDto.getFemaleCount())
-                    .amount(bookingRoomDto.sum())
-                    .build();
-            unbookedRooms.values().forEach(rooms -> {
-                addBookingRoom(rooms, infoParam);
-            });
+            unbookedRooms.values().forEach(rooms -> addBookingRoom(rooms, bookingRoomDto));
         });
     }
 
-    private void addBookingRoom(List<UnbookedRoom> rooms, RoomInfoParam roomInfoParam) {
-        Booking booking = roomInfoParam.getBooking();
-        int femaleCount = roomInfoParam.getFemaleCount();
-        int amount = roomInfoParam.getAmount();
+    private void addBookingRoom(List<UnbookedRoom> rooms, BookingRoomRequestDto bookingRoomRequestDto) {
+        int femaleCount = bookingRoomRequestDto.getFemaleCount();
+        int amount = bookingRoomRequestDto.sum();
 
         int index = 0;
-        for(UnbookedRoom unbookedRoom : rooms) {
+        for (UnbookedRoom unbookedRoom : rooms) {
             if (index < femaleCount) {
-                addRoomByGender(booking, unbookedRoom, Gender.FEMALE);
+                addRoomByGender(unbookedRoom, Gender.FEMALE);
             }
 
             if (femaleCount <= index && index < amount) {
-                addRoomByGender(booking, unbookedRoom, Gender.MALE);
+                addRoomByGender(unbookedRoom, Gender.MALE);
             }
 
             index++;
         }
     }
 
-    private void addRoomByGender(Booking booking, UnbookedRoom unbookedRoom, Gender gender) {
-        BookingRoomInfo info = BookingRoomInfo.builder().booking(booking).unbookedRoom(unbookedRoom).gender(gender).build();
+    private void addRoomByGender(UnbookedRoom unbookedRoom, Gender gender) {
+        BookingRoomInfo info = BookingRoomInfo.builder()
+                .booking(booking)
+                .unbookedRoom(unbookedRoom)
+                .gender(gender)
+                .build();
+
         //부킹룸 저장
         bookingRoomInfoRepository.save(info);
+
         //재고 삭제
+        addSoldStock(unbookedRoom);
+    }
+
+    private void addSoldStock(UnbookedRoom unbookedRoom) {
         unbookedRoomService.addBookedRoom(unbookedRoom);
     }
 

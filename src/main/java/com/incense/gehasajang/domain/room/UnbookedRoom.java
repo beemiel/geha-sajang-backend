@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -52,5 +51,9 @@ public class UnbookedRoom {
         this.room = room;
         this.todayAmount = todayAmount;
         this.bookedRoom = bookedRoom;
+    }
+
+    public boolean checkDate(LocalDateTime date) {
+        return entryDate.equals(date);
     }
 }

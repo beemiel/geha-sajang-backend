@@ -1,6 +1,8 @@
 package com.incense.gehasajang.service;
 
+import com.incense.gehasajang.domain.booking.Stay;
 import com.incense.gehasajang.domain.room.*;
+import com.incense.gehasajang.model.dto.booking.request.BookingRoomRequestDto;
 import com.incense.gehasajang.model.param.unbooked.UnbookedListParam;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,11 +47,8 @@ class UnbookedRoomServiceTest {
     @DisplayName("list -> map 테스트")
     void listToMap() throws Exception {
         //given
-        UnbookedListParam unbookedListParam = UnbookedListParam.builder().
-                checkIn(LocalDate.parse(date1, formatter).atStartOfDay())
-                .checkOut(LocalDate.parse(date4, formatter).atStartOfDay())
-                .roomId(1L)
-                .amount(3).build();
+        BookingRoomRequestDto requestDto = BookingRoomRequestDto.builder().roomId(1L).maleCount(1).femaleCount(2).build();
+        Stay stay = new Stay(LocalDate.parse(date1, formatter).atStartOfDay(), LocalDate.parse(date4, formatter).atStartOfDay());
         Room room = Room.builder().id(1L).defaultCapacity(4).maxCapacity(5).memo("room memo").name("room").peakAmount("10000").offPeakAmount("13000").roomType(RoomType.DORMITORY).build();
         List<UnbookedRoom> roomList = Arrays.asList(
                 UnbookedRoom.builder().id(1L).todayAmount("10000").room(room).entryDate(LocalDate.parse(date1, formatter).atStartOfDay()).build(),
@@ -69,7 +68,7 @@ class UnbookedRoomServiceTest {
         given(unbookedRoomRepository.findAllUnbooked(any(), any(), any())).willReturn(roomList);
 
         //when
-        Map<LocalDateTime, List<UnbookedRoom>> rooms = unbookedRoomService.getUnbookedRooms(unbookedListParam);
+        Map<LocalDateTime, List<UnbookedRoom>> rooms = unbookedRoomService.getUnbookedRoomsByRoomId(requestDto, stay);
 
         //then
         assertThat(rooms.size()).isEqualTo(3);

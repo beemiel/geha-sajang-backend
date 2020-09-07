@@ -1,19 +1,22 @@
 package com.incense.gehasajang.service;
 
-import com.incense.gehasajang.domain.room.*;
+import com.incense.gehasajang.domain.booking.Stay;
+import com.incense.gehasajang.domain.room.BookedRoom;
+import com.incense.gehasajang.domain.room.BookedRoomRepository;
+import com.incense.gehasajang.domain.room.UnbookedRoom;
+import com.incense.gehasajang.domain.room.UnbookedRoomRepository;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.NotFoundDataException;
-import com.incense.gehasajang.model.param.unbooked.UnbookedListParam;
+import com.incense.gehasajang.model.dto.booking.request.BookingRoomRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -23,66 +26,49 @@ public class UnbookedRoomService {
     private final UnbookedRoomRepository unbookedRoomRepository;
     private final BookedRoomRepository bookedRoomRepository;
 
-    //재고, 인원 수  확인
-    @Transactional(readOnly = true)
-    public Map<LocalDateTime, List<UnbookedRoom>> getUnbookedRooms(UnbookedListParam unbookedListParam) {
-        int amount = unbookedListParam.getAmount();
-        long duration = Duration.between(unbookedListParam.getCheckIn(), unbookedListParam.getCheckOut()).toDays(); //시간이 모두 00 이어야 하는걸로 알고있음
-        int expectedRoomCount = (int) duration * amount;
-
-        List<LocalDateTime> dates = getDates(unbookedListParam.getCheckIn(), duration);
-        int first = 0;
-        int last = dates.size() - 1;
-
-        List<UnbookedRoom> unbookedRooms = unbookedRoomRepository.findAllUnbooked(unbookedListParam.getRoomId(), dates.get(first), dates.get(last));
-
-        //TODO: 2020-09-04 리스트 분리할 때 재고 개수 체크 같이 해주기 -lynn
-        //날짜별 리스트로 분리 
-        Map<LocalDateTime, List<UnbookedRoom>> stockByDate = getStockByDateFromList(dates, unbookedRooms);
-
-        //날짜별 재고 개수 체크
-        checkCountByDate(stockByDate, amount);
-
-        return stockByDate;
-    }
+    private List<LocalDateTime> dates;
 
     public void addBookedRoom(UnbookedRoom unbookedRoom) {
         BookedRoom bookedRoom = BookedRoom.builder().unbookedRoom(unbookedRoom).build();
         bookedRoomRepository.save(bookedRoom);
     }
 
-    private List<LocalDateTime> getDates(LocalDateTime checkIn, long duration) {
-        List<LocalDateTime> dates = new ArrayList<>();
-        for (int i = 0; i < duration; i++) {
-            dates.add(checkIn.plusDays(i));
-        }
-        return dates;
+    //재고, 인원 수  확인
+    @Transactional(readOnly = true)
+    public Map<LocalDateTime, List<UnbookedRoom>> getUnbookedRoomsByRoomId(BookingRoomRequestDto roomRequestDto, Stay stay) {
+        dates = stay.getDates();
+        Long roomId = roomRequestDto.getRoomId();
+        int amount = roomRequestDto.sum();
+        final int FIRST_STAY = 0;
+        final int LAST_STAY = dates.size() - 1;
+
+        //모든 재고를 날짜별 리스트로 분리 및 재고 개수 체크
+        List<UnbookedRoom> unbookedRooms = unbookedRoomRepository.findAllUnbooked(roomId, dates.get(FIRST_STAY), dates.get(LAST_STAY));
+        return sortByDate(unbookedRooms, amount);
     }
 
-    private Map<LocalDateTime, List<UnbookedRoom>> getStockByDateFromList(List<LocalDateTime> dates, List<UnbookedRoom> unbookedRooms) {
+    private Map<LocalDateTime, List<UnbookedRoom>> sortByDate(List<UnbookedRoom> unbookedRooms, int amount) {
         Map<LocalDateTime, List<UnbookedRoom>> stock = new HashMap<>();
+
         dates.forEach(date -> {
-            stock.put(date, getListByDate(unbookedRooms, date));
+            List<UnbookedRoom> stockByDate = getListByDate(unbookedRooms, date);
+            checkCount(stockByDate.size(), amount);
+            stock.put(date, stockByDate);
         });
+
         return stock;
     }
 
     private List<UnbookedRoom> getListByDate(List<UnbookedRoom> unbookedRooms, LocalDateTime date) {
-        List<UnbookedRoom> newRooms = new ArrayList<>();
-        unbookedRooms.forEach(room -> {
-            if (room.getEntryDate().equals(date)) {
-                newRooms.add(room);
-            }
-        });
-        return newRooms;
+        return unbookedRooms.stream()
+                .filter(room -> room.checkDate(date))
+                .collect(Collectors.toList());
     }
 
-    private void checkCountByDate(Map<LocalDateTime, List<UnbookedRoom>> stockByDate, int amount) {
-        stockByDate.values().forEach((value) -> {
-            if (value.size() < amount) {
-                throw new NotFoundDataException(ErrorCode.NOT_FOUND_UNBOOKED);
-            }
-        });
+    private void checkCount(int stockSize, int amount) {
+        if (stockSize < amount) {
+            throw new NotFoundDataException(ErrorCode.NOT_FOUND_UNBOOKED);
+        }
     }
 
 }
