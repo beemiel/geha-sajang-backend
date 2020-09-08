@@ -4,10 +4,7 @@ import com.incense.gehasajang.domain.host.Host;
 import com.incense.gehasajang.domain.host.HostRepository;
 import com.incense.gehasajang.domain.host.MainHost;
 import com.incense.gehasajang.error.ErrorCode;
-import com.incense.gehasajang.exception.DeletedHostException;
-import com.incense.gehasajang.exception.DisabledHostException;
-import com.incense.gehasajang.exception.NotFoundDataException;
-import com.incense.gehasajang.exception.UnAuthMailException;
+import com.incense.gehasajang.exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,6 +72,33 @@ public class HostService {
             if (!isPassEmailAuth) {
                 throw new UnAuthMailException(ErrorCode.UNAUTH_MAIL);
             }
+        }
+    }
+
+    /**
+     * 중복 인증인지 확인
+     */
+    public void checkDuplicateAuth(MainHost host) {
+        if (host.isPassEmailAuth()) {
+            throw new DuplicateAuthException(ErrorCode.DUPLICATE_AUTH);
+        }
+    }
+
+    /**
+     * 만료된 키인지 확인
+     */
+    public void checkExpiredAuth(MainHost host) {
+        if (host.isAuthKeyExpired()) {
+            throw new ExpirationException(ErrorCode.EXPIRATION_AUTH);
+        }
+    }
+
+    /**
+     * 인증키 불일치 여부 확인
+     */
+    public void checkNotMatchAuth(MainHost host, String authkey) {
+        if (!host.isAuthKeyMatched(authkey)) {
+            throw new FailToAuthenticationException(ErrorCode.FAIL_TO_AUTH);
         }
     }
 

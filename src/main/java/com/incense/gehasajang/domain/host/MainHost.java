@@ -57,6 +57,10 @@ public class MainHost extends Host {
         return this.address.getDetail();
     }
 
+    public String getAuthKeyString() {
+        return authKey.getAuthKey();
+    }
+
     public void changeAuthPass() {
         isPassEmailAuth = true;
     }

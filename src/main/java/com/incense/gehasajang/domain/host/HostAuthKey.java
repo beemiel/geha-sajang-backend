@@ -40,6 +40,14 @@ public class HostAuthKey {
         authKey = passwordEncoder.encode(authKey);
     }
 
+    public void changeAuthKey(BCryptPasswordEncoder passwordEncoder) {
+        hashAuthKey(passwordEncoder);
+    }
+
+    public void updateExpirationDate() {
+        expirationDate = LocalDateTime.now().plusDays(1);
+    }
+
     public boolean isExpired() {
         return expirationDate.isBefore(LocalDateTime.now());
     }

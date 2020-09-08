@@ -43,6 +43,14 @@ public class SignUpController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PostMapping("/resend")
+    public ResponseEntity<Void> resendEmail(
+            @RequestBody @Valid EmailCheckDto email
+    ) {
+        signUpService.resend(email.getEmail());
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/auth")
     public ResponseEntity<String> joinConfirm(
             @RequestParam String email,
