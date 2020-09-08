@@ -23,9 +23,7 @@ public class SignUpService {
     private final HostRepository hostRepository;
 
     private final HostAuthKeyRepository hostAuthKeyRepository;
-
     private final JavaMailSender mailSender;
-
     private final BCryptPasswordEncoder passwordEncoder;
 
     public boolean checkAccount(String email) {
@@ -53,21 +51,18 @@ public class SignUpService {
     }
 
     public void confirm(String account, String authkey) {
-        //email 불일치
         MainHost host = hostRepository.findMainHostByAccount(account)
                 .orElseThrow(() -> new NotFoundDataException(ErrorCode.HOST_NOT_FOUND));
 
-        //이미 인증함
         if (host.isPassEmailAuth()) {
             throw new DuplicateAuthException(ErrorCode.DUPLICATE_AUTH);
         }
 
-        //인증키 만료
-        if (host.getAuthKey().getExpirationDate().isBefore(LocalDateTime.now())) {
+        if (host.isAuthKeyExpired()) {
             throw new ExpirationException(ErrorCode.EXPIRATION_AUTH);
         }
 
-        if (host.getAuthKey().getAuthKey().equals(authkey)) {
+        if (host.isAuthKeyMatched(authkey)) {
             host.changeAuthPass();
             hostRepository.save(host);
             return;

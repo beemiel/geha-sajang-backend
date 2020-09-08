@@ -39,4 +39,12 @@ public class HostAuthKey {
     public void hashAuthKey(BCryptPasswordEncoder passwordEncoder) {
         authKey = passwordEncoder.encode(authKey);
     }
+
+    public boolean isExpired() {
+        return expirationDate.isBefore(LocalDateTime.now());
+    }
+
+    public boolean isMatched(String authKey) {
+        return this.authKey.equals(authKey);
+    }
 }
