@@ -53,4 +53,12 @@ public abstract class Host extends BaseTimeEntity {
         return passwordEncoder.matches(password, this.password);
     }
 
+    public boolean isSubHost() {
+        return this.type.equals(HostRole.ROLE_SUB.getType());
+    }
+
+    public boolean isDeleted() {
+        return deletedAt != null;
+    }
+
 }
