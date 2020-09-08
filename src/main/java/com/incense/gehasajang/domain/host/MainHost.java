@@ -36,8 +36,9 @@ public class MainHost extends Host {
         this.isAgreeToMarketing = isAgreeToMarketing;
     }
 
-    public void changeAuthPass() {
-        isPassEmailAuth = true;
+    @PrePersist
+    public void prePersist() {
+        address = address == null ? new Address("", "", "", "") : address;
     }
 
     public String getCity() {
@@ -56,9 +57,20 @@ public class MainHost extends Host {
         return this.address.getDetail();
     }
 
-    @PrePersist
-    public void prePersist() {
-        address = address == null ? new Address("", "", "", "") : address;
+    public String getAuthKeyString() {
+        return authKey.getAuthKey();
+    }
+
+    public void changeAuthPass() {
+        isPassEmailAuth = true;
+    }
+
+    public boolean isAuthKeyExpired() {
+        return authKey.isExpired();
+    }
+
+    public boolean isAuthKeyMatched(String authKey) {
+        return this.authKey.isMatched(authKey);
     }
 
 }

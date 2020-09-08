@@ -2,7 +2,9 @@ package com.incense.gehasajang.service;
 
 import com.incense.gehasajang.domain.host.*;
 import com.incense.gehasajang.error.ErrorCode;
-import com.incense.gehasajang.exception.*;
+import com.incense.gehasajang.exception.CannotSendMailException;
+import com.incense.gehasajang.exception.DuplicateHostException;
+import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.util.CommonString;
 import com.incense.gehasajang.util.MailHandler;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +22,12 @@ import java.time.LocalDateTime;
 @Slf4j
 public class SignUpService {
 
+    private final HostService hostService;
+
     private final HostRepository hostRepository;
 
     private final HostAuthKeyRepository hostAuthKeyRepository;
-
     private final JavaMailSender mailSender;
-
     private final BCryptPasswordEncoder passwordEncoder;
 
     public boolean checkAccount(String email) {
@@ -52,29 +54,29 @@ public class SignUpService {
         sendMail(mailSender, mainHost.getAccount(), savedKey.getAuthKey());
     }
 
-    public void confirm(String account, String authkey) {
-        //email 불일치
-        MainHost host = hostRepository.findMainHostByAccount(account)
-                .orElseThrow(() -> new NotFoundDataException(ErrorCode.HOST_NOT_FOUND));
+    public void resend(String account) {
+        MainHost host = hostService.findMainHost(account);
 
-        //이미 인증함
-        if (host.isPassEmailAuth()) {
-            throw new DuplicateAuthException(ErrorCode.DUPLICATE_AUTH);
-        }
+        hostService.checkDuplicateAuth(host);
 
-        //인증키 만료
-        if (host.getAuthKey().getExpirationDate().isBefore(LocalDateTime.now())) {
-            throw new ExpirationException(ErrorCode.EXPIRATION_AUTH);
-        }
-
-        if (host.getAuthKey().getAuthKey().equals(authkey)) {
-            host.changeAuthPass();
-            hostRepository.save(host);
+        if (!host.isAuthKeyExpired()) {
+            sendMail(mailSender, host.getAccount(), host.getAuthKeyString());
             return;
         }
 
-        //인증키 불일치
-        throw new FailToAuthenticationException(ErrorCode.FAIL_TO_AUTH);
+        HostAuthKey authKey = updateAuthKey(host.getAuthKeyString());
+        sendMail(mailSender, host.getAccount(), authKey.getAuthKey());
+    }
+
+    public void confirm(String account, String authKey) {
+        MainHost host = hostService.findMainHost(account);
+
+        hostService.checkDuplicateAuth(host);
+        hostService.checkExpiredAuth(host);
+        hostService.checkNotMatchAuth(host, authKey);
+
+        host.changeAuthPass();
+        hostRepository.save(host);
     }
 
     private HostAuthKey createAuthKey(Host savedHost) {
@@ -86,6 +88,17 @@ public class SignUpService {
         hostAuthKey.hashAuthKey(passwordEncoder);
 
         return hostAuthKey;
+    }
+
+    private HostAuthKey updateAuthKey(String authKeyString) {
+        HostAuthKey authKey = hostAuthKeyRepository.findByAuthKey(authKeyString)
+                .orElseThrow(() -> new NotFoundDataException(ErrorCode.NOT_FOUND_DATA));
+        authKey.changeAuthKey(passwordEncoder);
+        authKey.updateExpirationDate();
+
+        hostAuthKeyRepository.save(authKey);
+
+        return authKey;
     }
 
     private void sendMail(JavaMailSender mailSender, String hostEmail, String key) {

@@ -842,6 +842,23 @@ Content-Type: application/json;charset=UTF-8
 - Response Fields
 include::{snippets}/sign-up-controller-test/fail-to-send-mail/response-fields.adoc[]
 
+=== POST /users/resend
+이메일 재전송을 요청합니다.
+기존의 코드가 만료되지 않은 경우에는 기존의 것을 보내고 만료 시에는 새로운 코드를 보냅니다.
+
+- HTTP Request
+include::{snippets}/sign-up-controller-test/resend/http-request.adoc[]
+
+==== 200 성공
+HTTP Status Code만 반환합니다.
+
+==== 404 호스트
+존재하지 않는 계정이거나 삭제된 계정인 경우 내부 에러 `US_002` 를 반환합니다.
+
+==== 401 이미 인증된 호스트
+내부 에러 `US_004` 를 반환합니다.
+
+
 == 로그인 관련 API
 
 === POST /signin
@@ -854,16 +871,21 @@ include::{snippets}/sign-in-controller-test/signin/http-request.adoc[]
 include::{snippets}/sign-in-controller-test/signin/request-fields.adoc[]
 
 ==== 200 성공
-token을 반환합니다.
+로그인에 성공하면 호스트의 정보와 쿠키로 토큰이 반환됩니다.
 
 - HTTP Response
 ```
 HTTP/1.1 200 OK
+Set-Cookie: token=token; Path=/
 
 {
-  "accessToken" : "eyJhbGciOiJIUzI1NiJ9.eyJhY2NvdW50IjoiZm9vIiwicm9sZSI6Im1haW4ifQ.4U2WhbbFLmBIQD3yZQ9j1EmD5AGIG6skcXykkJ_2Q7o"
+  "accessToken" : "token",
+  "registerState" : "unregistered",
+  "nickname" : "foo",
+  "profileImage" : "foo image"
 }
 ```
+
 
 - Response Fields
 include::{snippets}/sign-in-controller-test/signin/response-fields.adoc[]

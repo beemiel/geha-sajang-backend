@@ -418,8 +418,28 @@ class SignUpControllerTest {
                         )));
     }
 
+    @Test
+    @DisplayName("메일 재전송 성공")
+    void resend() throws Exception {
+        //given
+        EmailCheckDto checkDto = EmailCheckDto.builder().email("foo@gmail.com").build();
+        doNothing().when(signUpService).resend("foo@gmail.com");
+        
+        //when
+        mockMvc.perform(post("/api/v1/users/resend")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(checkDto)))
+                .andExpect(status().isOk())
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST), prettyPrint()),
+                        preprocessResponse(prettyPrint())));
 
-    private ResultActions createRequest(MainHost mainHost) throws Exception {
+    }
+
+
+   private ResultActions createRequest(MainHost mainHost) throws Exception {
         MockMultipartFile image = new MockMultipartFile("image", "image", "image/jpg", "image".getBytes());
 
         return mockMvc.perform(multipart("/api/v1/users")

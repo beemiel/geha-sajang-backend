@@ -38,6 +38,7 @@ public enum ErrorCode {
 
     //공통
     INPUT_VALUE_INVALID("CO_001", "입력값이 올바르지 않습니다.", 400),
+    NOT_FOUND_DATA("CO_003", "데이터를 찾을 수 없습니다.", 404),
 
     //이미지 관련,
     FILE_SIZE_LIMIT_EXCEED("IMG_001", "10MB이하의 파일만 가능합니다.", 500),

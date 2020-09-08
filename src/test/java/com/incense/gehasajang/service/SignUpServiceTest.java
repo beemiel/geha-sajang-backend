@@ -22,6 +22,9 @@ class SignUpServiceTest {
     private SignUpService signUpService;
 
     @Mock
+    private HostService hostService;
+
+    @Mock
     private HostRepository hostRepository;
 
     @Mock
@@ -36,7 +39,7 @@ class SignUpServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        signUpService = new SignUpService(hostRepository, hostAuthKeyRepository, javaMailSender, passwordEncoder);
+        signUpService = new SignUpService(hostService, hostRepository, hostAuthKeyRepository, javaMailSender, passwordEncoder);
     }
 
     @Test
