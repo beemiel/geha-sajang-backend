@@ -12,7 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
+import static com.incense.gehasajang.util.CommonString.TOKEN_COOKIE_NAME;
 
 @RestController
 @RequestMapping("/api/v1/")
@@ -23,10 +27,18 @@ public class SignInController {
 
     @PostMapping("/signin")
     public ResponseEntity<SignInResponseDto> signIn(
-            @Valid @RequestBody SignInRequestDto requestDto
+            @Valid @RequestBody SignInRequestDto requestDto,
+            HttpServletResponse response
     ) {
         SignInResponseDto signInResponseDto = signInService.authenticate(requestDto.getAccount(), requestDto.getPassword());
+        response.addCookie(createCookie(signInResponseDto.getAccessToken()));
         return ResponseEntity.ok(signInResponseDto);
+    }
+
+    private Cookie createCookie(String accessToken) {
+        Cookie cookie = new Cookie(TOKEN_COOKIE_NAME, accessToken);
+        cookie.setPath("/");
+        return cookie;
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.incense.gehasajang.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.incense.gehasajang.domain.host.MainHost;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.*;
 import com.incense.gehasajang.model.dto.signin.SignInRequestDto;
@@ -19,7 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static org.hamcrest.CoreMatchers.containsString;
+import static com.incense.gehasajang.util.CommonString.TOKEN_COOKIE_NAME;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
@@ -50,12 +49,17 @@ class SignInControllerTest {
     void signin() throws Exception {
         //given
         SignInRequestDto requestDto = SignInRequestDto.builder().account("foo").password("foo").build();
-        SignInResponseDto responseDto = SignInResponseDto.builder().accessToken("token").registerState("unregistered").build();
-        MainHost host = MainHost.builder().account("foo").type("main").build();
+        SignInResponseDto responseDto = SignInResponseDto.builder().accessToken("token").registerState("unregistered").nickname("foo").profileImage("foo image").build();
         given(signInService.authenticate(any(), any())).willReturn(responseDto);
 
         //when
-        signinRequest(requestDto).andExpect(status().isOk()).andExpect(content().string(containsString("accessToken")))
+        signinRequest(requestDto)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("accessToken").value("token"))
+                .andExpect(jsonPath("registerState").value("unregistered"))
+                .andExpect(jsonPath("nickname").value("foo"))
+                .andExpect(jsonPath("profileImage").value("foo image"))
+                .andExpect(cookie().exists(TOKEN_COOKIE_NAME))
                 .andDo(document("{class-name}/{method-name}",
                         preprocessRequest(modifyUris()
                                 .scheme(CommonString.SCHEMA)
@@ -66,8 +70,10 @@ class SignInControllerTest {
                                 fieldWithPath("password").description("계정 비밀번호")
                         ),
                         responseFields(
-                                fieldWithPath("accessToken").description("로그인에 성공하면 만들어지는 JWT 토큰"),
-                                fieldWithPath("registerState").description("등록 진행 상태")
+                                fieldWithPath("accessToken").description("Jwt 토큰. Cookie에 담겨서 응답이 가므로 해당 필드는 신경쓰지 않으셔도 됩니다."),
+                                fieldWithPath("registerState").description("등록 진행 상태"),
+                                fieldWithPath("nickname").description("호스트 닉네임"),
+                                fieldWithPath("profileImage").description("호스트 프로필 이미지 Url")
                         )));
     }
 

@@ -10,4 +10,6 @@ public class CommonString {
     public static final String LOGO_PATH = "static/logoblack.png";
     public static final String MAIL_AUTH_LINK = "<a href='http://13.124.108.177:8080/api/v1/users/auth?email=";
 
+    public static final String TOKEN_COOKIE_NAME = "token";
+
 }
