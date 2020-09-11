@@ -4,7 +4,6 @@ import com.incense.gehasajang.exception.AccessDeniedException;
 import com.incense.gehasajang.exception.CannotConvertException;
 import com.incense.gehasajang.exception.FailToAuthenticationException;
 import com.incense.gehasajang.exception.NotFoundDataException;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,10 +51,10 @@ public class ControllerErrorAdvice {
         return ErrorResponse.buildError(ErrorCode.CANNOT_CONVERT_FILE);
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     public ErrorResponse handleDuplicateException() {
-        return ErrorResponse.buildError(ErrorCode.DUPLICATE);
+        return ErrorResponse.buildError(ErrorCode.INPUT_VALUE_INVALID);
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
@@ -67,6 +67,12 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(FailToAuthenticationException.class)
     public ErrorResponse handleFailToAuth(FailToAuthenticationException e) {
         return ErrorResponse.buildError(e.getErrorCode());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ErrorResponse handleIllegalArgument(IllegalArgumentException e) {
+        return ErrorResponse.buildError(ErrorCode.CONSTRUCTOR_VALUE_INVALID);
     }
 
     private List<ErrorResponse.FieldError> getFieldErrors(BindingResult bindingResult) {

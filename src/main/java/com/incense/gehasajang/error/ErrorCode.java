@@ -38,6 +38,7 @@ public enum ErrorCode {
 
     //공통
     INPUT_VALUE_INVALID("CO_001", "입력값이 올바르지 않습니다.", 400),
+    CONSTRUCTOR_VALUE_INVALID("CO_002", "값을 확인해주세요.", 400),
     NOT_FOUND_DATA("CO_003", "데이터를 찾을 수 없습니다.", 404),
 
     //이미지 관련,

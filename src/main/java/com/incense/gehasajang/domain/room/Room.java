@@ -1,5 +1,6 @@
 package com.incense.gehasajang.domain.room;
 
+import com.incense.gehasajang.domain.BaseTimeEntity;
 import com.incense.gehasajang.domain.bed.Bed;
 import com.incense.gehasajang.domain.house.House;
 import lombok.AccessLevel;
@@ -16,7 +17,7 @@ import static javax.persistence.FetchType.LAZY;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Room {
+public class Room extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,6 +69,18 @@ public class Room {
 
     public Long getHouseId() {
         return this.house.getId();
+    }
+
+    public void addHouse(House house) {
+        this.house = house;
+    }
+
+    public void addRoomType(String roomType) {
+        this.roomType = RoomType.findBy(roomType);
+    }
+
+    public String getRoomTypeName() {
+        return roomType.getTypeName();
     }
 
 }
