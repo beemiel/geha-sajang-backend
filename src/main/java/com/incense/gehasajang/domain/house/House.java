@@ -63,7 +63,8 @@ public class House extends BaseTimeEntity {
     private List<SmsTemplate> smsTemplates;
 
     @Builder
-    public House(String name, Address address, String mainImage, String thumbnailImage, String mainNumber, List<HouseExtraInfo> houseExtraInfos) {
+    public House(Long id, String name, Address address, String mainImage, String thumbnailImage, String mainNumber, List<HouseExtraInfo> houseExtraInfos) {
+        this.id = id;
         this.uuid = UUID.randomUUID().toString();
         this.name = name;
         this.address = address;
