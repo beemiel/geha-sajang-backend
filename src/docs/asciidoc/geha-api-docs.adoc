@@ -87,11 +87,19 @@ API서버이므로 기본 Url은 **/api/v1(버전)/~** 입니다.
 
 | `CO_001`
 |  400
-|  입력값이 올바르지 않습니다
+|  입력값이 올바르지 않습니다.
+
+| `CO_002`
+|  400
+|  값을 확인해주세요.
+
+| `CO_003`
+|  404
+|  데이터를 찾을 수 없습니다.
 
 |===
 
-House 관련
+하우스 관련
 |===
 | Error code | Status | Message
 
@@ -109,7 +117,7 @@ House 관련
 
 |===
 
-Room 관련
+방 관련
 |===
 | Error code | Status | Message
 
@@ -119,7 +127,7 @@ Room 관련
 
 |===
 
-Booking 관련
+예약 관련
 |===
 | Error code | Status | Message
 
@@ -139,7 +147,7 @@ Booking 관련
 
 |===
 
-Host 관련
+호스트 관련
 |===
 | Error code | Status | Message
 
@@ -237,12 +245,12 @@ Host 관련
 
 그냥 회원가입/로그인 빼고 다~ 라고 생각하면 되겠네요.. 글로발😀
 
-=== 토큰이 없는 경우
+=== 토큰이 없는 경우 (401)
 토큰이 없는 경우 발생합니다.
 
 토큰이 없다는 것은 로그인을 하지 않았다는 의미입니다.
 
-- Http Response
+- HTTP Response
 ```
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json;charset=UTF-8
@@ -255,12 +263,12 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
-=== 토큰이 만료된 경우
+=== 토큰이 만료된 경우 (401)
 토큰의 유효기간이 만료된 경우 발생합니다.
 
 현재 토큰의 유효기간은 10일입니다. JWT토큰 치고는 긴데 리프레시 토큰을 적용하게 된다면 줄어들 예정입니다.
 
-- Http Response
+- HTTP Response
 ```
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json;charset=UTF-8
@@ -273,10 +281,10 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
-=== 토큰이 잘못된 경우
+=== 토큰이 잘못된 경우 (401)
 토큰의 시그니처가 맞지 않을 경우 발생합니다.
 
-- Http Response
+- HTTP Response
 ```
 HTTP/1.1 401 Unauthorized
 Content-Type: application/json;charset=UTF-8
@@ -289,13 +297,13 @@ Content-Type: application/json;charset=UTF-8
 }
 ```
 
-=== 해당 리소스에 권한이 없는 경우
+=== 해당 리소스에 권한이 없는 경우 (403)
 접근 권한이 없을 경우 발생합니다.
 
 스태프가 권한이 없는 리소스를 요청하거나,
 호스트가 다른 게스트 하우스의 리소스를 요청할 경우 발생합니다.
 
-- Http Response
+- HTTP Response
 ```
 HTTP/1.1 403 FORBIDDEN
 Content-Type: application/json;charset=UTF-8
@@ -307,6 +315,13 @@ Content-Type: application/json;charset=UTF-8
     "errors": []
 }
 ```
+
+=== 적절하지 않은 값 (400)
+유효한 값이 아닐 경우에 발생합니다.
+주로 Path Parameter의 값이 1보다 작거나, POST 요청 시 적절하지 않은 값이 들어갈 경우 발생합니다.
+
+- HTTP Response
+include::{snippets}/room-controller-test/path/response-body.adoc[]
 
 == House 관련 API
 
@@ -423,7 +438,7 @@ Content-Type: application/json;charset=UTF-8
 
 {
   "message" : "입력값이 올바르지 않습니다.",
-  "code" : "???",
+  "code" : "CO_001",
   "status" : 400,
   "errors" : [ {
     "field" : "mainNumber",
@@ -500,6 +515,56 @@ Content-Type: application/json;charset=UTF-8
 
 - Response Fields
 include::{snippets}/house-controller-test/cannot-convert-exception/response-fields.adoc[]
+
+== 방 관련 API
+방 타입은 `일인실`, `다인실`, `도미토리` 입니다.
+
+=== GET /houses/{houseId}/rooms
+지정한 하우스의 모든 방 목록을 가져옵니다.
+
+- HTTP Request
+include::{snippets}/room-controller-test/list/http-request.adoc[]
+
+==== 200 성공
+- HTTP Response
+include::{snippets}/room-controller-test/list/http-response.adoc[]
+
+- Response Fields
+include::{snippets}/room-controller-test/list/response-fields.adoc[]
+
+=== GET /houses/{houseId}/rooms/{roomId}
+방 하나의 정보를 가져옵니다.
+
+- HTTP Request
+include::{snippets}/room-controller-test/detail/http-request.adoc[]
+
+- Path Parameters
+include::{snippets}/room-controller-test/detail/path-parameters.adoc[]
+
+==== 200 성공
+- HTTP Response
+include::{snippets}/room-controller-test/detail/response-body.adoc[]
+
+==== 404 실패
+`RO_001` 를 반환합니다.
+
+=== POST /houses/{houseId}/rooms
+방을 하나 추가합니다.
+
+- HTTP Request
+include::{snippets}/room-controller-test/create/http-request.adoc[]
+
+- Path Parameters
+include::{snippets}/room-controller-test/create/path-parameters.adoc[]
+
+- Request Fields
+include::{snippets}/room-controller-test/create/request-fields.adoc[]
+
+==== 201 성공
+내용은 없습니다.
+
+==== 404 실패 하우스 없음
+`HO_001` 를 반환합니다.
 
 == 약관 관련 API
 
@@ -648,7 +713,7 @@ Content-Type: application/json;charset=UTF-8
 
 {
   "message" : "입력값이 올바르지 않습니다.",
-  "code" : "???",
+  "code" : "CO_001",
   "status" : 400,
   "errors" : [ {
     "field" : "password",
