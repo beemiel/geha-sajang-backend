@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,19 +61,24 @@ public class RoomController {
     @PostMapping
     public ResponseEntity<Void> create(
             @PathVariable @Min(1) Long houseId,
-            @Valid @RequestBody RoomDto roomDto,
+            @Valid @RequestBody List<RoomDto> roomDtos,
             @AuthenticationPrincipal UserAuthentication authentication
     ) {
-        Room room = mapper.map(roomDto, Room.class);
-        room.addRoomType(roomDto.getRoomTypeName());
+        List<Room> rooms = new ArrayList<>();
+
+        for (RoomDto roomDto : roomDtos) {
+            Room room = mapper.map(roomDto, Room.class);
+            room.addRoomType(roomDto.getRoomTypeName());
+            rooms.add(room);
+        }
 
         RoomCreateParam createParam = RoomCreateParam.builder()
-                .room(room)
+                .rooms(rooms)
                 .houseId(houseId)
                 .account(authentication.getAccount())
                 .build();
 
-        roomService.addRoom(createParam);
+        roomService.addRooms(createParam);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

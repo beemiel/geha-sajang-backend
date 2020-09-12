@@ -43,7 +43,7 @@ public class RoomService {
     }
 
     @Transactional
-    public void addRoom(RoomCreateParam createParam) {
+    public void addRooms(RoomCreateParam createParam) {
         account = createParam.getAccount();
         houseId = createParam.getHouseId();
 
@@ -51,10 +51,12 @@ public class RoomService {
 
         House house = houseRepository.findById(createParam.getHouseId()).orElseThrow(() -> new NotFoundDataException(ErrorCode.HOUSE_NOT_FOUND));
 
-        Room room = createParam.getRoom();
-        room.addHouse(house);
+        List<Room> rooms = createParam.getRooms();
+        for (Room room : rooms) {
+            room.addHouse(house);
+        }
 
-        roomRepository.save(room);
+        roomRepository.saveAll(rooms);
     }
 
     private void authorityCheck(String account, Long houseId) {
