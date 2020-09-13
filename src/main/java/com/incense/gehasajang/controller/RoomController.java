@@ -4,9 +4,8 @@ package com.incense.gehasajang.controller;
 import com.github.dozermapper.core.Mapper;
 import com.incense.gehasajang.domain.room.Room;
 import com.incense.gehasajang.model.dto.room.RoomDto;
-import com.incense.gehasajang.model.param.room.RoomCreateParam;
-import com.incense.gehasajang.model.param.room.RoomDetailParam;
 import com.incense.gehasajang.security.UserAuthentication;
+import com.incense.gehasajang.service.AuthorizationService;
 import com.incense.gehasajang.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,12 +28,15 @@ import java.util.stream.Collectors;
 public class RoomController {
 
     private final RoomService roomService;
+    private final AuthorizationService authorizationService;
+
     private final Mapper mapper;
 
     @GetMapping
     public ResponseEntity<List<RoomDto>> list(
             @PathVariable Long houseId
     ) {
+
         List<Room> rooms = roomService.getRooms(houseId);
 
         return ResponseEntity.ok(rooms.stream().map(room -> mapper.map(room, RoomDto.class)).collect(Collectors.toList()));
@@ -47,13 +49,10 @@ public class RoomController {
             @AuthenticationPrincipal UserAuthentication authentication
     ) {
 
-        RoomDetailParam detailParam = RoomDetailParam.builder()
-                .houseId(houseId)
-                .roomId(roomId)
-                .account(authentication.getAccount())
-                .build();
+        authorizationService.checkHouse(houseId, authentication.getAccount());
 
-        Room room = roomService.getRoom(detailParam);
+        Room room = roomService.getRoom(houseId, roomId);
+
         return ResponseEntity.ok(mapper.map(room, RoomDto.class));
     }
 
@@ -64,6 +63,7 @@ public class RoomController {
             @Valid @RequestBody List<RoomDto> roomDtos,
             @AuthenticationPrincipal UserAuthentication authentication
     ) {
+
         List<Room> rooms = new ArrayList<>();
 
         for (RoomDto roomDto : roomDtos) {
@@ -72,13 +72,9 @@ public class RoomController {
             rooms.add(room);
         }
 
-        RoomCreateParam createParam = RoomCreateParam.builder()
-                .rooms(rooms)
-                .houseId(houseId)
-                .account(authentication.getAccount())
-                .build();
+        authorizationService.checkHouse(houseId, authentication.getAccount());
 
-        roomService.addRooms(createParam);
+        roomService.addRooms(houseId, rooms);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
