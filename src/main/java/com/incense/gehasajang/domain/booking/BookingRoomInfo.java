@@ -1,5 +1,6 @@
 package com.incense.gehasajang.domain.booking;
 
+import com.incense.gehasajang.domain.bed.Bed;
 import com.incense.gehasajang.domain.room.UnbookedRoom;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,12 +23,20 @@ public class BookingRoomInfo {
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
-    @OneToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "unbooked_room_id")
     private UnbookedRoom unbookedRoom;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "bed_id")
+    private Bed bed;
+
+    private Boolean isDownBed;
+
+    private Boolean isAdditionalBed;
 
     private LocalDateTime deletedAt;
 

@@ -1,5 +1,6 @@
 package com.incense.gehasajang.domain.bed;
 
+import com.incense.gehasajang.domain.booking.BookingRoomInfo;
 import com.incense.gehasajang.domain.room.UnbookedRoom;
 import com.incense.gehasajang.domain.room.Room;
 import lombok.Getter;
@@ -35,6 +36,6 @@ public class Bed {
     private LocalDateTime deletedAt;
 
     @OneToMany(mappedBy = "bed")
-    private List<UnbookedRoom> unbookedRooms;
+    private List<BookingRoomInfo> bookingRoomInfos;
 
 }
