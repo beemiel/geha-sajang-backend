@@ -1,11 +1,12 @@
 package com.incense.gehasajang.controller;
 
+import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.error.ErrorResponse;
 import com.incense.gehasajang.exception.ZeroCountException;
 import com.incense.gehasajang.model.dto.booking.request.BookingRequestDto;
 import com.incense.gehasajang.security.UserAuthentication;
-import com.incense.gehasajang.service.AuthorizationService;
 import com.incense.gehasajang.service.BookingService;
+import com.incense.gehasajang.service.HouseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ import javax.validation.constraints.Min;
 @RequestMapping("/api/v1/houses/{houseId}/bookings")
 public class BookingController {
 
-    private final AuthorizationService authorizationService;
+    private final HouseService houseService;
     private final BookingService bookingService;
 
     @PostMapping
@@ -33,8 +34,8 @@ public class BookingController {
             @PathVariable @Min(value = 1) Long houseId,
             @AuthenticationPrincipal UserAuthentication authentication
     ) {
-        authorizationService.checkHouse(houseId, authentication.getAccount());
-        bookingService.addBookingInfo(request, houseId);
+        House house = houseService.getHouse(houseId, authentication.getAccount());
+        bookingService.addBookingInfo(request, house);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
