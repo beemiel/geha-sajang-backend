@@ -19,7 +19,7 @@ VALUES (1, '이용약관', '이용약관 Lorem ipsum dolor sit amet, consectetur
        (3, '마케팅', '마케팅 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.');
 
 INSERT INTO room VALUES (1, 4, 6, 'room memo1', 'test_room_1', 15000, 20000, 'MULTIPLE', 1, now(), null, null);
-INSERT INTO room VALUES (2, 4, 6, 'room memo2', 'test_room_2', 30000, 40000, 'DORMITORY', 2, now(), null, null);
+INSERT INTO room VALUES (2, 4, 6, 'room memo2', 'test_room_2', 30000, 40000, 'DORMITORY', 1, now(), null, null);
 INSERT INTO room VALUES (3, 4, 6, 'room memo3', 'test_room_3', 30000, 40000, 'MULTIPLE', 2, now(), null, null);
 INSERT INTO room VALUES (4, 2, 3, 'room memo4', 'test_room_4', 40000, 50000, 'MULTIPLE', 1, now(), null, null);
 INSERT INTO room VALUES (5, 2, 3, 'room memo5', 'test_room_5', 40000, 50000, 'MULTIPLE', 1, now(), null, now());

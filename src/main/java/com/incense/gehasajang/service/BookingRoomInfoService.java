@@ -4,6 +4,8 @@ import com.incense.gehasajang.domain.booking.Booking;
 import com.incense.gehasajang.domain.booking.BookingRoomInfo;
 import com.incense.gehasajang.domain.booking.BookingRoomInfoRepository;
 import com.incense.gehasajang.domain.booking.Gender;
+import com.incense.gehasajang.domain.room.Room;
+import com.incense.gehasajang.domain.room.RoomType;
 import com.incense.gehasajang.domain.room.UnbookedRoom;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.NotFoundDataException;
@@ -28,6 +30,9 @@ public class BookingRoomInfoService {
     private final AuthorizationService authorizationService;
 
     private Booking booking;
+    private int femaleCount;
+    private int amount;
+    private int index;
 
     public void addBookingRoomInfo(BookingRoomParam bookingRoomParam) {
         booking = bookingRoomParam.getSavedBooking();
@@ -35,25 +40,33 @@ public class BookingRoomInfoService {
         List<BookingRoomRequestDto> bookingRoomInfos = bookingRoomParam.getBookingRoomInfos();
 
         bookingRoomInfos.forEach(bookingRoomDto -> {
-            //roomId와 houseId 검증
-            boolean exist = authorizationService.checkRoom(bookingRoomDto.getRoomId(), houseId);
+            boolean exist = authorizationService.isExistsRoom(bookingRoomDto.getRoomId(), houseId);
             if (!exist) {
                 throw new NotFoundDataException(ErrorCode.ROOM_NOT_FOUND);
             }
 
-            //재고, 인원 수  확인 후 가져오기
             Map<LocalDateTime, List<UnbookedRoom>> unbookedRooms = unbookedRoomService.getUnbookedRoomsByRoomId(bookingRoomDto, booking.getStay());
-
-            //부킹룸 저장 & 재고 삭제
-            unbookedRooms.values().forEach(rooms -> addBookingRoom(rooms, bookingRoomDto));
+            unbookedRooms.values().forEach(rooms -> addRoom(rooms, bookingRoomDto));
         });
     }
 
-    private void addBookingRoom(List<UnbookedRoom> rooms, BookingRoomRequestDto bookingRoomRequestDto) {
-        int femaleCount = bookingRoomRequestDto.getFemaleCount();
-        int amount = bookingRoomRequestDto.sum();
+    private void addRoom(List<UnbookedRoom> rooms, BookingRoomRequestDto bookingRoomDto) {
+        Room room = rooms.get(0).getRoom();
+        femaleCount = bookingRoomDto.getFemaleCount();
+        amount = bookingRoomDto.sum();
+        index = 0;
 
-        int index = 0;
+        if (room.getRoomType().equals(RoomType.MULTIPLE) || room.getRoomType().equals(RoomType.SINGLE)) {
+            addMultiAndSingleRoom(rooms.get(0));
+            return;
+        }
+
+        if (room.getRoomType().equals(RoomType.DORMITORY)) {
+            addDormitoryRoom(rooms);
+        }
+    }
+
+    private void addDormitoryRoom(List<UnbookedRoom> rooms) {
         for (UnbookedRoom unbookedRoom : rooms) {
             if (index < femaleCount) {
                 addRoomByGender(unbookedRoom, Gender.FEMALE);
@@ -63,8 +76,22 @@ public class BookingRoomInfoService {
                 addRoomByGender(unbookedRoom, Gender.MALE);
             }
 
+            addSoldStock(unbookedRoom);
             index++;
         }
+    }
+
+    private void addMultiAndSingleRoom(UnbookedRoom unbookedRoom) {
+        for (int i = 0; i < amount; i++) {
+            if(i < femaleCount) {
+                addRoomByGender(unbookedRoom, Gender.FEMALE);
+                continue;
+            }
+
+            addRoomByGender(unbookedRoom, Gender.MALE);
+        }
+
+        addSoldStock(unbookedRoom);
     }
 
     private void addRoomByGender(UnbookedRoom unbookedRoom, Gender gender) {
@@ -74,11 +101,7 @@ public class BookingRoomInfoService {
                 .gender(gender)
                 .build();
 
-        //부킹룸 저장
         bookingRoomInfoRepository.save(info);
-
-        //재고 삭제
-        addSoldStock(unbookedRoom);
     }
 
     private void addSoldStock(UnbookedRoom unbookedRoom) {
