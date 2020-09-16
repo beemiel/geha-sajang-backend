@@ -70,13 +70,14 @@ public class BookingRoomInfoService {
         for (UnbookedRoom unbookedRoom : rooms) {
             if (index < femaleCount) {
                 addRoomByGender(unbookedRoom, Gender.FEMALE);
+                addSoldStock(unbookedRoom);
             }
 
             if (femaleCount <= index && index < amount) {
                 addRoomByGender(unbookedRoom, Gender.MALE);
+                addSoldStock(unbookedRoom);
             }
 
-            addSoldStock(unbookedRoom);
             index++;
         }
     }
