@@ -1,10 +1,7 @@
 package com.incense.gehasajang.service;
 
 import com.incense.gehasajang.domain.booking.Stay;
-import com.incense.gehasajang.domain.room.BookedRoom;
-import com.incense.gehasajang.domain.room.BookedRoomRepository;
-import com.incense.gehasajang.domain.room.UnbookedRoom;
-import com.incense.gehasajang.domain.room.UnbookedRoomRepository;
+import com.incense.gehasajang.domain.room.*;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.exception.ZeroCountException;
@@ -43,10 +40,10 @@ public class UnbookedRoomService {
         final int FIRST_STAY = 0;
         final int LAST_STAY = dates.size() - 1;
 
-        checkZero(amount);
+        checkAmountIsZero(amount);
 
         //모든 재고를 날짜별 리스트로 분리 및 재고 개수 체크
-        List<UnbookedRoom> unbookedRooms = unbookedRoomRepository.findAllUnbooked(roomId, dates.get(FIRST_STAY), dates.get(LAST_STAY));
+        List<UnbookedRoom> unbookedRooms = unbookedRoomRepository.findAllByEntryDateBetweenAndRoom_IdAndRoom_DeletedAtNullAndBookedRoom_UnbookedRoomNull(dates.get(FIRST_STAY), dates.get(LAST_STAY), roomId);
         return sortByDate(unbookedRooms, amount);
     }
 
@@ -55,7 +52,7 @@ public class UnbookedRoomService {
 
         dates.forEach(date -> {
             List<UnbookedRoom> stockByDate = getListByDate(unbookedRooms, date);
-            checkCount(stockByDate.size(), amount);
+            checkCount(stockByDate, amount);
             stock.put(date, stockByDate);
         });
 
@@ -68,13 +65,22 @@ public class UnbookedRoomService {
                 .collect(Collectors.toList());
     }
 
-    private void checkCount(int stockSize, int amount) {
-        if (stockSize < amount) {
+    private void checkCount(List<UnbookedRoom> stockByDate, int amount) {
+        Room room = stockByDate.get(0).getRoom();
+
+        if(room.getRoomType().equals(RoomType.MULTIPLE) || room.getRoomType().equals(RoomType.SINGLE)) {
+            if(room.getMaxCapacity() < amount) {
+                throw new NotFoundDataException(ErrorCode.NOT_FOUND_UNBOOKED);
+            }
+            return;
+        }
+
+        if (stockByDate.size() < amount) {
             throw new NotFoundDataException(ErrorCode.NOT_FOUND_UNBOOKED);
         }
     }
 
-    private void checkZero(int amount) {
+    private void checkAmountIsZero(int amount) {
         final int ZERO = 0;
         if(amount <= ZERO) {
             throw new ZeroCountException(ErrorCode.ZERO_COUNT);
