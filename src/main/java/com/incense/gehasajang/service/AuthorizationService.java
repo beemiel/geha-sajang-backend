@@ -1,6 +1,6 @@
 package com.incense.gehasajang.service;
 
-import com.incense.gehasajang.domain.house.HouseRepository;
+import com.incense.gehasajang.domain.room.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthorizationService {
 
-    private final HouseRepository houseRepository;
+    private final RoomRepository roomRepository;
 
     public boolean checkRoom(Long roomId, Long houseId) {
-        return houseRepository.existsByIdAndRooms_Id(houseId, roomId);
+        return roomRepository.existsByIdAndDeletedAtNullAndHouse_Id(roomId, houseId);
     }
 }
