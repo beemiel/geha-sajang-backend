@@ -7,6 +7,7 @@ import com.incense.gehasajang.model.dto.guest.response.GuestCheckResponseDto;
 import com.incense.gehasajang.security.UserAuthentication;
 import com.incense.gehasajang.service.AuthorizationService;
 import com.incense.gehasajang.service.GuestService;
+import com.incense.gehasajang.service.HouseService;
 import com.incense.gehasajang.util.CommonString;
 import com.incense.gehasajang.util.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -52,7 +53,7 @@ class GuestControllerTest {
     private GuestService guestService;
 
     @MockBean
-    private AuthorizationService authorizationService;
+    private HouseService houseService;
 
     private UserAuthentication authentication;
 
@@ -79,7 +80,6 @@ class GuestControllerTest {
                 GuestCheckResponseDto.builder().guestId(2L).email("foo2@gmail.com").memo("test2").name("foo2").phoneNumber("01011111111").lastBooking(LocalDateTime.now().minusDays(1)).build()
         );
         given(guestService.findGuests(any(), any())).willReturn(responseDtos);
-        doNothing().when(authorizationService).checkHouse(any(), any());
 
         //when
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/houses/{houseId}/guests", 1)
@@ -113,7 +113,6 @@ class GuestControllerTest {
     void listFail() throws Exception {
         //given
         given(guestService.findGuests(any(), any())).willThrow(new NotFoundDataException(ErrorCode.NOT_FOUND_GUEST));
-        doNothing().when(authorizationService).checkHouse(any(), any());
 
         //when
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/houses/{houseId}/guests", 1)

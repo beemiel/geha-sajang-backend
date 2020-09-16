@@ -48,8 +48,6 @@ class HouseServiceTest {
                 .name("게스트하우스")
                 .address(new Address("city", "street", "postcode", "detail"))
                 .build();
-        MainHost host = MainHost.builder().build();
-        given(hostRepository.findByAccountAndHostHouses_House_Id(any(), any())).willReturn(Optional.ofNullable(host));
         given(houseRepository.findById(1L)).willReturn(Optional.of(returnHouse));
 
         //when

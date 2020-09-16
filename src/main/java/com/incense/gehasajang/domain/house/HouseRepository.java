@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface HouseRepository extends JpaRepository<House, Long> {
 
-    Optional<House> findById(Long houseId);
+    Optional<House> findById(@Param(value = "houseId") Long houseId);
 
-    boolean existsByIdAndRooms_Id(@Param(value = "houseId") Long houseId, @Param(value = "roomId") Long roomId);
+    Optional<House> findByIdAndHostHouses_Host_Account(@Param(value = "houseId") Long houseId, @Param(value = "account") String account);
 
 }

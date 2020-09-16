@@ -91,7 +91,7 @@ class HouseControllerTest {
                         HouseExtraInfo.builder().title("추가3").build()
                 ))
                 .build();
-        given(houseService.getHouse(any())).willReturn(house);
+        given(houseService.getHouse(any(), any())).willReturn(house);
 
         //when
         ResultActions resultActions = successRequestHouseInfo(1L);
@@ -106,14 +106,14 @@ class HouseControllerTest {
     @DisplayName("게스트_하우스_정보를_가져오지_못한다.")
     public void getHouseInfoFail() throws Exception {
         //given
-        given(houseService.getHouse(any())).willThrow(new NotFoundDataException(ErrorCode.HOUSE_NOT_FOUND));
+        given(houseService.getHouse(any(), any())).willThrow(new NotFoundDataException(ErrorCode.HOUSE_NOT_FOUND));
 
         //when
         ResultActions resultActions = failRequestHouseInfo(2L);
 
         //then
         resultActions.andExpect(status().isNotFound());
-        verify(houseService).getHouse(any());
+        verify(houseService).getHouse(any(), any());
     }
 
     @Test

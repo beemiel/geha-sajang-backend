@@ -1,9 +1,6 @@
 package com.incense.gehasajang.service;
 
-import com.incense.gehasajang.domain.host.HostRepository;
-import com.incense.gehasajang.domain.house.HouseRepository;
-import com.incense.gehasajang.error.ErrorCode;
-import com.incense.gehasajang.exception.AccessDeniedException;
+import com.incense.gehasajang.domain.room.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,15 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthorizationService {
 
-    private final HostRepository hostRepository;
-    private final HouseRepository houseRepository;
+    private final RoomRepository roomRepository;
 
-    public void checkHouse(Long houseId, String account) {
-        hostRepository.findByAccountAndHostHouses_House_Id(account, houseId)
-                .orElseThrow(() -> new AccessDeniedException(ErrorCode.ACCESS_DENIED));
-    }
-
-    public boolean checkRoom(Long roomId, Long houseId) {
-        return houseRepository.existsByIdAndRooms_Id(houseId, roomId);
+    public boolean isExistsRoom(Long roomId, Long houseId) {
+        return roomRepository.existsByIdAndDeletedAtNullAndHouse_Id(roomId, houseId);
     }
 }

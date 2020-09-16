@@ -2,6 +2,7 @@ package com.incense.gehasajang.service;
 
 import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.guest.GuestRepository;
+import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.model.dto.guest.response.GuestCheckResponseDto;
@@ -21,33 +22,33 @@ public class GuestService {
     private final GuestRepository guestRepository;
 
     //이름이 동일한 게스트들을 모두 반환
-    public List<GuestCheckResponseDto> findGuests(Long houseId, String guestName) {
-        Set<Guest> guests = guestRepository.findAllByNameAndBookings_House_Id(guestName, houseId);
+    public List<GuestCheckResponseDto> findGuests(House house, String guestName) {
+        Set<Guest> guests = guestRepository.findAllByNameAndBookings_House(guestName, house);
 
         if (guests.isEmpty()) {
             throw new NotFoundDataException(ErrorCode.NOT_FOUND_GUEST);
         }
 
-        return toDto(guests, houseId);
+        return toDto(guests, house.getId());
     }
 
     //게스트 id가 null이면 insert null이 아니면 update
     @Transactional
-    public Guest addGuest(Guest guestInformation, Long houseId) {
+    public Guest addGuest(Guest guestInformation, House house) {
         if (guestInformation.getId() != null) {
-            Guest updatedGuest = updateGuest(guestInformation, houseId);
+            Guest updatedGuest = updateGuest(guestInformation, house);
             return guestRepository.save(updatedGuest);
         }
         return guestRepository.save(guestInformation);
     }
 
-    private Guest updateGuest(Guest guestInformation, Long houseId) {
-        Guest guest = findGuest(guestInformation.getId(), houseId);
+    private Guest updateGuest(Guest guestInformation, House house) {
+        Guest guest = findGuest(guestInformation.getId(), house);
         return guest.changeByInfo(guestInformation);
     }
 
-    private Guest findGuest(Long guestId, Long houseId) {
-        return guestRepository.findByIdAndBookings_House_Id(guestId, houseId)
+    private Guest findGuest(Long guestId, House house) {
+        return guestRepository.findByIdAndBookings_House(guestId, house)
                 .orElseThrow(() -> new NotFoundDataException(ErrorCode.NOT_FOUND_GUEST));
     }
 

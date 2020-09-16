@@ -22,27 +22,24 @@ public class BookingService {
     private final GuestService guestService;
     private final BookingRoomInfoService bookingRoomInfoService;
     private final BookingExtraInfoService bookingExtraInfoService;
-    private final HouseService houseService;
 
     private final Mapper mapper;
 
-    public void addBookingInfo(BookingRequestDto request, Long houseId) {
+    public void addBookingInfo(BookingRequestDto request, House house) {
         Guest guest = request.toGuest(mapper);
-        Guest savedGuest = guestService.addGuest(guest, houseId);
+        Guest savedGuest = guestService.addGuest(guest, house);
 
-        House savedHouse = houseService.getHouse(houseId);
-
-        Booking booking = request.toBooking(savedHouse, savedGuest);
+        Booking booking = request.toBooking(house, savedGuest);
         Booking savedBooking = addBooking(booking);
 
         BookingRoomParam bookingRoomParam = BookingRoomParam.builder()
-                .houseId(houseId)
+                .houseId(house.getId())
                 .savedBooking(savedBooking)
                 .bookingRoomInfos(request.getBookingRooms()).build();
         bookingRoomInfoService.addBookingRoomInfo(bookingRoomParam);
 
         BookingExtraParam bookingExtraParam = BookingExtraParam.builder()
-                .houseId(houseId)
+                .houseId(house.getId())
                 .savedBooking(savedBooking)
                 .bookingExtraInfos(request.getBookingExtraInfos()).build();
         bookingExtraInfoService.addBookingExtraInfo(bookingExtraParam);

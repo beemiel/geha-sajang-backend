@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 public class HouseController {
 
     private final HouseService houseService;
-    private final AuthorizationService authorizationService;
     private final S3Service s3Service;
 
     @GetMapping("/{houseId}")
@@ -41,8 +40,7 @@ public class HouseController {
             @PathVariable @Min(value = 1) Long houseId,
             @AuthenticationPrincipal UserAuthentication authentication
     ) {
-        authorizationService.checkHouse(houseId, authentication.getAccount());
-        House house = houseService.getHouse(houseId);
+        House house = houseService.getHouse(houseId, authentication.getAccount());
         //TODO: 2020-09-04 매퍼로 바꿀 것 -lynn
         HouseDto houseDto = toHouseDto(house);
         return ResponseEntity.ok(houseDto);

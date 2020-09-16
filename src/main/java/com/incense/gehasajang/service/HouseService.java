@@ -4,6 +4,7 @@ import com.incense.gehasajang.domain.host.Host;
 import com.incense.gehasajang.domain.host.HostRepository;
 import com.incense.gehasajang.domain.house.*;
 import com.incense.gehasajang.error.ErrorCode;
+import com.incense.gehasajang.exception.AccessDeniedException;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.exception.NumberExceededException;
 import com.incense.gehasajang.util.CommonString;
@@ -27,6 +28,11 @@ public class HouseService {
 
     public House getHouse(Long houseId) {
         return houseRepository.findById(houseId).orElseThrow(() -> new NotFoundDataException(ErrorCode.HOUSE_NOT_FOUND));
+    }
+
+    public House getHouse(Long houseId, String account) {
+        return houseRepository.findByIdAndHostHouses_Host_Account(houseId, account)
+                .orElseThrow(() -> new AccessDeniedException(ErrorCode.ACCESS_DENIED));
     }
 
     @Transactional

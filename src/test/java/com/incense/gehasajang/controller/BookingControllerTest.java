@@ -12,6 +12,7 @@ import com.incense.gehasajang.model.dto.guest.request.GuestRequestDto;
 import com.incense.gehasajang.security.UserAuthentication;
 import com.incense.gehasajang.service.AuthorizationService;
 import com.incense.gehasajang.service.BookingService;
+import com.incense.gehasajang.service.HouseService;
 import com.incense.gehasajang.util.CommonString;
 import com.incense.gehasajang.util.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -60,7 +61,7 @@ class BookingControllerTest {
     private BookingService bookingService;
 
     @MockBean
-    private AuthorizationService authorizationService;
+    private HouseService houseService;
 
     private UserAuthentication authentication;
 
