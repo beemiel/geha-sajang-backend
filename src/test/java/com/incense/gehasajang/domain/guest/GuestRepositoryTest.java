@@ -1,21 +1,16 @@
 package com.incense.gehasajang.domain.guest;
 
-import com.incense.gehasajang.domain.booking.Booking;
-import com.incense.gehasajang.domain.booking.BookingRepository;
-import com.incense.gehasajang.domain.booking.PeopleCount;
-import com.incense.gehasajang.domain.booking.Stay;
 import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.domain.house.HouseRepository;
-import org.junit.jupiter.api.BeforeEach;
+import com.incense.gehasajang.error.ErrorCode;
+import com.incense.gehasajang.exception.AccessDeniedException;
+import com.incense.gehasajang.exception.NotFoundDataException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,42 +25,30 @@ class GuestRepositoryTest {
     @Autowired
     private GuestRepository guestRepository;
 
-    @Autowired
-    private BookingRepository bookingRepository;
-
-    @BeforeEach
-    public void setUp() {
-        List<House> houses = Arrays.asList(
-                House.builder().name("테스트 하우스1").mainNumber("01011111111").build(),
-                House.builder().name("테스트 하우스2").mainNumber("01022222222").build()
-        );
-        houses.forEach(house -> houseRepository.save(house));
-
-        List<Guest> guests = Arrays.asList(
-                Guest.builder().name("foo").phoneNumber("01012345678").build(),
-                Guest.builder().name("foo").phoneNumber("01087654321").build(),
-                Guest.builder().name("foo").phoneNumber("01011111113").build()
-        );
-        guests.forEach(guest -> guestRepository.save(guest));
-
-        List<Booking> bookings = Arrays.asList(
-                Booking.builder().guest(guests.get(0)).house(houses.get(1)).stay(new Stay(LocalDateTime.now().minusDays(3), LocalDateTime.now())).peopleCount(new PeopleCount(2, 0)).requirement("메모1").build(),
-                Booking.builder().guest(guests.get(0)).house(houses.get(1)).stay(new Stay(LocalDateTime.now().minusDays(15), LocalDateTime.now().minusDays(2))).peopleCount(new PeopleCount(2, 0)).requirement("메모2").build(),
-                Booking.builder().guest(guests.get(1)).house(houses.get(1)).stay(new Stay(LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(4))).peopleCount(new PeopleCount(2, 0)).requirement("메모3").build(),
-                Booking.builder().guest(guests.get(1)).house(houses.get(1)).stay(new Stay(LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(6))).peopleCount(new PeopleCount(2, 0)).requirement("메모4").build(),
-                Booking.builder().guest(guests.get(2)).house(houses.get(1)).stay(new Stay(LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(7))).peopleCount(new PeopleCount(2, 0)).requirement("메모5").build()
-        );
-        bookings.forEach(booking -> bookingRepository.save(booking));
-    }
-
     @Test
     @DisplayName("게스트 리스트 테스트")
     void list() throws Exception {
+        //given
+        House house = houseRepository.findById(1L).orElseThrow(() -> new AccessDeniedException(ErrorCode.ACCESS_DENIED));
+
         //when
-        Set<Guest> guests = guestRepository.findAllByNameAndBookings_House_Id("foo", 2L);
+        Set<Guest> savedGuests = guestRepository.findAllByNameAndBookings_House("test", house);
 
         //then
-        assertThat(guests.size()).isEqualTo(3);
+        assertThat(savedGuests.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("게스트 찾기")
+    void findGuest() throws Exception {
+        //given
+        House house = houseRepository.findById(1L).orElseThrow(() -> new AccessDeniedException(ErrorCode.ACCESS_DENIED));
+
+        //when
+        Guest guest = guestRepository.findByIdAndBookings_House(2L, house).orElseThrow(() -> new NotFoundDataException(ErrorCode.NOT_FOUND_GUEST));
+
+        //then
+        assertThat(guest.getPhoneNumber()).isEqualTo("01011111111");
     }
 
 }

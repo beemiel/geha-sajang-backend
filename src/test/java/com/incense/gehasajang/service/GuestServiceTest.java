@@ -2,6 +2,7 @@ package com.incense.gehasajang.service;
 
 import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.guest.GuestRepository;
+import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.model.dto.guest.request.GuestRequestDto;
@@ -42,7 +43,6 @@ class GuestServiceTest {
     void addGuest() throws Exception {
         //given
         Guest guest = Guest.builder().name("foo").phoneNumber("01000000000").email("foo@gmail.com").memo("memo1").build();
-        GuestRequestDto guestRequestDto = GuestRequestDto.builder().name("test").phoneNumber("01012345678").email("test@gmail.com").memo("change").build();
         given(guestRepository.save(any())).willReturn(guest);
 
         //when
@@ -60,12 +60,12 @@ class GuestServiceTest {
     @DisplayName("게스트 찾기 없음")
     void findGuestNotFound() throws Exception {
         //given
-        given(guestRepository.findAllByNameAndBookings_House_Id(any(), any())).willReturn(Collections.emptySet());
+        given(guestRepository.findAllByNameAndBookings_House(any(), any())).willReturn(Collections.emptySet());
 
         //when
         NotFoundDataException e = assertThrows(NotFoundDataException.class,
                 () -> {
-                    if (guestRepository.findAllByNameAndBookings_House_Id(any(), any()).isEmpty()) {
+                    if (guestRepository.findAllByNameAndBookings_House(any(), any()).isEmpty()) {
                         throw new NotFoundDataException(ErrorCode.NOT_FOUND_GUEST);
                     }
                 });
@@ -81,12 +81,13 @@ class GuestServiceTest {
         Set<Guest> guests = new HashSet<>();
         guests.add(Guest.builder().id(1L).name("foo").phoneNumber("01011111111").memo("memo").email("foo@gmail.com").build());
         guests.add(Guest.builder().id(2L).name("foo2").phoneNumber("01022222222").memo("memo2").email("foo2@gmail.com").build());
+        House house = House.builder().id(1L).name("foo house").build();
 
-        given(guestRepository.findAllByNameAndBookings_House_Id(any(), any())).willReturn(guests);
+        given(guestRepository.findAllByNameAndBookings_House(any(), any())).willReturn(guests);
         given(guestRepository.findLastBookingById(any(), any())).willReturn(LocalDateTime.now());
 
         //when
-        List<GuestCheckResponseDto> responseDtos = guestService.findGuests(1L, "foo");
+        List<GuestCheckResponseDto> responseDtos = guestService.findGuests(house, "foo");
 
         //then
         assertThat(responseDtos.size()).isEqualTo(2);
