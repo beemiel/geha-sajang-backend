@@ -12,7 +12,7 @@ public class AuthorizationService {
 
     private final RoomRepository roomRepository;
 
-    public boolean checkRoom(Long roomId, Long houseId) {
+    public boolean isExistsRoom(Long roomId, Long houseId) {
         return roomRepository.existsByIdAndDeletedAtNullAndHouse_Id(roomId, houseId);
     }
 }

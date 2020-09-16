@@ -40,7 +40,9 @@ public class UnbookedRoomService {
         final int FIRST_STAY = 0;
         final int LAST_STAY = dates.size() - 1;
 
-        checkAmountIsZero(amount);
+        if(checkNumberIsZero(amount)) {
+            throw new ZeroCountException(ErrorCode.ZERO_COUNT);
+        }
 
         //모든 재고를 날짜별 리스트로 분리 및 재고 개수 체크
         List<UnbookedRoom> unbookedRooms = unbookedRoomRepository.findAllByEntryDateBetweenAndRoom_IdAndRoom_DeletedAtNullAndBookedRoom_UnbookedRoomNull(dates.get(FIRST_STAY), dates.get(LAST_STAY), roomId);
@@ -66,6 +68,10 @@ public class UnbookedRoomService {
     }
 
     private void checkCount(List<UnbookedRoom> stockByDate, int amount) {
+        if(checkNumberIsZero(stockByDate.size())) {
+            throw new NotFoundDataException(ErrorCode.NOT_FOUND_UNBOOKED);
+        }
+
         Room room = stockByDate.get(0).getRoom();
 
         if(room.getRoomType().equals(RoomType.MULTIPLE) || room.getRoomType().equals(RoomType.SINGLE)) {
@@ -80,11 +86,9 @@ public class UnbookedRoomService {
         }
     }
 
-    private void checkAmountIsZero(int amount) {
-        final int ZERO = 0;
-        if(amount <= ZERO) {
-            throw new ZeroCountException(ErrorCode.ZERO_COUNT);
-        }
+    private boolean checkNumberIsZero(int number) {
+        int ZERO = 0;
+        return number <= ZERO;
     }
 
 }
