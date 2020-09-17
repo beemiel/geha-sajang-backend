@@ -2,8 +2,10 @@ package com.incense.gehasajang.domain.booking;
 
 import com.incense.gehasajang.domain.bed.Bed;
 import com.incense.gehasajang.domain.room.UnbookedRoom;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +14,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookingRoomInfo {
 
     @Id

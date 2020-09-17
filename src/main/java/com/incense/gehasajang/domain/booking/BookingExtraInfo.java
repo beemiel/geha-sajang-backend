@@ -1,7 +1,9 @@
 package com.incense.gehasajang.domain.booking;
 
 import com.incense.gehasajang.domain.house.HouseExtraInfo;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,6 +12,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookingExtraInfo {
 
     @Id

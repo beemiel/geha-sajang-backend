@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -43,10 +44,10 @@ public class Booking extends BaseTimeEntity {
     private LocalDateTime deletedAt;
 
     @OneToMany(mappedBy = "booking")
-    private List<BookingExtraInfo> bookingExtraInfos;
+    private Set<BookingExtraInfo> bookingExtraInfos = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "booking")
-    private List<BookingRoomInfo> bookingRoomInfos;
+    private Set<BookingRoomInfo> bookingRoomInfos = new LinkedHashSet<>();
 
     @Builder
     public Booking(House house, Guest guest, Stay stay, PeopleCount peopleCount, String requirement) {
