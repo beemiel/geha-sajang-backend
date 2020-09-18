@@ -1,10 +1,14 @@
 package com.incense.gehasajang.controller;
 
 import com.incense.gehasajang.domain.house.House;
+import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.error.ErrorResponse;
+import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.exception.ZeroCountException;
 import com.incense.gehasajang.model.dto.booking.request.BookingRequestDto;
+import com.incense.gehasajang.model.dto.booking.response.BookingResponseDto;
 import com.incense.gehasajang.security.UserAuthentication;
+import com.incense.gehasajang.service.AuthorizationService;
 import com.incense.gehasajang.service.BookingService;
 import com.incense.gehasajang.service.HouseService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +30,21 @@ public class BookingController {
 
     private final HouseService houseService;
     private final BookingService bookingService;
+    private final AuthorizationService authorizationService;
+
+    @GetMapping("/{bookingId}")
+    public ResponseEntity<BookingResponseDto> detail(
+            @PathVariable @Min(value = 1) Long houseId,
+            @PathVariable @Min(value = 1) Long bookingId,
+            @AuthenticationPrincipal UserAuthentication authentication
+    ) {
+        boolean exist = authorizationService.isExistsBooking(houseId, bookingId, authentication.getAccount());
+        if(!exist) {
+            throw new NotFoundDataException(ErrorCode.NOT_FOUND_DATA);
+        }
+
+        return ResponseEntity.ok(bookingService.getBooking(bookingId));
+    }
 
     @PostMapping
     @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_MAIN')")

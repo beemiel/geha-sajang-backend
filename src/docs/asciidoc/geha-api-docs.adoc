@@ -1194,3 +1194,20 @@ HTTP/1.1 404 Not Found
   "errors" : [ ]
 }
 ```
+
+=== GET /houses/{houseId}/bookings/{bookingId}
+예약을 불러옵니다.
+
+- HTTP Request
+include::{snippets}/booking-controller-test/detail/http-request.adoc[]
+
+- Path Parameters
+include::{snippets}/booking-controller-test/detail/path-parameters.adoc[]
+
+==== 200 성공
+- HTTP Response
+include::{snippets}/booking-controller-test/detail/response-body.adoc[]
+
+- Response Fields
+include::{snippets}/booking-controller-test/detail/response-fields.adoc[]
+
