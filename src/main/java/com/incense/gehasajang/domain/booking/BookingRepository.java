@@ -14,6 +14,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("select b from Booking b where b.id = :bookingId and b.deletedAt is null")
     Optional<Booking> findBooking(@Param(value = "bookingId") Long bookingId);
 
-    boolean existsByIdAndHouse_IdAndHouse_HostHouses_Host_Account(@Param(value = "houseId")Long houseId, @Param(value = "bookingId")Long bookingId, @Param(value = "account")String account);
+    boolean existsByIdAndDeletedAtNullAndHouse_IdAndHouse_HostHouses_Host_Account(@Param(value = "houseId")Long houseId, @Param(value = "bookingId")Long bookingId, @Param(value = "account")String account);
 
 }

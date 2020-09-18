@@ -19,6 +19,6 @@ public class AuthorizationService {
     }
 
     public boolean isExistsBooking(Long houseId, Long bookingId, String account) {
-        return bookingRepository.existsByIdAndHouse_IdAndHouse_HostHouses_Host_Account(houseId, bookingId, account);
+        return bookingRepository.existsByIdAndDeletedAtNullAndHouse_IdAndHouse_HostHouses_Host_Account(houseId, bookingId, account);
     }
 }
