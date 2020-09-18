@@ -1211,3 +1211,9 @@ include::{snippets}/booking-controller-test/detail/response-body.adoc[]
 - Response Fields
 include::{snippets}/booking-controller-test/detail/response-fields.adoc[]
 
+==== 404 찾을 수 없음
+존재하지 않는 예약을 조회하거나, 다른 하우스의 예약을 조회하거나 하는 경우와 같이
+`하우스 Id, 예약 Id, 호스트 계정` 이 세 가지 조건을 모두 만족하지 못한 경우 발생합니다.
+
+- HTTP Response
+include::{snippets}/booking-controller-test/not-found-booking/response-body.adoc[]

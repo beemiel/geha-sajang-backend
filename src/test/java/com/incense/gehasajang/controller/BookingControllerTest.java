@@ -252,7 +252,7 @@ class BookingControllerTest {
     }
 
     @Test
-    @DisplayName("예약 상세")
+    @DisplayName("예약 상세 성공")
     void detail() throws Exception {
         //given
         List<BedResponseDto> bedResponseDtos1 = Arrays.asList(
@@ -318,6 +318,25 @@ class BookingControllerTest {
                                 fieldWithPath("bookingRoomResponseDto[].bedResponseDtos[].isDownBed").description("예약한 방 침대 층"),
                                 fieldWithPath("bookingRoomResponseDto[].bedResponseDtos[].gender").description("예약한 방 침대 성별")
                         )
+                ));
+    }
+
+    @Test
+    @DisplayName("예약 상세 404")
+    void notFoundBooking() throws Exception {
+        //given
+        given(authorizationService.isExistsBooking(any(), any(), any())).willReturn(false);
+
+        //when
+        ResultActions resultActions = find(1L, 1L);
+
+        //then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST), prettyPrint()),
+                        preprocessResponse(prettyPrint())
                 ));
     }
 

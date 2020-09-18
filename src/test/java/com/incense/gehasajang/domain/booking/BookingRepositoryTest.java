@@ -30,4 +30,20 @@ class BookingRepositoryTest {
         assertThat(booking.getGuest().getName()).isEqualTo("test");
     }
 
+    @Test
+    @DisplayName("예약 존재 여부")
+    void existsBooking() throws Exception {
+        //when
+        boolean result = bookingRepository.existsByIdAndHouse_IdAndHouse_HostHouses_Host_Account(1L,1L, "bluuminn@gmail.com");
+        boolean result2 = bookingRepository.existsByIdAndHouse_IdAndHouse_HostHouses_Host_Account(1L,1L, "bluuminn2@gmail.com");
+        boolean result3 = bookingRepository.existsByIdAndHouse_IdAndHouse_HostHouses_Host_Account(1L,4L, "bluuminn@gmail.com");
+        boolean result4 = bookingRepository.existsByIdAndHouse_IdAndHouse_HostHouses_Host_Account(9L,1L, "bluuminn@gmail.com");
+
+        //then
+        assertThat(result).isTrue();
+        assertThat(result2).isFalse();
+        assertThat(result3).isFalse();
+        assertThat(result4).isFalse();
+    }
+
 }
