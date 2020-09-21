@@ -2,8 +2,10 @@ package com.incense.gehasajang.domain.booking;
 
 import com.incense.gehasajang.domain.bed.Bed;
 import com.incense.gehasajang.domain.room.UnbookedRoom;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +14,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookingRoomInfo {
 
     @Id
@@ -41,9 +44,13 @@ public class BookingRoomInfo {
     private LocalDateTime deletedAt;
 
     @Builder
-    public BookingRoomInfo(Booking booking, UnbookedRoom unbookedRoom, Gender gender) {
+    public BookingRoomInfo(Booking booking, UnbookedRoom unbookedRoom, Gender gender, Bed bed, Boolean isDownBed, Boolean isAdditionalBed) {
         this.booking = booking;
         this.unbookedRoom = unbookedRoom;
         this.gender = gender;
+        this.bed = bed;
+        this.isDownBed = isDownBed;
+        this.isAdditionalBed = isAdditionalBed;
     }
+
 }

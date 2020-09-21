@@ -1,7 +1,15 @@
 package com.incense.gehasajang.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.incense.gehasajang.domain.bed.Bed;
+import com.incense.gehasajang.domain.bed.BedType;
+import com.incense.gehasajang.domain.booking.*;
+import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.host.HostRole;
+import com.incense.gehasajang.domain.house.House;
+import com.incense.gehasajang.domain.house.HouseExtraInfo;
+import com.incense.gehasajang.domain.room.Room;
+import com.incense.gehasajang.domain.room.UnbookedRoom;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.exception.ZeroCountException;
@@ -33,14 +41,16 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
@@ -62,6 +72,9 @@ class BookingControllerTest {
 
     @MockBean
     private HouseService houseService;
+
+    @MockBean
+    private AuthorizationService authorizationService;
 
     private UserAuthentication authentication;
 
@@ -241,12 +254,101 @@ class BookingControllerTest {
                 ));
     }
 
+    @Test
+    @DisplayName("예약 상세 성공")
+    void detail() throws Exception {
+        //given
+        House house = House.builder().id(1L).name("하우스1").build();
+        Guest guest = Guest.builder().name("게스트 이름").email("이메일").memo("게스트 메모").phoneNumber("01012345678").build();
+        PeopleCount peopleCount = new PeopleCount(4, 0);
+        Stay stay = new Stay(LocalDateTime.now().minusDays(1L), LocalDateTime.now().plusDays(1L));
+
+        Set<BookingExtraInfo> bookingExtraInfos = new LinkedHashSet<>();
+        HouseExtraInfo extraInfo = HouseExtraInfo.builder().house(house).title("조식").build();
+        HouseExtraInfo extraInfo2 = HouseExtraInfo.builder().house(house).title("중식").build();
+        bookingExtraInfos.add(BookingExtraInfo.builder().attendDate(LocalDateTime.now()).isAttend(true).peopleCount(2).memo("일반식").houseExtraInfo(extraInfo).build());
+        bookingExtraInfos.add(BookingExtraInfo.builder().attendDate(LocalDateTime.now().plusDays(1L)).isAttend(true).peopleCount(2).memo("일반식").houseExtraInfo(extraInfo2).build());
+
+        Set<BookingRoomInfo> bookingRoomInfos = new LinkedHashSet<>();
+        Room room = Room.builder().name("방1").build();
+        UnbookedRoom unbookedRoom = UnbookedRoom.builder().room(room).build();
+        Bed bed = Bed.builder().room(room).alias("침대1").bedType(BedType.DOUBLE).build();
+        bookingRoomInfos.add(BookingRoomInfo.builder().unbookedRoom(unbookedRoom).gender(Gender.FEMALE).bed(bed).isAdditionalBed(false).isDownBed(true).build());
+        bookingRoomInfos.add(BookingRoomInfo.builder().unbookedRoom(unbookedRoom).gender(Gender.MALE).bed(bed).isAdditionalBed(false).isDownBed(true).build());
+
+        Booking booking = Booking.builder().house(house).guest(guest).peopleCount(peopleCount).stay(stay).requirement("요구사항").bookingExtraInfos(bookingExtraInfos).bookingRoomInfos(bookingRoomInfos).build();
+
+        given(bookingService.getBooking(any())).willReturn(booking);
+        given(authorizationService.isExistsBooking(any(), any(), any())).willReturn(true);
+
+        //when
+        ResultActions resultActions = find(1L, 1L);
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST), prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("houseId").description("요청하고자 하는 house id, 호스트가 속한 하우스가 아닐 경우 403 반환"),
+                                parameterWithName("bookingId").description("요청하고자 하는 booking id")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").description("예약 id").type(Long.class),
+                                fieldWithPath("femaleCount").description("여성 인원수"),
+                                fieldWithPath("maleCount").description("남성 인원수"),
+                                fieldWithPath("checkIn").description("체크이 날짜"),
+                                fieldWithPath("checkOut").description("체크아웃 날짜"),
+                                fieldWithPath("requirement").description("요구사항"),
+                                fieldWithPath("guestResponseDto").description("게스트"),
+                                fieldWithPath("guestResponseDto.name").description("게스트 이름"),
+                                fieldWithPath("guestResponseDto.phoneNumber").description("게스트 번호"),
+                                fieldWithPath("guestResponseDto.email").description("게스트 이메일"),
+                                fieldWithPath("guestResponseDto.memo").description("게스트 메모"),
+                                fieldWithPath("bookingExtraResponseDto").description("예약 추가 서비스"),
+                                fieldWithPath("bookingExtraResponseDto[].extraName").description("예약 추가 서비스 이름"),
+                                fieldWithPath("bookingExtraResponseDto[].date").description("예약 추가 서비스 참여 날짜"),
+                                fieldWithPath("bookingExtraResponseDto[].count").description("예약 추가 서비스 참여 인원"),
+                                fieldWithPath("bookingExtraResponseDto[].memo").description("예약 추가 서비스 메모"),
+                                fieldWithPath("bookingRoomInfoResponseDto").description("예약한 방"),
+                                fieldWithPath("bookingRoomInfoResponseDto[].roomName").description("예약한 방 이름"),
+                                fieldWithPath("bookingRoomInfoResponseDto[].femaleCount").description("예약한 방 여성 인원수"),
+                                fieldWithPath("bookingRoomInfoResponseDto[].maleCount").description("예약한 방 남성 인원수")
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("예약 상세 404")
+    void notFoundBooking() throws Exception {
+        //given
+        given(authorizationService.isExistsBooking(any(), any(), any())).willReturn(false);
+
+        //when
+        ResultActions resultActions = find(1L, 1L);
+
+        //then
+        resultActions.andExpect(status().isNotFound())
+                .andDo(document("{class-name}/{method-name}",
+                        preprocessRequest(modifyUris()
+                                .scheme(CommonString.SCHEMA)
+                                .host(CommonString.HOST), prettyPrint()),
+                        preprocessResponse(prettyPrint())
+                ));
+    }
 
     private ResultActions create(BookingRequestDto request) throws Exception {
         return mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/houses/{houseId}/bookings", 1)
                 .with(authentication(authentication))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)));
+    }
+
+    private ResultActions find(Long houseId, Long bookingId) throws Exception {
+        return mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/houses/{houseId}/bookings/{bookingId}", houseId, bookingId)
+                .with(authentication(authentication)));
     }
 
 }

@@ -24,6 +24,9 @@ INSERT INTO room VALUES (3, 4, 6, 'room memo3', 'test_room_3', 30000, 40000, 'MU
 INSERT INTO room VALUES (4, 2, 3, 'room memo4', 'test_room_4', 40000, 50000, 'MULTIPLE', 1, now(), null, null);
 INSERT INTO room VALUES (5, 2, 3, 'room memo5', 'test_room_5', 40000, 50000, 'MULTIPLE', 1, now(), null, now());
 
+INSERT INTO bed (alias, bed_type, room_id, created_at, updated_at, deleted_at)
+VALUES ('문 옆 침대', 'SINGLE', 1, now(), null, now());
+
 INSERT INTO unbooked_room (entry_date, today_amount, room_id)
 VALUES ('2020-08-01', 15000, 1),
        ('2020-08-01', 30000, 2),
@@ -60,7 +63,7 @@ VALUES ('2020-08-01', 15000, 1),
        ('2020-08-03', 40000, 5);
 
 
-    INSERT INTO booked_room
+INSERT INTO booked_room
 VALUES (1,1),
        (2,2),
        (3,3);
@@ -88,12 +91,21 @@ VALUES (1, 'test@naver.com', 'test memo', 'test', '01000000000'),
        (2, 'test2@naver.com', 'test2 memo', 'test', '01011111111'),
        (3, 'test3@naver.com', 'test3 memo', 'test2', '01022222222');
 
-
-INSERT INTO booking
-VALUES (1, '2020-07-05', '2020-07-08', 2, 0, '요구사항11', 1, 1, null, null, null),
-       (2, '2020-08-09', '2020-08-13', 3, 0, '요구사항22', 1, 1, null, null, null),
+INSERT INTO booking (booking_id, check_in, check_out, female_count, male_count, requirement, guest_id, house_id, created_at, updated_at, deleted_at)
+VALUES (1, '2020-07-05', '2020-07-08', 3, 1, '요구사항11', 1, 1, null, null, null),
+       (2, '2020-08-09', '2020-08-13', 3, 0, '요구사항22', 1, 1, null, null, now()),
        (3, '2020-08-09', '2020-08-13', 4, 0, '요구사항22', 2, 1, null, null, null),
        (4, '2020-08-09', '2020-08-13', 5, 0, '요구사항22', 2, 2, null, null, null),
        (5, '2020-08-09', '2020-08-13', 6, 0, '요구사항22', 3, 2, null, null, null),
        (6, '2020-08-15', '2020-08-17', 5, 0, '요구사항이다', 2, 2, null, null, null),
        (7, '2020-08-18', '2020-08-17', 1, 0, '요구사항..', 2, 2, null, null, null);
+
+INSERT INTO booking_extra_info (attend_date, is_attend, memo, people_count, house_extra_info_id, booking_id)
+VALUES ('2020-08-01', true, '추가 서비스 메모1', 2, 1, 1),
+       ('2020-08-02', true, '추가 서비스 메모2', 1, 1, 1);
+
+INSERT INTO booking_room_info (gender, booking_id, unbooked_room_id, is_additional_bed, is_down_bed, bed_id, deleted_at)
+VALUES ('FEMALE', 1, 1, false, false, 1, null),
+       ('FEMALE', 1, 1, false, false, null, null),
+       ('MALE', 1, 2, false, false, null, null),
+       ('FEMALE', 1, 2, false, false, null, null);

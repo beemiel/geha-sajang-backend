@@ -3,7 +3,10 @@ package com.incense.gehasajang.domain.bed;
 import com.incense.gehasajang.domain.booking.BookingRoomInfo;
 import com.incense.gehasajang.domain.room.UnbookedRoom;
 import com.incense.gehasajang.domain.room.Room;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,6 +16,7 @@ import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Bed {
 
     @Id
@@ -38,4 +42,10 @@ public class Bed {
     @OneToMany(mappedBy = "bed")
     private List<BookingRoomInfo> bookingRoomInfos;
 
+    @Builder
+    public Bed(Room room, BedType bedType, String alias) {
+        this.room = room;
+        this.bedType = bedType;
+        this.alias = alias;
+    }
 }
