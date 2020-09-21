@@ -24,10 +24,10 @@ public class GuestRequestDto {
     private String phoneNumber;
 
     @Mapping("email")
-    private String email;
+    private String email = "";
 
     @Size(max = 500)
     @Mapping("memo")
-    private String memo;
+    private String memo = "";
 
 }
