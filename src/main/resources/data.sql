@@ -92,7 +92,7 @@ VALUES (1, 'test@naver.com', 'test memo', 'test', '01000000000'),
        (3, 'test3@naver.com', 'test3 memo', 'test2', '01022222222');
 
 INSERT INTO booking (booking_id, check_in, check_out, female_count, male_count, requirement, guest_id, house_id, created_at, updated_at, deleted_at)
-VALUES (1, '2020-07-05', '2020-07-08', 2, 0, '요구사항11', 1, 1, null, null, null),
+VALUES (1, '2020-07-05', '2020-07-08', 3, 1, '요구사항11', 1, 1, null, null, null),
        (2, '2020-08-09', '2020-08-13', 3, 0, '요구사항22', 1, 1, null, null, now()),
        (3, '2020-08-09', '2020-08-13', 4, 0, '요구사항22', 2, 1, null, null, null),
        (4, '2020-08-09', '2020-08-13', 5, 0, '요구사항22', 2, 2, null, null, null),
@@ -107,5 +107,5 @@ VALUES ('2020-08-01', true, '추가 서비스 메모1', 2, 1, 1),
 INSERT INTO booking_room_info (gender, booking_id, unbooked_room_id, is_additional_bed, is_down_bed, bed_id, deleted_at)
 VALUES ('FEMALE', 1, 1, false, false, 1, null),
        ('FEMALE', 1, 1, false, false, null, null),
-       ('FEMALE', 1, 2, false, false, null, null),
+       ('MALE', 1, 2, false, false, null, null),
        ('FEMALE', 1, 2, false, false, null, null);
