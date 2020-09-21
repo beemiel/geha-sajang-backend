@@ -44,9 +44,13 @@ public class BookingRoomInfo {
     private LocalDateTime deletedAt;
 
     @Builder
-    public BookingRoomInfo(Booking booking, UnbookedRoom unbookedRoom, Gender gender) {
+    public BookingRoomInfo(Booking booking, UnbookedRoom unbookedRoom, Gender gender, Bed bed, Boolean isDownBed, Boolean isAdditionalBed) {
         this.booking = booking;
         this.unbookedRoom = unbookedRoom;
         this.gender = gender;
+        this.bed = bed;
+        this.isDownBed = isDownBed;
+        this.isAdditionalBed = isAdditionalBed;
     }
+
 }

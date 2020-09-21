@@ -1,8 +1,7 @@
 package com.incense.gehasajang.model.dto.booking.response;
 
+import com.github.dozermapper.core.Mapping;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -12,7 +11,11 @@ public class BookingExtraResponseDto {
 
     private String extraName;
     private String date;
+
+    @Mapping("peopleCount")
     private int count;
+
+    @Mapping("memo")
     private String memo;
 
 }

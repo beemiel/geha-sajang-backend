@@ -12,4 +12,5 @@ public class CommonString {
 
     public static final String TOKEN_COOKIE_NAME = "token";
 
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
 }

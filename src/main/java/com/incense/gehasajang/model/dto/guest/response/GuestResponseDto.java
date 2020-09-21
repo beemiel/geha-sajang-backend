@@ -1,5 +1,6 @@
 package com.incense.gehasajang.model.dto.guest.response;
 
+import com.github.dozermapper.core.Mapping;
 import lombok.*;
 
 @Data
@@ -8,9 +9,16 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GuestResponseDto {
 
+    @Mapping("name")
     private String name;
-    private String number;
+
+    @Mapping("phoneNumber")
+    private String phoneNumber;
+
+    @Mapping("email")
     private String email;
+
+    @Mapping("memo")
     private String memo;
 
 }
