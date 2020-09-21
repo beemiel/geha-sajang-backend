@@ -9,8 +9,7 @@ import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    @EntityGraph(attributePaths = {"guest", "bookingExtraInfos", "bookingExtraInfos.houseExtraInfo",
-            "bookingRoomInfos", "bookingRoomInfos.unbookedRoom", "bookingRoomInfos.unbookedRoom.room", "bookingRoomInfos.bed"})
+    @EntityGraph(attributePaths = {"guest", "bookingExtraInfos.houseExtraInfo", "bookingRoomInfos.unbookedRoom.room"})
     @Query("select b from Booking b where b.id = :bookingId and b.deletedAt is null")
     Optional<Booking> findBooking(@Param(value = "bookingId") Long bookingId);
 

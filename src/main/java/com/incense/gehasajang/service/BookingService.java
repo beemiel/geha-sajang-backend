@@ -5,6 +5,8 @@ import com.incense.gehasajang.domain.booking.Booking;
 import com.incense.gehasajang.domain.booking.BookingRepository;
 import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.house.House;
+import com.incense.gehasajang.error.ErrorCode;
+import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.model.dto.booking.request.BookingRequestDto;
 import com.incense.gehasajang.model.dto.booking.response.BookingResponseDto;
 import com.incense.gehasajang.model.param.booking.BookingExtraParam;
@@ -26,8 +28,9 @@ public class BookingService {
 
     private final Mapper mapper;
 
-    public BookingResponseDto getBooking(Long bookingId) {
-        return null;
+    public Booking getBooking(Long bookingId) {
+        return bookingRepository.findBooking(bookingId)
+                .orElseThrow(() -> new NotFoundDataException(ErrorCode.NOT_FOUND_DATA));
     }
 
     public void addBookingInfo(BookingRequestDto request, House house) {
