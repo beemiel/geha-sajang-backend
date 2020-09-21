@@ -28,6 +28,7 @@ public class BookingService {
 
     private final Mapper mapper;
 
+    @Transactional(readOnly = true)
     public Booking getBooking(Long bookingId) {
         return bookingRepository.findBooking(bookingId)
                 .orElseThrow(() -> new NotFoundDataException(ErrorCode.NOT_FOUND_DATA));
