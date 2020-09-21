@@ -1,20 +1,22 @@
 package com.incense.gehasajang.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.incense.gehasajang.domain.booking.Gender;
+import com.incense.gehasajang.domain.bed.Bed;
+import com.incense.gehasajang.domain.bed.BedType;
+import com.incense.gehasajang.domain.booking.*;
+import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.host.HostRole;
+import com.incense.gehasajang.domain.house.House;
+import com.incense.gehasajang.domain.house.HouseExtraInfo;
+import com.incense.gehasajang.domain.room.Room;
+import com.incense.gehasajang.domain.room.UnbookedRoom;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.exception.ZeroCountException;
 import com.incense.gehasajang.model.dto.booking.request.BookingExtraInfoRequestDto;
 import com.incense.gehasajang.model.dto.booking.request.BookingRequestDto;
 import com.incense.gehasajang.model.dto.booking.request.BookingRoomRequestDto;
-import com.incense.gehasajang.model.dto.booking.response.BedResponseDto;
-import com.incense.gehasajang.model.dto.booking.response.BookingExtraResponseDto;
-import com.incense.gehasajang.model.dto.booking.response.BookingResponseDto;
-import com.incense.gehasajang.model.dto.booking.response.BookingRoomResponseDto;
 import com.incense.gehasajang.model.dto.guest.request.GuestRequestDto;
-import com.incense.gehasajang.model.dto.guest.response.GuestResponseDto;
 import com.incense.gehasajang.security.UserAuthentication;
 import com.incense.gehasajang.service.AuthorizationService;
 import com.incense.gehasajang.service.BookingService;
@@ -39,10 +41,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -255,27 +258,27 @@ class BookingControllerTest {
     @DisplayName("예약 상세 성공")
     void detail() throws Exception {
         //given
-        List<BedResponseDto> bedResponseDtos1 = Arrays.asList(
-                BedResponseDto.builder().bedName("침대1").isDownBed(true).gender(Gender.FEMALE).build(),
-                BedResponseDto.builder().bedName("침대2").isDownBed(false).gender(Gender.FEMALE).build()
-        );
-        List<BedResponseDto> bedResponseDtos2 = Arrays.asList(
-                BedResponseDto.builder().bedName("침대3").isDownBed(true).gender(Gender.FEMALE).build(),
-                BedResponseDto.builder().bedName("침대4").isDownBed(true).gender(Gender.FEMALE).build()
-        );
-        List<BookingRoomResponseDto> bookingRoomResponseDto = Arrays.asList(
-                BookingRoomResponseDto.builder().roomName("방1").femaleCount(2).maleCount(0).bedResponseDtos(bedResponseDtos1).build(),
-                BookingRoomResponseDto.builder().roomName("방2").femaleCount(2).maleCount(0).bedResponseDtos(bedResponseDtos2).build()
-        );
-        List<BookingExtraResponseDto> bookingExtraResponseDto = Arrays.asList(
-                BookingExtraResponseDto.builder().extraName("조식").date("2020-08-01").count(4).memo("1인 비건").build(),
-                BookingExtraResponseDto.builder().extraName("중식").date("2020-08-01").count(3).memo("일반식").build(),
-                BookingExtraResponseDto.builder().extraName("석식").date("2020-08-01").count(2).memo("파티").build()
-        );
-        GuestResponseDto guestResponseDto = GuestResponseDto.builder().name("게스트").number("01012345678").email("guest@gmail.com").memo("단골").build();
-        BookingResponseDto bookingResponseDto = BookingResponseDto.builder().id(1L).femaleCount(4).maleCount(0).checkIn("2020-08-01").checkOut("2020-08-02").requirement("식사 중요").guestResponseDto(guestResponseDto).bookingExtraResponseDto(bookingExtraResponseDto).bookingRoomResponseDto(bookingRoomResponseDto).build();
+        House house = House.builder().id(1L).name("하우스1").build();
+        Guest guest = Guest.builder().name("게스트 이름").email("이메일").memo("게스트 메모").phoneNumber("01012345678").build();
+        PeopleCount peopleCount = new PeopleCount(4, 0);
+        Stay stay = new Stay(LocalDateTime.now().minusDays(1L), LocalDateTime.now().plusDays(1L));
 
-        given(bookingService.getBooking(any())).willReturn(bookingResponseDto);
+        Set<BookingExtraInfo> bookingExtraInfos = new LinkedHashSet<>();
+        HouseExtraInfo extraInfo = HouseExtraInfo.builder().house(house).title("조식").build();
+        HouseExtraInfo extraInfo2 = HouseExtraInfo.builder().house(house).title("중식").build();
+        bookingExtraInfos.add(BookingExtraInfo.builder().attendDate(LocalDateTime.now()).isAttend(true).peopleCount(2).memo("일반식").houseExtraInfo(extraInfo).build());
+        bookingExtraInfos.add(BookingExtraInfo.builder().attendDate(LocalDateTime.now().plusDays(1L)).isAttend(true).peopleCount(2).memo("일반식").houseExtraInfo(extraInfo2).build());
+
+        Set<BookingRoomInfo> bookingRoomInfos = new LinkedHashSet<>();
+        Room room = Room.builder().name("방1").build();
+        UnbookedRoom unbookedRoom = UnbookedRoom.builder().room(room).build();
+        Bed bed = Bed.builder().room(room).alias("침대1").bedType(BedType.DOUBLE).build();
+        bookingRoomInfos.add(BookingRoomInfo.builder().unbookedRoom(unbookedRoom).gender(Gender.FEMALE).bed(bed).isAdditionalBed(false).isDownBed(true).build());
+        bookingRoomInfos.add(BookingRoomInfo.builder().unbookedRoom(unbookedRoom).gender(Gender.MALE).bed(bed).isAdditionalBed(false).isDownBed(true).build());
+
+        Booking booking = Booking.builder().house(house).guest(guest).peopleCount(peopleCount).stay(stay).requirement("요구사항").bookingExtraInfos(bookingExtraInfos).bookingRoomInfos(bookingRoomInfos).build();
+
+        given(bookingService.getBooking(any())).willReturn(booking);
         given(authorizationService.isExistsBooking(any(), any(), any())).willReturn(true);
 
         //when
@@ -293,7 +296,7 @@ class BookingControllerTest {
                                 parameterWithName("bookingId").description("요청하고자 하는 booking id")
                         ),
                         responseFields(
-                                fieldWithPath("id").description("예약 id"),
+                                fieldWithPath("id").description("예약 id").type(Long.class),
                                 fieldWithPath("femaleCount").description("여성 인원수"),
                                 fieldWithPath("maleCount").description("남성 인원수"),
                                 fieldWithPath("checkIn").description("체크이 날짜"),
@@ -301,7 +304,7 @@ class BookingControllerTest {
                                 fieldWithPath("requirement").description("요구사항"),
                                 fieldWithPath("guestResponseDto").description("게스트"),
                                 fieldWithPath("guestResponseDto.name").description("게스트 이름"),
-                                fieldWithPath("guestResponseDto.number").description("게스트 번호"),
+                                fieldWithPath("guestResponseDto.phoneNumber").description("게스트 번호"),
                                 fieldWithPath("guestResponseDto.email").description("게스트 이메일"),
                                 fieldWithPath("guestResponseDto.memo").description("게스트 메모"),
                                 fieldWithPath("bookingExtraResponseDto").description("예약 추가 서비스"),
@@ -309,14 +312,10 @@ class BookingControllerTest {
                                 fieldWithPath("bookingExtraResponseDto[].date").description("예약 추가 서비스 참여 날짜"),
                                 fieldWithPath("bookingExtraResponseDto[].count").description("예약 추가 서비스 참여 인원"),
                                 fieldWithPath("bookingExtraResponseDto[].memo").description("예약 추가 서비스 메모"),
-                                fieldWithPath("bookingRoomResponseDto").description("예약한 방"),
-                                fieldWithPath("bookingRoomResponseDto[].roomName").description("예약한 방 이름"),
-                                fieldWithPath("bookingRoomResponseDto[].femaleCount").description("예약한 방 여성 인원수"),
-                                fieldWithPath("bookingRoomResponseDto[].maleCount").description("예약한 방 남성 인원수"),
-                                fieldWithPath("bookingRoomResponseDto[].bedResponseDtos").description("예약한 방 침대"),
-                                fieldWithPath("bookingRoomResponseDto[].bedResponseDtos[].bedName").description("예약한 방 침대 이름"),
-                                fieldWithPath("bookingRoomResponseDto[].bedResponseDtos[].isDownBed").description("예약한 방 침대 층"),
-                                fieldWithPath("bookingRoomResponseDto[].bedResponseDtos[].gender").description("예약한 방 침대 성별")
+                                fieldWithPath("bookingRoomInfoResponseDto").description("예약한 방"),
+                                fieldWithPath("bookingRoomInfoResponseDto[].roomName").description("예약한 방 이름"),
+                                fieldWithPath("bookingRoomInfoResponseDto[].femaleCount").description("예약한 방 여성 인원수"),
+                                fieldWithPath("bookingRoomInfoResponseDto[].maleCount").description("예약한 방 남성 인원수")
                         )
                 ));
     }
