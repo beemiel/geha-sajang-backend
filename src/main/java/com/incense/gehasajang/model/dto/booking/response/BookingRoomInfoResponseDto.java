@@ -13,6 +13,5 @@ public class BookingRoomResponseDto {
     private String roomName;
     private int femaleCount;
     private int maleCount;
-    private List<BedResponseDto> bedResponseDtos;
 
 }
