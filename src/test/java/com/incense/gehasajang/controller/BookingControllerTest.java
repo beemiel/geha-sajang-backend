@@ -260,7 +260,7 @@ class BookingControllerTest {
         //given
         House house = House.builder().id(1L).name("하우스1").build();
         Guest guest = Guest.builder().name("게스트 이름").email("이메일").memo("게스트 메모").phoneNumber("01012345678").build();
-        PeopleCount peopleCount = new PeopleCount(4, 0);
+        PeopleCount peopleCount = new PeopleCount(1, 1);
         Stay stay = new Stay(LocalDateTime.now().minusDays(1L), LocalDateTime.now().plusDays(1L));
 
         Set<BookingExtraInfo> bookingExtraInfos = new LinkedHashSet<>();
