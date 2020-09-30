@@ -264,10 +264,11 @@ class BookingControllerTest {
         Stay stay = new Stay(LocalDateTime.now().minusDays(1L), LocalDateTime.now().plusDays(1L));
 
         Set<BookingExtraInfo> bookingExtraInfos = new LinkedHashSet<>();
-        HouseExtraInfo extraInfo = HouseExtraInfo.builder().house(house).title("조식").build();
-        HouseExtraInfo extraInfo2 = HouseExtraInfo.builder().house(house).title("중식").build();
-        bookingExtraInfos.add(BookingExtraInfo.builder().attendDate(LocalDateTime.now()).isAttend(true).peopleCount(2).memo("일반식").houseExtraInfo(extraInfo).build());
-        bookingExtraInfos.add(BookingExtraInfo.builder().attendDate(LocalDateTime.now().plusDays(1L)).isAttend(true).peopleCount(2).memo("일반식").houseExtraInfo(extraInfo2).build());
+        HouseExtraInfo extraInfo = HouseExtraInfo.builder().id(7L).house(house).title("조식").build();
+        HouseExtraInfo extraInfo2 = HouseExtraInfo.builder().id(9L).house(house).title("중식").build();
+
+        bookingExtraInfos.add(BookingExtraInfo.builder().id(3L).attendDate(LocalDateTime.now()).isAttend(true).peopleCount(2).memo("일반식").houseExtraInfo(extraInfo).build());
+        bookingExtraInfos.add(BookingExtraInfo.builder().id(6L).attendDate(LocalDateTime.now().plusDays(1L)).isAttend(true).peopleCount(2).memo("일반식").houseExtraInfo(extraInfo2).build());
 
         Set<BookingRoomInfo> bookingRoomInfos = new LinkedHashSet<>();
         Room room = Room.builder().name("방1").build();
@@ -308,7 +309,9 @@ class BookingControllerTest {
                                 fieldWithPath("guestResponseDto.email").description("게스트 이메일"),
                                 fieldWithPath("guestResponseDto.memo").description("게스트 메모"),
                                 fieldWithPath("bookingExtraResponseDto").description("예약 추가 서비스"),
-                                fieldWithPath("bookingExtraResponseDto[].extraName").description("예약 추가 서비스 이름"),
+                                fieldWithPath("bookingExtraResponseDto[].bookingExtraInfoId").description("예약한 추가 서비스 id"),
+                                fieldWithPath("bookingExtraResponseDto[].houseExtraInfoId").description("해당 하우스의 추가 서비스 id"),
+                                fieldWithPath("bookingExtraResponseDto[].extraName").description("해당 하우스의 추가 서비스 이름"),
                                 fieldWithPath("bookingExtraResponseDto[].date").description("예약 추가 서비스 참여 날짜"),
                                 fieldWithPath("bookingExtraResponseDto[].count").description("예약 추가 서비스 참여 인원"),
                                 fieldWithPath("bookingExtraResponseDto[].memo").description("예약 추가 서비스 메모"),
