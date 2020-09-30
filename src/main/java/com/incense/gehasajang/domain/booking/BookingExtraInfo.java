@@ -40,7 +40,8 @@ public class BookingExtraInfo {
     private int peopleCount;
 
     @Builder
-    public BookingExtraInfo(Boolean isAttend, HouseExtraInfo houseExtraInfo, String memo, LocalDateTime attendDate, int peopleCount) {
+    public BookingExtraInfo(Long id, Boolean isAttend, HouseExtraInfo houseExtraInfo, String memo, LocalDateTime attendDate, int peopleCount) {
+        this.id = id;
         this.isAttend = isAttend;
         this.houseExtraInfo = houseExtraInfo;
         this.memo = memo;

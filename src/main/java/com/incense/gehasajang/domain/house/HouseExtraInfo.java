@@ -34,7 +34,8 @@ public class HouseExtraInfo {
     private LocalDateTime deletedAt;
 
     @Builder
-    public HouseExtraInfo(House house, String title) {
+    public HouseExtraInfo(Long id, House house, String title) {
+        this.id = id;
         this.house = house;
         this.title = title;
     }

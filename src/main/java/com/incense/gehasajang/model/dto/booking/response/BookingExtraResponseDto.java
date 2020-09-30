@@ -9,6 +9,12 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookingExtraResponseDto {
 
+    @Mapping("id")
+    private Long bookingExtraInfoId;
+
+    @Mapping("houseExtraInfo.id")
+    private Long houseExtraInfoId;
+
     private String extraName;
     private String date;
 
