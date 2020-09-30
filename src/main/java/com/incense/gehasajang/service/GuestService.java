@@ -36,8 +36,7 @@ public class GuestService {
     @Transactional
     public Guest addGuest(Guest guestInformation, House house) {
         if (guestInformation.getId() != null) {
-            Guest updatedGuest = updateGuest(guestInformation, house);
-            return guestRepository.save(updatedGuest);
+            return findGuest(guestInformation.getId(), house);
         }
         return guestRepository.save(guestInformation);
     }
