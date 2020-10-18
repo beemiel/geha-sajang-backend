@@ -47,6 +47,7 @@ import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -280,7 +281,7 @@ class BookingControllerTest {
         Booking booking = Booking.builder().house(house).guest(guest).peopleCount(peopleCount).stay(stay).requirement("요구사항").bookingExtraInfos(bookingExtraInfos).bookingRoomInfos(bookingRoomInfos).build();
 
         given(bookingService.getBooking(any())).willReturn(booking);
-        given(authorizationService.isExistsBooking(any(), any(), any())).willReturn(true);
+        doNothing().when(authorizationService).isExistsBooking(any(), any());
 
         //when
         ResultActions resultActions = find(1L, 1L);
@@ -327,7 +328,7 @@ class BookingControllerTest {
     @DisplayName("예약 상세 404")
     void notFoundBooking() throws Exception {
         //given
-        given(authorizationService.isExistsBooking(any(), any(), any())).willReturn(false);
+        doThrow(new NotFoundDataException(ErrorCode.NOT_FOUND_DATA)).when(authorizationService).isExistsBooking(any(), any());
 
         //when
         ResultActions resultActions = find(1L, 1L);

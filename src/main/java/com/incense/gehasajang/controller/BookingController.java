@@ -52,11 +52,7 @@ public class BookingController {
             @PathVariable @Min(value = 1) Long bookingId,
             @AuthenticationPrincipal UserAuthentication authentication
     ) {
-        boolean exist = authorizationService.isExistsBooking(houseId, bookingId, authentication.getAccount());
-        if (!exist) {
-            throw new NotFoundDataException(ErrorCode.NOT_FOUND_DATA);
-        }
-
+        authorizationService.isExistsBooking(bookingId, authentication.getAccount());
         return ResponseEntity.ok(convertToBookingResponseDto(bookingService.getBooking(bookingId)));
     }
 

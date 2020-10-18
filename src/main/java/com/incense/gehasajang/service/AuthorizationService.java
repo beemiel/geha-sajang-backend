@@ -1,7 +1,10 @@
 package com.incense.gehasajang.service;
 
+import com.incense.gehasajang.domain.booking.Booking;
 import com.incense.gehasajang.domain.booking.BookingRepository;
 import com.incense.gehasajang.domain.room.RoomRepository;
+import com.incense.gehasajang.error.ErrorCode;
+import com.incense.gehasajang.exception.NotFoundDataException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +21,11 @@ public class AuthorizationService {
         return roomRepository.existsByIdAndDeletedAtNullAndHouse_Id(roomId, houseId);
     }
 
-    public boolean isExistsBooking(Long houseId, Long bookingId, String account) {
-        return bookingRepository.existsByIdAndDeletedAtNullAndHouse_IdAndHouse_HostHouses_Host_Account(houseId, bookingId, account);
+    public void isExistsBooking(Long bookingId, String account) {
+        Booking booking = bookingRepository.existsBooking(bookingId, account);
+
+        if(booking == null) {
+            throw new NotFoundDataException(ErrorCode.NOT_FOUND_DATA);
+        }
     }
 }
