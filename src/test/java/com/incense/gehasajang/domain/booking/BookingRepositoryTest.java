@@ -33,18 +33,18 @@ class BookingRepositoryTest {
     @DisplayName("예약 존재 여부")
     void existsBooking() throws Exception {
         //when
-        boolean result = bookingRepository.existsByIdAndDeletedAtNullAndHouse_IdAndHouse_HostHouses_Host_Account(1L,1L, "bluuminn@gmail.com");
-        boolean result2 = bookingRepository.existsByIdAndDeletedAtNullAndHouse_IdAndHouse_HostHouses_Host_Account(1L,1L, "bluuminn2@gmail.com");
-        boolean result3 = bookingRepository.existsByIdAndDeletedAtNullAndHouse_IdAndHouse_HostHouses_Host_Account(1L,4L, "bluuminn@gmail.com");
-        boolean result4 = bookingRepository.existsByIdAndDeletedAtNullAndHouse_IdAndHouse_HostHouses_Host_Account(9L,1L, "bluuminn@gmail.com");
-        boolean result5 = bookingRepository.existsByIdAndDeletedAtNullAndHouse_IdAndHouse_HostHouses_Host_Account(1L,2L, "bluuminn@gmail.com");
+        Booking result = bookingRepository.existsBooking(1L, "bluuminn@gmail.com");
+        Booking result2 = bookingRepository.existsBooking(1L, "bluuminn2@gmail.com");
+        Booking result3 = bookingRepository.existsBooking(4L, "bluuminn@gmail.com");
+        Booking result4 = bookingRepository.existsBooking(2L, "bluuminn@gmail.com");
+        Booking result5 = bookingRepository.existsBooking(3L, "bluuminn@gmail.com");
 
         //then
-        assertThat(result).isTrue();
-        assertThat(result2).isFalse();
-        assertThat(result3).isFalse();
-        assertThat(result4).isFalse();
-        assertThat(result5).isFalse();
+        assertThat(result).isNotNull();
+        assertThat(result2).isNull();
+        assertThat(result3).isNull();
+        assertThat(result4).isNull();
+        assertThat(result5).isNotNull();
     }
 
 }
