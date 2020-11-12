@@ -4,11 +4,10 @@ import com.github.dozermapper.core.Mapper;
 import com.incense.gehasajang.domain.booking.Booking;
 import com.incense.gehasajang.domain.booking.BookingExtraInfo;
 import com.incense.gehasajang.domain.booking.BookingRoomInfo;
+import com.incense.gehasajang.domain.guest.Guest;
 import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.domain.room.Room;
-import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.error.ErrorResponse;
-import com.incense.gehasajang.exception.NotFoundDataException;
 import com.incense.gehasajang.exception.ZeroCountException;
 import com.incense.gehasajang.model.dto.booking.request.BookingRequestDto;
 import com.incense.gehasajang.model.dto.booking.response.BookingExtraResponseDto;
@@ -20,6 +19,8 @@ import com.incense.gehasajang.service.AuthorizationService;
 import com.incense.gehasajang.service.BookingService;
 import com.incense.gehasajang.service.HouseService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -70,7 +71,9 @@ public class BookingController {
 
     private BookingResponseDto convertToBookingResponseDto(Booking booking) {
         BookingResponseDto bookingResponseDto = mapper.map(booking, BookingResponseDto.class);
-        bookingResponseDto.addGuest(mapper.map(booking.getGuest(), GuestResponseDto.class));
+        Guest guest = (Guest) unproxy(booking.getGuest());
+
+        bookingResponseDto.addGuest(mapper.map(guest, GuestResponseDto.class));
         bookingResponseDto.addBookingExtraResponseDto(convertToBookingExtraResponseDtos(booking.getBookingExtraInfos()));
         bookingResponseDto.addBookingRoomInfoResponseDto(convertToBookingRoomInfoResponseDtos(booking.getBookingRoomInfos()));
         return bookingResponseDto;
@@ -103,6 +106,13 @@ public class BookingController {
         return bookingRoomInfos.stream()
                 .map(info -> info.getUnbookedRoom().getRoom())
                 .collect(Collectors.toSet());
+    }
+
+    private Object unproxy(Object obj) {
+        if (obj instanceof HibernateProxy) {
+            return Hibernate.unproxy(obj);
+        }
+        return obj;
     }
 
     /**
