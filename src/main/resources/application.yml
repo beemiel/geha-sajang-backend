@@ -1,6 +1,11 @@
 spring:
-  profiles:
-    active: local
+  datasource:
+    url: jdbc:mysql://localhost:3306/geha_sajang?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    initialization-mode: always
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    data: classpath:schema.sql, classpath:data.sql
   jpa:
     hibernate:
       ddl-auto: none
@@ -16,27 +21,15 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace #쿼리 파라미터에 어떤 타입의 어떤 데이터가 들어가는지 로그에 찍힘
+    org.springframework.security: DEBUG
 
----
-
-spring:
-  profiles: local
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/geha_sajang?serverTimezone=UTC&characterEncoding=UTF-8
-    initialization-mode: always
-    schema: classpath:schema.sql
-    username: root
-    password: root
-
----
-
-spring:
-  profiles: mysql
-  datasource:
-    url: jdbc:mysql://${MYSQL_ENDPOINT}:3306/${MYSQL_DATABASE}?serverTimezone=UTC&characterEncoding=UTF-8
-    initialization-mode: always
-    schema: classpath:schema.sql
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
+cloud:
+  aws:
+    s3:
+      bucket: lynn-s3-test
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      instanceProfile: true
