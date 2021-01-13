@@ -36,7 +36,7 @@ create table host (
     is_active boolean default true,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp on update current_timestamp,
-    deleted_at timestamp,
+    deleted_at timestamp default current_timestamp,
     primary key (host_id)
 );
 
@@ -56,13 +56,12 @@ create table house (
     detail varchar(255),
     postcode varchar(255),
     street varchar(255),
---     main_image varchar(255),
     main_image text,
     thumbnail_image varchar(255),
     main_number varchar(15),
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp on update current_timestamp,
-    deleted_at timestamp,
+    deleted_at timestamp default current_timestamp,
     primary key (house_id)
 );
 
@@ -85,7 +84,7 @@ create table room (
     house_id bigint references house(house_id),
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp on update current_timestamp,
-    deleted_at timestamp,
+    deleted_at timestamp default current_timestamp,
     primary key (room_id)
 );
 
@@ -105,7 +104,7 @@ create table bed (
     room_id bigint references room(room_id),
     created_at timestamp default CURRENT_TIMESTAMP,
     updated_at timestamp default current_timestamp on update current_timestamp,
-    deleted_at timestamp,
+    deleted_at timestamp default current_timestamp,
     primary key (bed_id)
 );
 
@@ -123,7 +122,7 @@ create table sms_template (
     house_id bigint references house(house_id),
     created_at timestamp default CURRENT_TIMESTAMP,
     updated_at timestamp default current_timestamp on update current_timestamp,
-    deleted_at timestamp,
+    deleted_at timestamp default current_timestamp,
     primary key (sms_template_id)
 );
 
@@ -141,7 +140,7 @@ create table checklist (
     target_data timestamp,
     house_id bigint references house(house_id),
     created_at timestamp default CURRENT_TIMESTAMP,
-    deleted_at timestamp,
+    deleted_at timestamp default CURRENT_TIMESTAMP,
     primary key (checklist_id)
 );
 
@@ -160,7 +159,7 @@ create table house_extra_info (
     house_extra_info_id bigint auto_increment,
     title varchar(255),
     house_id bigint references house(house_id),
-    deleted_at timestamp,
+    deleted_at timestamp default current_timestamp,
     primary key (house_extra_info_id)
 );
 
@@ -175,8 +174,8 @@ create table guest (
 
 create table booking (
     booking_id bigint auto_increment,
-    check_in timestamp not null,
-    check_out timestamp not null,
+    check_in timestamp not null default current_timestamp,
+    check_out timestamp not null default current_timestamp,
     female_count integer default 0,
     male_count integer default 0,
     requirement varchar(500),
@@ -184,7 +183,7 @@ create table booking (
     house_id bigint references house(house_id),
     created_at timestamp default CURRENT_TIMESTAMP,
     updated_at timestamp default current_timestamp on update current_timestamp,
-    deleted_at timestamp,
+    deleted_at timestamp default current_timestamp,
     primary key (booking_id)
 );
 
@@ -221,7 +220,7 @@ create table booking_room_info (
     is_additional_bed boolean,
     is_down_bed boolean,
     bed_id bigint references bed(bed_id),
-    deleted_at timestamp,
+    deleted_at timestamp default current_timestamp,
     primary key (booking_room_info_id)
 );
 

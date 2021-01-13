@@ -27,6 +27,7 @@ jobs:
       - name: Set up MySQL
         uses: mirromutth/mysql-action@v1.1
         with:
+          character set server: 'utf8'
           mysql version: '5.7'
           mysql user: 'root'
           mysql root password: 'root'
