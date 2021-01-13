@@ -77,7 +77,7 @@ create table room (
     room_id bigint auto_increment,
     default_capacity integer not null,
     max_capacity integer not null,
-    memo varchar(255), --메모는 text?
+    memo varchar(255),
     name varchar(255),
     off_peak_amount varchar(10),
     peak_amount varchar(10),
@@ -118,7 +118,7 @@ create table house_off (
 
 create table sms_template (
     sms_template_id bigint auto_increment,
-    contents varchar(255), --text
+    contents varchar(255),
     title varchar(255),
     house_id bigint references house(house_id),
     created_at timestamp default CURRENT_TIMESTAMP,
