@@ -27,10 +27,10 @@ jobs:
       - name: Set up MySQL
         uses: mirromutth/mysql-action@v1.1
         with:
-          mysql-version: '5.7'
-          mysql-user: 'root'
-          mysql-root-password: 'root'
-          mysql-password: 'root'
+          mysql version: '5.7'
+          mysql user: 'root'
+          mysql root password: 'root'
+          mysql password: 'root'
           mysql database: 'geha_sajang'
 
       - name: Grant excute permission for gradlew
