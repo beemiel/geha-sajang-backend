@@ -10,6 +10,8 @@ on:
 env:
   S3_BUCKET_NAME: lynn-test-deploy
   PROJECT_NAME: geha-sajang
+  CURRENT_MAIL_PASSWORD: ${{ secrets.CURRENT_MAIL_PASSWORD }}
+  NEW_MAIL_PASSWORD: ${{ secrets.NEW_MAIL_PASSWORD }}
 
 jobs:
   build:
@@ -40,6 +42,10 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Change mail password
+        run: sed -i "23s/$CURRENT_MAIL_PASSWORD/$NEW_MAIL_PASSWORD/" /home/runner/work/geha-sajang-backend/geha-sajang-backend/src/main/resources/application.yml
+        shell: bash
 
       - name: Grant excute permission for gradlew
         run: chmod +x gradlew
