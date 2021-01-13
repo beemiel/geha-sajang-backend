@@ -1,3 +1,5 @@
+use geha_sajang;
+
 drop table if exists booking_room_info;
 drop table if exists booking_extra_info;
 drop table if exists booked_room;
