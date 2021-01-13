@@ -6,6 +6,11 @@ build/
 !**/src/test/**
 .DS_Store
 
+### 필요 없는 설정 파일 ###
+application-*.yml
+src/test/resources/application.yml
+.env
+
 ### STS ###
 .apt_generated
 .classpath
