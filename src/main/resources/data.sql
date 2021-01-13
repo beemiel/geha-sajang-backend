@@ -1,5 +1,3 @@
-use geha_sajang;
-
 INSERT INTO house (house_id, uuid, name, city, street, postcode, detail, main_number)
 VALUES (1, 'uuid1', '게스트 하우스1',  'city1', 'street1', 'postcode1', 'detail1', '010-1234-5678'),
        (2, 'uuid2', '하우스 게스트2',  'city2', 'street2', 'postcode2', 'detail2', '010-1111-1111'),
