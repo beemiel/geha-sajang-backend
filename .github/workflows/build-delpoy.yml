@@ -12,6 +12,9 @@ env:
   PROJECT_NAME: geha-sajang
   CURRENT_MAIL_PASSWORD: ${{ secrets.CURRENT_MAIL_PASSWORD }}
   NEW_MAIL_PASSWORD: ${{ secrets.NEW_MAIL_PASSWORD }}
+  AWS_RDS: ${{ secrets.AWS_RDS }}
+  AWS_RDS_USER_NAME: ${{ secrets.AWS_RDS_USER_NAME }}
+  AWS_RDS_USER_PASSWORD:  ${{ secrets.AWS_RDS_USER_PASSWORD }}
 
 jobs:
   build:
@@ -44,7 +47,19 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Change mail password
-        run: sed -i "23s/$CURRENT_MAIL_PASSWORD/$NEW_MAIL_PASSWORD/" /home/runner/work/geha-sajang-backend/geha-sajang-backend/src/main/resources/application.yml
+        run: sed -i "18s/$CURRENT_MAIL_PASSWORD/$NEW_MAIL_PASSWORD/" /home/runner/work/geha-sajang-backend/geha-sajang-backend/src/main/resources/application.yml
+        shell: bash
+
+      - name: Change deploy RDS url
+        run: sed -i "61s/AWS_RDS/$AWS_RDS/" /home/runner/work/geha-sajang-backend/geha-sajang-backend/src/main/resources/application.yml
+        shell: bash
+
+      - name: Change deploy RDS username
+        run: sed -i "64s/AWS_RDS_USER_NAME/$AWS_RDS_USER_NAME/" /home/runner/work/geha-sajang-backend/geha-sajang-backend/src/main/resources/application.yml
+        shell: bash
+
+      - name: Change deploy RDS password
+        run: sed -i "65s/AWS_RDS_USER_PASSWORD/$AWS_RDS_USER_PASSWORD/" /home/runner/work/geha-sajang-backend/geha-sajang-backend/src/main/resources/application.yml
         shell: bash
 
       - name: Grant excute permission for gradlew
