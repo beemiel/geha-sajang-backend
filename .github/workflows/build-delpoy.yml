@@ -38,8 +38,13 @@ jobs:
         shell: bash
 
       - name: Build with gradle
-        run: ./gradlew build --stacktrace --debug
+        run: ./gradlew build --stacktrace
         shell: bash
+
+      - name: Notify failure
+        run: cat /home/runner/work/geha-sajang-backend/geha-sajang-backend/build/reports/tests/test/index.html
+        shell: bash
+        if: failure()
 
       - name: Make to zip file
         run: zip -r ./$GITHUB_SHA.zip .
