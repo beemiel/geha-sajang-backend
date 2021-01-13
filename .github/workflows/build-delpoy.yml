@@ -28,6 +28,8 @@ jobs:
         uses: samin/mysql-action@v1
         with:
           character set server: 'utf8'
+          collation server: 'utf8_general_ci'
+          mysql version: '5.7'
           mysql database: 'geha_sajang'
           mysql user: ${{ secrets.MYSQL_USER_NAME }}
           mysql password: ${{ secrets.MYSQL_PASSWORD }}
