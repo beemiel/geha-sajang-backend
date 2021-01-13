@@ -66,7 +66,7 @@ jobs:
         if: failure()
 
       - name: Upload reports to S3
-        run: aws s3 cp --region ap-northeast-2 /home/runner/work/geha-sajang-backend/geha-sajang-backend/build/reports/tests/test/classes/com.incense.gehasajang.GehaSajangApplicationTests.html s3://$S3_BUCKET_NAME
+        run: aws s3 cp --region ap-northeast-2 /home/runner/work/geha-sajang-backend/geha-sajang-backend/build/reports/tests/test s3://$S3_BUCKET_NAME/error --recursive
         shell: bash
         if: failure()
 
