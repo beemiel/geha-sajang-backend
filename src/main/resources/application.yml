@@ -3,8 +3,8 @@ spring:
     url: jdbc:mysql://localhost:3306/geha_sajang?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     initialization-mode: always
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: root
+    username: test
+    password: test
     data: classpath:schema.sql, classpath:data.sql
   jpa:
     hibernate:
