@@ -26,10 +26,16 @@ public class HouseService {
     private final HouseExtraInfoRepository houseExtraInfoRepository;
     private final HostHouseRepository hostHouseRepository;
 
+    /**
+     * House가 존재하지 않는 경우
+     */
     public House getHouse(Long houseId) {
         return houseRepository.findById(houseId).orElseThrow(() -> new NotFoundDataException(ErrorCode.HOUSE_NOT_FOUND));
     }
 
+    /**
+     * Host가 House에 권한이 없는 경우
+     */
     public House getHouse(Long houseId, String account) {
         return houseRepository.findByIdAndHostHouses_Host_Account(houseId, account)
                 .orElseThrow(() -> new AccessDeniedException(ErrorCode.ACCESS_DENIED));
