@@ -549,7 +549,9 @@ include::{snippets}/room-controller-test/detail/response-body.adoc[]
 `RO_001` 를 반환합니다.
 
 === POST /houses/{houseId}/rooms
-방을 하나 추가합니다.
+방을 여러개 추가합니다.
+
+하나만 추가할 경우에도 배열에 담아야 합니다.
 
 - HTTP Request
 include::{snippets}/room-controller-test/create/http-request.adoc[]
@@ -563,8 +565,10 @@ include::{snippets}/room-controller-test/create/request-fields.adoc[]
 ==== 201 성공
 내용은 없습니다.
 
-==== 404 실패 하우스 없음
-`HO_001` 를 반환합니다.
+==== 403 실패 권한 없음
+`US_013` 를 반환합니다.
+
+House와 Host가 매치되지 않는 경우 무조건 해당 에러를 반환합니다.
 
 == 약관 관련 API
 
