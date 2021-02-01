@@ -2,10 +2,11 @@ package com.incense.gehasajang.controller;
 
 
 import com.github.dozermapper.core.Mapper;
+import com.incense.gehasajang.domain.house.House;
 import com.incense.gehasajang.domain.room.Room;
 import com.incense.gehasajang.model.dto.room.RoomDto;
 import com.incense.gehasajang.security.UserAuthentication;
-import com.incense.gehasajang.service.AuthorizationService;
+import com.incense.gehasajang.service.HouseService;
 import com.incense.gehasajang.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 public class RoomController {
 
     private final RoomService roomService;
-    private final AuthorizationService authorizationService;
+    private final HouseService houseService;
 
     private final Mapper mapper;
 
@@ -49,9 +50,9 @@ public class RoomController {
             @AuthenticationPrincipal UserAuthentication authentication
     ) {
 
-        authorizationService.checkHouse(houseId, authentication.getAccount());
+        House house = houseService.getHouse(houseId, authentication.getAccount());
 
-        Room room = roomService.getRoom(houseId, roomId);
+        Room room = roomService.getRoom(house.getId(), roomId);
 
         return ResponseEntity.ok(mapper.map(room, RoomDto.class));
     }
@@ -64,17 +65,18 @@ public class RoomController {
             @AuthenticationPrincipal UserAuthentication authentication
     ) {
 
+        House house = houseService.getHouse(houseId, authentication.getAccount());
+
         List<Room> rooms = new ArrayList<>();
 
         for (RoomDto roomDto : roomDtos) {
             Room room = mapper.map(roomDto, Room.class);
             room.addRoomType(roomDto.getRoomTypeName());
+            room.addHouse(house);
             rooms.add(room);
         }
 
-        authorizationService.checkHouse(houseId, authentication.getAccount());
-
-        roomService.addRooms(houseId, rooms);
+        roomService.addRooms(rooms);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
