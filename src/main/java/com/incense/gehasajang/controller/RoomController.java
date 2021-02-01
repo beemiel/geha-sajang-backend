@@ -4,9 +4,8 @@ package com.incense.gehasajang.controller;
 import com.github.dozermapper.core.Mapper;
 import com.incense.gehasajang.domain.room.Room;
 import com.incense.gehasajang.model.dto.room.RoomDto;
-import com.incense.gehasajang.model.param.room.RoomCreateParam;
-import com.incense.gehasajang.model.param.room.RoomDetailParam;
 import com.incense.gehasajang.security.UserAuthentication;
+import com.incense.gehasajang.service.AuthorizationService;
 import com.incense.gehasajang.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,12 +28,15 @@ import java.util.stream.Collectors;
 public class RoomController {
 
     private final RoomService roomService;
+    private final AuthorizationService authorizationService;
+
     private final Mapper mapper;
 
     @GetMapping
     public ResponseEntity<List<RoomDto>> list(
             @PathVariable Long houseId
     ) {
+
         List<Room> rooms = roomService.getRooms(houseId);
 
         return ResponseEntity.ok(rooms.stream().map(room -> mapper.map(room, RoomDto.class)).collect(Collectors.toList()));
@@ -46,13 +49,10 @@ public class RoomController {
             @AuthenticationPrincipal UserAuthentication authentication
     ) {
 
-        RoomDetailParam detailParam = RoomDetailParam.builder()
-                .houseId(houseId)
-                .roomId(roomId)
-                .account(authentication.getAccount())
-                .build();
+        authorizationService.checkHouse(houseId, authentication.getAccount());
 
-        Room room = roomService.getRoom(detailParam);
+        Room room = roomService.getRoom(houseId, roomId);
+
         return ResponseEntity.ok(mapper.map(room, RoomDto.class));
     }
 
@@ -60,19 +60,21 @@ public class RoomController {
     @PostMapping
     public ResponseEntity<Void> create(
             @PathVariable @Min(1) Long houseId,
-            @Valid @RequestBody RoomDto roomDto,
+            @Valid @RequestBody List<RoomDto> roomDtos,
             @AuthenticationPrincipal UserAuthentication authentication
     ) {
-        Room room = mapper.map(roomDto, Room.class);
-        room.addRoomType(roomDto.getRoomTypeName());
 
-        RoomCreateParam createParam = RoomCreateParam.builder()
-                .room(room)
-                .houseId(houseId)
-                .account(authentication.getAccount())
-                .build();
+        List<Room> rooms = new ArrayList<>();
 
-        roomService.addRoom(createParam);
+        for (RoomDto roomDto : roomDtos) {
+            Room room = mapper.map(roomDto, Room.class);
+            room.addRoomType(roomDto.getRoomTypeName());
+            rooms.add(room);
+        }
+
+        authorizationService.checkHouse(houseId, authentication.getAccount());
+
+        roomService.addRooms(houseId, rooms);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
