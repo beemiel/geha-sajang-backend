@@ -8,6 +8,7 @@ import com.incense.gehasajang.domain.room.RoomType;
 import com.incense.gehasajang.error.ErrorCode;
 import com.incense.gehasajang.model.dto.room.RoomDto;
 import com.incense.gehasajang.security.UserAuthentication;
+import com.incense.gehasajang.service.HouseService;
 import com.incense.gehasajang.service.RoomService;
 import com.incense.gehasajang.util.CommonString;
 import com.incense.gehasajang.util.JwtUtil;
@@ -51,6 +52,9 @@ class RoomControllerTest {
     @MockBean
     private RoomService roomService;
 
+    @MockBean
+    private HouseService houseService;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -61,7 +65,7 @@ class RoomControllerTest {
     private String jwt;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         jwtUtil = new JwtUtil(Keys.secretKeyFor(SignatureAlgorithm.HS256));
         jwt = jwtUtil.createToken("test@naver.com", HostRole.ROLE_MAIN.getType());
         Claims claims = jwtUtil.parseToken(jwt);
@@ -71,7 +75,7 @@ class RoomControllerTest {
     @Test
     @DisplayName("방 상세 목록 성공")
     @WithMockUser(username = "foo", roles = {"SUB", "MAIN"})
-    public void list() throws Exception {
+    void list() throws Exception {
         //given
         House house = House.builder().id(1L).build();
         List<Room> rooms = Arrays.asList(
@@ -111,7 +115,8 @@ class RoomControllerTest {
         //given
         House house = House.builder().id(1L).build();
         Room room = Room.builder().id(1L).name("방1").memo("방1 메모").roomType(RoomType.SINGLE).offPeakAmount("10000").peakAmount("15000").maxCapacity(1).defaultCapacity(1).house(house).build();
-        given(roomService.getRoom(any())).willReturn(room);
+        given(roomService.getRoom(any(), any())).willReturn(room);
+        given(houseService.getHouse(any(), any())).willReturn(house);
 
         //when
         ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/houses/{houseId}/rooms/{roomId}", 1, 1)
@@ -145,10 +150,11 @@ class RoomControllerTest {
     @DisplayName("방 생성")
     void create() throws Exception {
         //given
-        RoomDto roomDto = RoomDto.builder().name("방").roomTypeName("다인실").peakAmount("10000").offPeakAmount("9000").maxCapacity(3).defaultCapacity(3).memo("방 메모").build();
+        List<RoomDto> roomDtos = Arrays.asList(RoomDto.builder().name("방").roomTypeName("다인실").peakAmount("10000").offPeakAmount("9000").maxCapacity(3).defaultCapacity(3).memo("방 메모").build(),
+                RoomDto.builder().name("방2").roomTypeName("다인실").peakAmount("20000").offPeakAmount("5000").maxCapacity(2).defaultCapacity(2).memo("방 메모2").build());
 
         //when
-        ResultActions resultActions = create(roomDto);
+        ResultActions resultActions = create(roomDtos, 1L);
 
         //then
         resultActions.andExpect(status().isCreated())
@@ -161,15 +167,15 @@ class RoomControllerTest {
                                 parameterWithName("houseId").description("요청하고자 하는 house id, 호스트가 속한 하우스가 아닐 경우 403 반환")
                         ),
                         requestFields(
-                                fieldWithPath("roomId").description("방 등록 요청시에는 사용하지 않습니다."),
-                                fieldWithPath("name").description("방 이름"),
-                                fieldWithPath("houseId").description("방 등록 요청시에는 사용하지 않습니다."),
-                                fieldWithPath("memo").description("방에 대한 메모"),
-                                fieldWithPath("roomTypeName").description("방 타입"),
-                                fieldWithPath("maxCapacity").description("최대 인원"),
-                                fieldWithPath("defaultCapacity").description("기본 인원"),
-                                fieldWithPath("peakAmount").description("성수기 가격"),
-                                fieldWithPath("offPeakAmount").description("비성수기 가격")
+                                fieldWithPath("[]roomId").description("방 등록 요청시에는 사용하지 않습니다."),
+                                fieldWithPath("[]name").description("방 이름"),
+                                fieldWithPath("[]houseId").description("방 등록 요청시에는 사용하지 않습니다."),
+                                fieldWithPath("[]memo").description("방에 대한 메모"),
+                                fieldWithPath("[]roomTypeName").description("방 타입"),
+                                fieldWithPath("[]maxCapacity").description("최대 인원"),
+                                fieldWithPath("[]defaultCapacity").description("기본 인원"),
+                                fieldWithPath("[]peakAmount").description("성수기 가격"),
+                                fieldWithPath("[]offPeakAmount").description("비성수기 가격")
                         )));
     }
 
@@ -177,13 +183,11 @@ class RoomControllerTest {
     @DisplayName("path variable 실패")
     void path() throws Exception {
         //given
-        RoomDto roomDto = RoomDto.builder().name("방").roomTypeName("다인실").peakAmount("10000").offPeakAmount("9000").maxCapacity(3).defaultCapacity(3).memo("방 메모").build();
+        List<RoomDto> roomDtos = Arrays.asList(RoomDto.builder().name("방").roomTypeName("다인실").peakAmount("10000").offPeakAmount("9000").maxCapacity(3).defaultCapacity(3).memo("방 메모").build(),
+                RoomDto.builder().name("방2").roomTypeName("다인실").peakAmount("20000").offPeakAmount("5000").maxCapacity(2).defaultCapacity(2).memo("방 메모2").build());
 
         //when
-        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/houses/{houseId}/rooms", -1)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(roomDto))
-                .with(authentication(userAuthentication)));
+        ResultActions resultActions = create(roomDtos, -1L);
 
         //then
         resultActions.andExpect(status().is4xxClientError())
@@ -195,10 +199,10 @@ class RoomControllerTest {
                         preprocessResponse(prettyPrint())));
     }
 
-    private ResultActions create(RoomDto roomDto) throws Exception {
-        return mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/houses/{houseId}/rooms", 1)
+    private ResultActions create(List<RoomDto> roomDtos, Long houseId) throws Exception {
+        return mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/houses/{houseId}/rooms", houseId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(roomDto))
+                .content(objectMapper.writeValueAsString(roomDtos))
                 .with(authentication(userAuthentication)));
     }
 }

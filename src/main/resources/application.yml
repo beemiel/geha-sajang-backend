@@ -50,7 +50,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: test
     password: test
-    data: classpath:schema.sql, classpath:data.sql
+    data: classpath:schema.sql
 
 
 ---
@@ -63,4 +63,4 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: AWS_RDS_USER_NAME
     password: AWS_RDS_USER_PASSWORD
-    data: classpath:schema.sql, classpath:data.sql
+    data: classpath:schema.sql
