@@ -39,12 +39,14 @@ public class BookingRoomInfoService {
         Long houseId = bookingRoomParam.getHouseId();
         List<BookingRoomRequestDto> bookingRoomInfos = bookingRoomParam.getBookingRoomInfos();
 
+        //방이 존재하는지 확인
         bookingRoomInfos.forEach(bookingRoomDto -> {
             boolean exist = authorizationService.isExistsRoom(bookingRoomDto.getRoomId(), houseId);
             if (!exist) {
                 throw new NotFoundDataException(ErrorCode.ROOM_NOT_FOUND);
             }
 
+            //방이 존재한다면 필요한 날짜만큼 재고를 가져옴
             Map<LocalDateTime, List<UnbookedRoom>> unbookedRooms = unbookedRoomService.getUnbookedRoomsByRoomId(bookingRoomDto, booking.getStay());
             unbookedRooms.values().forEach(rooms -> addRoom(rooms, bookingRoomDto));
         });
