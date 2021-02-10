@@ -1176,8 +1176,8 @@ HTTP/1.1 404 Not Found
 HTTP/1.1 404 Not Found
 
 {
-  "message" : "예약 가능한 방이 없습니다.",
-  "code" : "UN_001",
+  "message" : "추가 서비스를 찾을 수 없습니다.",
+  "code" : "HO_003",
   "status" : 404,
   "errors" : [ ]
 }
