@@ -1126,24 +1126,8 @@ include::{snippets}/booking-controller-test/success-booking/request-fields.adoc[
 HTTP/1.1 201 Created
 ```
 
-==== 404 게스트
-올바르지 않은 Guest Id가 들어올 경우 발생합니다.
-
-- HTTP Response
-```
-HTTP/1.1 404 Not Found
-
-{
-  "message" : "게스트를 찾을 수 없습니다.",
-  "code" : "GU_001",
-  "status" : 404,
-  "errors" : [ ]
-}
-
-```
-
-==== 404 하우스
-올바르지 않은 House Id가 들어올 경우 발생합니다.
+==== 403 게스트 & 하우스
+매칭되는 게스트와 하우스가 없는 경우 코드 US_013을 반환합니다.
 
 ==== 404 룸
 해당 하우스에 존재하지 않는 Room Id 입니다.
