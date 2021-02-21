@@ -68,7 +68,7 @@ public class S3Service {
     }
 
     private Optional<File> convert(MultipartFile image) throws IOException {
-        File convertFile = new File(image.getOriginalFilename());
+        File convertFile = new File("./geha-sajang-image",image.getOriginalFilename());
         if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                 fos.write(image.getBytes());
