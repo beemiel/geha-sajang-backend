@@ -60,6 +60,7 @@ public class S3Service {
     }
 
     private void removeNewFile(File targetFile) {
+        log.debug("file path: {}", targetFile.getPath());
         if (targetFile.delete()) {
             log.info("파일이 삭제되었습니다.");
         } else {
@@ -68,7 +69,7 @@ public class S3Service {
     }
 
     private Optional<File> convert(MultipartFile image) throws IOException {
-        File convertFile = new File("./geha-sajang-image",image.getOriginalFilename());
+        File convertFile = new File("./image",image.getOriginalFilename());
         if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                 fos.write(image.getBytes());
