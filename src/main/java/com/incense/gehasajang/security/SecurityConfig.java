@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers("/*/*/signin", "/*/*/users/**", "/*/*/signout").permitAll()
+                .antMatchers("/*/*/signin", "/*/*/users/**", "/*/*/signout", "/favicon.ico").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/terms", "/").permitAll()
                 .anyRequest().hasRole("SUB")
 
