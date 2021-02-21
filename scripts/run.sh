@@ -10,9 +10,6 @@ sudo kill -15 ${CURRENT_PID}
 sudo rm /home/ubuntu/nohup.out
 echo "> Remove nohup.out"
 
-# 이미지 업로드 시 파일 생성을 위해 디렉토리에 쓰기 권한 추가
-sudo chmod 777 /home/ubuntu/geha-sajang/
-
 # 새로 어플리케이션 실행
 nohup java -jar -Dspring.profiles.active=deploy /home/ubuntu/geha-sajang/build/libs/* > /home/ubuntu/nohup.out 2>&1 &
 echo "> Now new WAS runs."
